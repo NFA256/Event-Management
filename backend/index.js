@@ -73,6 +73,36 @@ app.route("/users/:id").delete(deleteUser);
 
 
 
+
+//----------------------  EXHIBITOR CONTROLLER ROUTING   ---------------
+const {
+   createExhibitor,
+  getAllExhibitors,
+  getExhibitorById,
+  updateExhibitor,
+  deleteExhibitor,
+} = require("./Controllers/ExhibitorController");
+
+
+
+// Create role
+app.route("/exhibitors").post(createExhibitor);
+
+// Get all roles
+app.route("/exhibitors").get(getAllExhibitors);
+
+// Get single role by ID
+app.route("/exhibitors/:id").get(getExhibitorById);
+
+// Update role by ID
+app.route("/exhibitors/:id").put(updateExhibitor);
+
+// Delete role by ID
+app.route("/exhibitors/:id").delete(deleteExhibitor);
+
+
+
+
 //--------server listen
 
 app.listen(process.env.PORT, function () {
