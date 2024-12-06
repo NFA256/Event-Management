@@ -19,6 +19,6 @@ const Roles_Schema = mongoose.Schema(
 );
 
 // Create the model
-const roles_tb = mongoose.model("roles", Roles_Schema);
+const roles = mongoose.model("roles", Roles_Schema);
 
-module.exports = roles_tb;
+module.exports = roles;
