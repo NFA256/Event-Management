@@ -36,8 +36,8 @@ const createRole = async (req, res) => {
 // Description --  GET ALL ROLES FUNCTION
 const getAllRoles = async (req, res) => {
     try {
-        const roles = await roles.find();
-        return res.status(200).json({ success: true, data: roles });
+        const getroles = await roles.find();
+        return res.status(200).json({ success: true, data: getroles });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, message: "Error fetching roles", error: error.message });

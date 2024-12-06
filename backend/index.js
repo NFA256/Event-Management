@@ -44,6 +44,31 @@ app.route("/roles/:id").put(updateRole);
 app.route("/roles/:id").delete(deleteRole);
 
 
+//----------------------  USER ACCOUNT CONTROLLER ROUTING   ---------------
+const {
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+} = require("./Controllers/UserController");
+
+
+
+// Create role
+app.route("/users").post(createUser);
+
+// Get all roles
+app.route("/users").get(getAllUsers);
+
+// Get single role by ID
+app.route("/users/:id").get(getUserById);
+
+// Update role by ID
+app.route("/users/:id").put(updateUser);
+
+// Delete role by ID
+app.route("/users/:id").delete(deleteUser);
 
 
 

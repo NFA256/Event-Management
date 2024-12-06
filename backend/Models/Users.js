@@ -7,6 +7,10 @@ const User_Schema = mongoose.Schema(
       type: String,
       required: [true, "Name is required"],
       trim: true,
+      match: [
+        /^[A-Za-z]{3,}$/,
+        "Name must be at least 3 characters long and contain only alphabets",
+      ],
     },
     email: {
       type: String,
@@ -21,7 +25,10 @@ const User_Schema = mongoose.Schema(
       type: String,
       required: [true, "CNIC is required"],
       unique: true,
-      match: [/^[0-9]{11}$/, "Please provide a valid 11-digit CNIC"],
+      match: [
+        /^\d{4}-\d{7}-\d{1}$/,
+        "CNIC format must be 1234-1234567-1",
+      ],
     },
     password: {
       type: String,
