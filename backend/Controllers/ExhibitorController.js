@@ -1,6 +1,8 @@
-exhibitor = require("../Models/Exhibitor"); // Adjust path as needed
+exhibitor = require("../Models/Exhibitor"); 
 
-// Create a new exhibitor
+// Method -------  GET
+// API   --------  http://localhost:5000/exhibitors
+// Description --  CREATE EXHIBITOR FUNCTION
 const createExhibitor = async (req, res) => {
   try {
     const { company_id, image, contact, product, user_id, booth_id } = req.body;
@@ -20,6 +22,10 @@ const createExhibitor = async (req, res) => {
   }
 };
 
+
+// Method -------  POST
+// API   --------  http://localhost:5000/users
+// Description --  GET EXHIBITOR FUNCTION
 // Get all exhibitors
 const getAllExhibitors = async (req, res) => {
   try {
@@ -33,6 +39,10 @@ const getAllExhibitors = async (req, res) => {
   }
 };
 
+
+// Method -------  GET
+// API   --------  http://localhost:5000/exhibitors/:id
+// Description --  GET  EXHIBITOR BY ID FUNCTION
 // Get a single exhibitor by ID
 const getExhibitorById = async (req, res) => {
   try {
@@ -52,6 +62,10 @@ const getExhibitorById = async (req, res) => {
   }
 };
 
+
+// Method -------  PUT
+// API   --------  http://localhost:5000/exhibitors/:id
+// Description --  UPDATE EXHIBITOR BY ID FUNCTION
 // Update an exhibitor by ID
 const updateExhibitor = async (req, res) => {
   try {
@@ -72,6 +86,10 @@ const updateExhibitor = async (req, res) => {
   }
 };
 
+
+// Method -------  DELETE
+// API   --------  http://localhost:5000/exhibitors/:id
+// Description --  DELETE EXHIBITOR FUNCTION
 // Delete an exhibitor by ID
 const deleteExhibitor = async (req, res) => {
   try {
@@ -88,6 +106,8 @@ const deleteExhibitor = async (req, res) => {
     return res.status(500).json({ success: false, message: "Error deleting exhibitor", error: error.message });
   }
 };
+
+
 
 // Export the controller functions
 module.exports = {

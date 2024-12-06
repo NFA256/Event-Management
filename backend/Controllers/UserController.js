@@ -1,7 +1,7 @@
-const users = require("../Models/Users"); // Adjust the path as per your project structure
+const users = require("../Models/Users"); 
 const bcrypt = require("bcrypt");
 
-// Method -------  POST
+// Method -------  GET
 // API   --------  http://localhost:5000/users
 // Description --  CREATE USERS FUNCTION
 const createUser = async (req, res) => {
@@ -68,7 +68,7 @@ const createUser = async (req, res) => {
   }
 };
 
-// Method -------  GET
+// Method -------  POST
 // API   --------  http://localhost:5000/users
 // Description --  GET ALL USERS FUNCTION
 const getAllUsers = async (req, res) => {
