@@ -73,7 +73,7 @@ const createUser = async (req, res) => {
 // Description --  GET ALL USERS FUNCTION
 const getAllUsers = async (req, res) => {
   try {
-    const getusers = await users.find().populate("roles", "RoleName Status"); // Populate role details
+    const getusers = await users.find().populate("role", "RoleName Status"); // Populate role details
     return res.status(200).json({ success: true, data: getusers });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Error fetching users", error: error.message });
