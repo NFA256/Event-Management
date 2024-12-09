@@ -103,6 +103,35 @@ app.route("/exhibitors/:id").delete(deleteExhibitor);
 
 
 
+//----------------------  EVENT CONTROLLER ROUTING   ---------------
+const {
+ createEvent,
+  getAllEvents,
+  getEventById,
+  updateEvent,
+  deleteEvent,
+} = require("./Controllers/EventController");
+
+
+
+// Create role
+app.route("/events").post(createEvent);
+
+// Get all roles
+app.route("/events").get(getAllEvents);
+
+// Get single role by ID
+app.route("/events/:id").get(getEventById);
+
+// Update role by ID
+app.route("/events/:id").put(updateEvent);
+
+// Delete role by ID
+app.route("/events/:id").delete(deleteEvent);
+
+
+
+
 //--------server listen
 
 app.listen(process.env.PORT, function () {
