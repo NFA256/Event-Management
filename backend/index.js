@@ -132,6 +132,36 @@ app.route("/events/:id").delete(deleteEvent);
 
 
 
+//----------------------  SEMINAR CONTROLLER ROUTING   ---------------
+const {
+createSeminar,
+  getAllSeminars,
+  getSeminarById,
+  updateSeminar,
+  deleteSeminar,
+} = require("./Controllers/SeminarController");
+
+
+
+// Create role
+app.route("/seminars").post(createSeminar);
+
+// Get all roles
+app.route("/seminars").get(getAllSeminars);
+
+// Get single role by ID
+app.route("/seminars/:id").get(getSeminarById);
+
+// Update role by ID
+app.route("/seminars/:id").put(updateSeminar);
+
+// Delete role by ID
+app.route("/seminars/:id").delete(deleteSeminar);
+
+
+
+
+
 //--------server listen
 
 app.listen(process.env.PORT, function () {
