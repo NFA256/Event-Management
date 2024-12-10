@@ -114,12 +114,24 @@ const Footer = () => {
           <div class="row footer-wejed justify-content-between">
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6">
               {/* <!-- logo --> */}
-              <div class="footer-logo mb-20">
-                <Link to="/">
-                  <img src="assets/img/logo/logo2_footer.png" alt="" />
-                </Link>
-              </div>
-            </div>
+              <div className="logo img-fluid ">
+    <Link to="/">
+      <img className="mb-5"
+        src="assets/img/logo/footerlogo.png"
+        alt="Logo"
+        style={{
+          maxWidth: "450px", // Adjust size as needed
+          height: "65px",
+          color:'black',
+          marginBottom:"180px",
+        }}
+      />
+  
+    </Link>
+  </div>
+</div>
+
+
             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-5">
               <div class="footer-tittle-bottom">
                 <span>5000+</span>

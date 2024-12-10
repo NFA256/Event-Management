@@ -1,15 +1,20 @@
-import React from 'react'
-import Navbar from './Components/Navbar'
-import Footer from './Components/Footer'
-import { BrowserRouter,Routes ,Route } from 'react-router-dom'
-import About from './Components/About'
-import Speakers from './Components/Speakers'
-import Schedule from './Components/Schedule'
-import Contact from './Pages/Contact'
-import Home from './Pages/Home'
-import Login from './Pages/Login'
-import Register from './Pages/Register'
+import React from 'react';
+import Navbar from './User/Components/Navbar';
+import Footer from './User/Components/Footer';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import About from './User/Components/About';
+import Speakers from './User/Components/Speakers';
+import Schedule from './User/Components/Schedule';
+import Contact from './User/Pages/Contact';
+import Home from './User/Pages/Home';
+import Login from './User/Pages/Login';
+import Register from './User/Pages/Register';
+import Sidebar from './Admin/Components/Sidebar';
+import Error from './User/Pages/Error';
+
 const App = () => {
+  
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -21,10 +26,13 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<Sidebar />} />
+  {/* Fallback route */}
+  <Route path="*" element={<Error />} />
       </Routes>
       <Footer />
     </BrowserRouter>
   );
-}
+};
 
-export default App
+export default App;
