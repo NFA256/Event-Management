@@ -5,10 +5,30 @@ const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    cnic: "",
+    role: "",
     password: "",
     confirmPassword: "",
   });
+  const handleCNICInputChange = (e) => {
+    let inputValue = e.target.value;
+    //----------Remove alphabets
+    inputValue = inputValue.replace(/\D/g, '');
 
+    //------------ after 5 numbers a dash added
+    if (inputValue.length > 5) {
+      inputValue = inputValue.slice(0, 5) + '-' + inputValue.slice(5);
+    }
+    //------------ after 13 numbers a dash added
+    if (inputValue.length > 13) {
+      inputValue = inputValue.slice(0, 13) + '-' + inputValue.slice(13);
+    }
+    //-------- Only allow 13 digits (15 characters with the dashes)
+    if (inputValue.length <= 15) {
+      setCNICno(inputValue);
+
+    }
+  };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -64,6 +84,28 @@ const Register = () => {
               onChange={handleChange}
               required
             />
+          </div>
+          <div className="form-group mb-3">
+            <input
+              className="form-control"
+              name="cnic"
+              id="cnic"
+              type=""
+              placeholder="Enter your cnic no"
+              value={formData.cnic}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group mb-3">
+            <select  className="form-control" 
+              name="role"
+              id="role" value={formData.role}
+              onChange={handleChange}>
+<option value="">Select Role</option>
+<option value="exhibitor">Exhibitor</option>
+<option value="attendee">Attendee</option>
+              </select>
           </div>
           <div className="form-group mb-3">
             <input
