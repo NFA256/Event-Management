@@ -23,6 +23,24 @@ const usersRoutes = require("./Routes/usersRoutes");
 const exhibitorRoutes = require("./Routes/exhibitorRoutes");
 const eventRoutes = require("./Routes/eventRoutes");
 const seminarRoutes = require("./Routes/seminarRoutes");
+const hallRoutes = require("./Routes/hallsRoutes");
+const floorRoutes = require("./Routes/floorRoutes");
+const workshopRoutes = require("./Routes/workshopsRoutes");
+const sessionRoutes = require("./Routes/sessionsRoute");
+const speakerRoutes = require("./Routes/speakersRoute");
+const testimonialRoutes = require("./Routes/testimonialRoutes");
+const feedbackRoutes = require("./Routes/feedbackRoutes");
+const boothRoutes = require("./Routes/boothRoutes");
+const contactRoutes = require("./Routes/contactRoutes");
+
+
+
+
+
+
+
+
+
 //--- CONTROLLER IMPORT-----ROLES TABLE------
 
 // Use routes
@@ -31,6 +49,24 @@ app.use("/", usersRoutes); // For user-related routes
 app.use("/", exhibitorRoutes); // For exhibitor-related routes
 app.use("/", eventRoutes); // For event-related routes
 app.use("/", seminarRoutes); // For seminar-related routes
+app.use("/", hallRoutes); // For halls-related routes
+app.use("/", floorRoutes); // For floor-related routes
+app.use("/", workshopRoutes); // For worKshop-related routes
+app.use("/", sessionRoutes); // For session-related routes
+app.use("/", speakerRoutes); // For speaker-related routes
+app.use("/", testimonialRoutes); // For testimonial-related routes
+app.use("/", feedbackRoutes); // For feedback-related routes
+app.use("/", boothRoutes); // For feedback-related routes
+app.use("/", contactRoutes); // For contact-related routes
+
+
+
+
+
+
+
+
+
 
 
 //--------server listen
