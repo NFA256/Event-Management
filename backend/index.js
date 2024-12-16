@@ -13,9 +13,7 @@ app.use(cors())
 //-----db connect
 const {connectionDB} = require("./Config/Database");
 
-
-
-
+//-----------------------ROUTES------------------------//
 
 // Import routes
 const rolesRoutes = require("./Routes/rolesRoutes");
@@ -41,7 +39,7 @@ const contactRoutes = require("./Routes/contactRoutes");
 
 
 
-//--- CONTROLLER IMPORT-----ROLES TABLE------
+//--- CONTROLLER IMPORT-----------//
 
 // Use routes
 app.use("/", rolesRoutes); // For role-related routes
@@ -58,15 +56,6 @@ app.use("/", testimonialRoutes); // For testimonial-related routes
 app.use("/", feedbackRoutes); // For feedback-related routes
 app.use("/", boothRoutes); // For feedback-related routes
 app.use("/", contactRoutes); // For contact-related routes
-
-
-
-
-
-
-
-
-
 
 
 //--------server listen
