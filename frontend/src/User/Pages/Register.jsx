@@ -25,7 +25,7 @@ const Register = () => {
     }
     //-------- Only allow 13 digits (15 characters with the dashes)
     if (inputValue.length <= 15) {
-      setCNICno(inputValue);
+      // setCNICno(inputValue);
 
     }
   };
