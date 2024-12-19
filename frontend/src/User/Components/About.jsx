@@ -80,14 +80,14 @@ export const AboutContent = () => (
 
 export const AboutPricing = () => (
   <>
-    {/* <div class="gallery-area fix">
-      <div class="container-fluid p-0">
-        <div class="row no-gutters">
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="gallery-box">
-              <div class="single-gallery">
+    {/* <div className="gallery-area fix">
+      <div className="container-fluid p-0">
+        <div className="row no-gutters">
+          <div className="col-lg-3 col-md-3 col-sm-6">
+            <div className="gallery-box">
+              <div className="single-gallery">
                 <div
-                  class="gallery-img "
+                  className="gallery-img "
                   style={{
                     backgroundImage: "url(assets/img/gallery/gallery1.png);",
                   }}
@@ -95,11 +95,11 @@ export const AboutPricing = () => (
               </div>
             </div>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="gallery-box">
-              <div class="single-gallery">
+          <div className="col-lg-3 col-md-3 col-sm-6">
+            <div className="gallery-box">
+              <div className="single-gallery">
                 <div
-                  class="gallery-img "
+                  className="gallery-img "
                   style={{
                     backgroundImage: "url(assets/img/gallery/gallery2.png);",
                   }}
@@ -107,11 +107,11 @@ export const AboutPricing = () => (
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-6">
-            <div class="gallery-box">
-              <div class="single-gallery">
+          <div className="col-lg-6 col-md-6 col-sm-6">
+            <div className="gallery-box">
+              <div className="single-gallery">
                 <div
-                  class="gallery-img "
+                  className="gallery-img "
                   style={{
                     backgroundImage: "url(assets/img/gallery/gallery3.png);",
                   }}
@@ -119,11 +119,11 @@ export const AboutPricing = () => (
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-6">
-            <div class="gallery-box">
-              <div class="single-gallery">
+          <div className="col-lg-6 col-md-6 col-sm-6">
+            <div className="gallery-box">
+              <div className="single-gallery">
                 <div
-                  class="gallery-img "
+                  className="gallery-img "
                   style={{
                     backgroundImage: "url(assets/img/gallery/gallery4.png);",
                   }}
@@ -131,11 +131,11 @@ export const AboutPricing = () => (
               </div>
             </div>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="gallery-box">
-              <div class="single-gallery">
+          <div className="col-lg-3 col-md-3 col-sm-6">
+            <div className="gallery-box">
+              <div className="single-gallery">
                 <div
-                  class="gallery-img "
+                  className="gallery-img "
                   style={{
                     backgroundImage: "url(assets/img/gallery/gallery5.png);",
                   }}
@@ -143,11 +143,11 @@ export const AboutPricing = () => (
               </div>
             </div>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-6">
-            <div class="gallery-box">
-              <div class="single-gallery">
+          <div className="col-lg-3 col-md-3 col-sm-6">
+            <div className="gallery-box">
+              <div className="single-gallery">
                 <div
-                  class="gallery-img "
+                  className="gallery-img "
                   style={{
                     backgroundImage:
                       "url(assets/img/gallery/gallery6.png);",
@@ -161,12 +161,12 @@ export const AboutPricing = () => (
         </div>
       </div>
         </div> */}
-    <section class="pricing-card-area section-padding2">
-      <div class="container">
+    <section className="pricing-card-area section-padding2">
+      <div className="container">
         {/* <!-- Section Tittle --> */}
-        <div class="row justify-content-center">
-          <div class="col-lg-5 col-md-8">
-            <div class="section-tittle text-center mb-100">
+        <div className="row justify-content-center">
+          <div className="col-lg-5 col-md-8">
+            <div className="section-tittle text-center mb-100">
               <h2>Program Pricing</h2>
               <p>
                 There arge many variations ohf passages of sorem gp ilable, but
@@ -175,59 +175,59 @@ export const AboutPricing = () => (
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10">
-            <div class="single-card text-center mb-30">
-              <div class="card-top">
+        <div className="row">
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
+            <div className="single-card text-center mb-30">
+              <div className="card-top">
                 <span>Day - 1</span>
                 <h4>$ 05.00</h4>
               </div>
-              <div class="card-bottom">
+              <div className="card-bottom">
                 <ul>
                   <li>Increase traffic 50%</li>
                   <li>E-mail support</li>
                   <li>10 Free Optimization</li>
                   <li>24/7 support</li>
                 </ul>
-                <a href="services.html" class="black-btn">
+                <a href="services.html" className="black-btn">
                   View Spackert
                 </a>
               </div>
             </div>
           </div>
-          <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10">
-            <div class="single-card active text-center mb-30">
-              <div class="card-top">
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
+            <div className="single-card active text-center mb-30">
+              <div className="card-top">
                 <span>Day - 1,2,3</span>
                 <h4>$ 08.00</h4>
               </div>
-              <div class="card-bottom">
+              <div className="card-bottom">
                 <ul>
                   <li>Increase traffic 50%</li>
                   <li>E-mail support</li>
                   <li>10 Free Optimization</li>
                   <li>24/7 support</li>
                 </ul>
-                <a href="services.html" class="black-btn">
+                <a href="services.html" className="black-btn">
                   View Spackert
                 </a>
               </div>
             </div>
           </div>
-          <div class="col-xl-4 col-lg-4 col-md-6 col-sm-10">
-            <div class="single-card text-center mb-30">
-              <div class="card-top">
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
+            <div className="single-card text-center mb-30">
+              <div className="card-top">
                 <span>Day - 1,2</span>
                 <h4>$ 06.00</h4>
               </div>
-              <div class="card-bottom">
+              <div className="card-bottom">
                 <ul>
                   <li>Increase traffic 50%</li>
                   <li>E-mail support</li>
                   <li>10 Free Optimization</li>
                   <li>24/7 support</li>
                 </ul>
-                <a href="services.html" class="black-btn">
+                <a href="services.html" className="black-btn">
                   View Spackert
                 </a>
               </div>

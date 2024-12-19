@@ -1,61 +1,166 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+// -----User API
+// API
+// http://localhost:5000/users
+
+// -----Role API
+// API
+// http://localhost:5000/roles
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    cnic: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const handleCNICInputChange = (e) => {
-    let inputValue = e.target.value;
-    //----------Remove alphabets
-    inputValue = inputValue.replace(/\D/g, '');
+  const navigate = useNavigate();
 
-    //------------ after 5 numbers a dash added
-    if (inputValue.length > 5) {
-      inputValue = inputValue.slice(0, 5) + '-' + inputValue.slice(5);
-    }
-    //------------ after 13 numbers a dash added
-    if (inputValue.length > 13) {
-      inputValue = inputValue.slice(0, 13) + '-' + inputValue.slice(13);
-    }
-    //-------- Only allow 13 digits (15 characters with the dashes)
-    if (inputValue.length <= 15) {
-      // setCNICno(inputValue);
+  const [GetRoles, setGetRoles] = useState([]);
+  const [Name, setName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Cnic, setCnic] = useState("");
+  const [Password, setPassword] = useState("");
+  const [Cpassword, setCpassword] = useState("");
+  const [Role, setRole] = useState("");
+  const [Error, setError] = useState("");
+  const [Success, setSuccess] = useState("");
 
+  useEffect(() => {
+    // Fetch roles from API
+    async function getRoles() {
+      try {
+        const response = await fetch("http://localhost:5000/roles");
+        if (response.status === 200) {
+          const result = await response.json();
+          console.log("Fetched Roles:", result); // Log the response to check the structure
+          if (result.success) {
+            setGetRoles(result.data);
+          } else {
+            setError("Failed to fetch roles.");
+          }
+        } else {
+          setError("Failed to fetch roles.");
+        }
+      } catch (error) {
+        setError("An error occurred while fetching roles.");
+        console.log(error);
+      }
     }
+
+    getRoles();
+  }, []);
+  // const formatCnic = (value) => {
+  //   // Remove all non-numeric characters
+  //   const cnic = value.replace(/\D/g, "");
+
+  //   // Only format CNIC if it has exactly 13 digits
+  //   if (cnic.length === 13) {
+  //     return `${cnic.slice(0, 4)}-${cnic.slice(4, 11)}-${cnic.slice(11, 12)}`;
+  //   }
+
+  //   // Return the CNIC as-is if it's not 13 digits long
+  //   return cnic;
+  // };
+
+  const handleCnicChange = (e) => {
+    const value = e.target.value;
+    setCnic(value); // Store the raw input value
   };
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  // Update the CNIC when the user moves away from the field
+  const handleBlur = () => {
+    // const formattedCnic = formatCnic(Cnic);
+    // setCnic(formattedCnic); // Apply the formatted CNIC
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+    // Format CNIC before submission
+    // const formattedCnic = formatCnic(Cnic); // Apply the formatting function
+
+    // Validate inputs
+    if (Name === "" || Name.length < 3) {
+      setError("Username is not valid");
       return;
     }
-    // Add registration logic here
-    console.log("Registration attempt:", formData);
+    if (Email === "" || Email.length < 5) {
+      setError("Email is not valid");
+      return;
+    }
+    if (Password === "" || Password.length < 6) {
+      setError("Password must be strong");
+      return;
+    }
+    if (Cpassword !== Password) {
+      setError("Password must be equal to Confirm Password");
+      return;
+    }
+    if (Role === "" || Role === "none") {
+      setError("Please select a role.");
+      return;
+    }
+
+    // Check if the selected role's ObjectId is valid
+    const validRoles = GetRoles.map((role) => role._id.toString()); // Ensure _id is in string format
+    if (!validRoles.includes(Role)) {
+      setError("Invalid role selected.");
+      return;
+    }
+    console.log("Fetched Roles:", GetRoles); // Add this log to verify
+
+    // Create user object
+    const newUser = {
+      name: Name,
+      email: Email,
+      password: Password,
+      role: Role,
+      cnic: Cnic, // Adding CNIC to the user object
+    };
+    console.log("Sending User Data:", newUser);
+
+    // Send user data to backend
+    try {
+      const response = await fetch("http://localhost:5000/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
+
+      if (response.status !== 201) {
+        const errorData = await response.json();
+        console.log("Error Response:", errorData);
+        setError(errorData.message || "Failed to register the user.");
+      } else {
+        setSuccess("Account Registered Successfully !!");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("An error occurred while registering the user.");
+    }
   };
 
   return (
     <div
       className="d-flex mb-5 justify-content-center align-items-center"
-      style={{
-        minHeight: "75vh",
-      }}
+      style={{ minHeight: "75vh" }}
     >
-      <div className="container shadow-lg p-5" style={{ maxWidth: "400px" }}>
+      <div className="container shadow-lg p-5" style={{ maxWidth: "550px" }}>
         <div className="text-center mb-4">
           <u>
             <h2>Register</h2>
           </u>
         </div>
+        {Error && (
+          <div className="alert alert-danger" role="alert">
+            <p>{Error}</p>
+          </div>
+        )}
+        {Success && (
+          <div className="alert alert-success" role="alert">
+            <p>{Success}</p>
+          </div>
+        )}
         <form
           onSubmit={handleSubmit}
           className="form-contact contact_form"
@@ -68,8 +173,8 @@ const Register = () => {
               id="name"
               type="text"
               placeholder="Enter your name"
-              value={formData.name}
-              onChange={handleChange}
+              value={Name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
@@ -80,8 +185,8 @@ const Register = () => {
               id="email"
               type="email"
               placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -90,23 +195,36 @@ const Register = () => {
               className="form-control"
               name="cnic"
               id="cnic"
-              type=""
-              placeholder="Enter your cnic no"
-              value={formData.cnic}
-              onChange={handleChange}
+              type="text"
+              placeholder="Enter your CNIC (XXXXX-XXXXXXX-X)"
+              value={Cnic}
+              onChange={handleCnicChange}
+              onBlur={handleBlur} // Apply formatting when the input loses focus
               required
             />
           </div>
-          <div className="form-group mb-3">
-            <select  className="form-control" 
-              name="role"
-              id="role" value={formData.role}
-              onChange={handleChange}>
-<option value="">Select Role</option>
-<option value="exhibitor">Exhibitor</option>
-<option value="attendee">Attendee</option>
-              </select>
+          <div data-mdb-input-init className="form-outline mb-4">
+            <select
+              className="form-control"
+              onChange={(e) => setRole(e.target.value)} // Set the selected ObjectId
+              value={Role}
+              required
+            >
+              <option value="none">Choose Role</option>
+              {GetRoles.length > 0 ? (
+                GetRoles.map((role, index) => (
+                  <option key={index} value={role._id}>
+                    {" "}
+                    {/* Use the role's ObjectId */}
+                    {role.RoleName}
+                  </option>
+                ))
+              ) : (
+                <option disabled>No roles available</option>
+              )}
+            </select>
           </div>
+
           <div className="form-group mb-3">
             <input
               className="form-control"
@@ -114,8 +232,8 @@ const Register = () => {
               id="password"
               type="password"
               placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
+              value={Password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -126,8 +244,8 @@ const Register = () => {
               id="confirmPassword"
               type="password"
               placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              value={Cpassword}
+              onChange={(e) => setCpassword(e.target.value)}
               required
             />
           </div>

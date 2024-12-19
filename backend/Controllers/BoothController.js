@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const booths = require("../Models/Booth"); // Adjust path as needed
 
+// Method -------  POST
+// API   --------  http://localhost:5000/booths
 // Create a new booth
 const createBooth = async (req, res) => {
   try {
@@ -36,6 +38,8 @@ const createBooth = async (req, res) => {
   }
 };
 
+// Method -------  GET
+// API   --------  http://localhost:5000/booths
 // Get all booths
 const getAllBooths = async (req, res) => {
   try {
@@ -46,6 +50,8 @@ const getAllBooths = async (req, res) => {
   }
 };
 
+// Method -------  GET
+// API   --------  http://localhost:5000/booths/id
 // Get a specific booth by ID
 const getBoothById = async (req, res) => {
   try {
@@ -59,6 +65,8 @@ const getBoothById = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch booth", error: error.message });
   }
 };
+// Method -------  PUT
+// API   --------  http://localhost:5000/booths
 
 // Update a booth by ID (including reserved_bool update)
 const updateBooth = async (req, res) => {
@@ -106,6 +114,8 @@ const updateBooth = async (req, res) => {
   }
 };
 
+// Method -------  DELEtE
+// API   --------  http://localhost:5000/booths/id
 // Delete a booth by ID
 const deleteBooth = async (req, res) => {
   try {
