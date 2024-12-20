@@ -1,12 +1,34 @@
-const workshops = require("../Models/Workshop");  // Import the Workshop model
+const workshops = require("../Models/Workshop"); // Adjust the path as necessary
 
 // Create a new workshop
 const createWorkshop = async (req, res) => {
   try {
-    const { title, description, image, total_sessions, start_date, end_date, hall_id, no_of_attendees } = req.body;
+    const {
+      title,
+      description,
+      image,
+      total_sessions,
+      start_date,
+      end_date,
+      hall_id,
+      no_of_attendees,
+      price,
+      speaker_id,
+    } = req.body;
 
     // Validate the incoming data
-    if (!title || !description || !image || !total_sessions || !start_date || !end_date || !hall_id || !no_of_attendees) {
+    if (
+      !title ||
+      !description ||
+      !image ||
+      !total_sessions ||
+      !start_date ||
+      !end_date ||
+      !hall_id ||
+      !no_of_attendees ||
+      !price ||
+      !speaker_id
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -27,6 +49,8 @@ const createWorkshop = async (req, res) => {
       end_date,
       hall_id,
       no_of_attendees,
+      price,
+      speaker_id,
     });
 
     await newWorkshop.save();
@@ -43,7 +67,7 @@ const createWorkshop = async (req, res) => {
 // Get all workshops
 const getAllWorkshops = async (req, res) => {
   try {
-    const getworkshops = await workshops.find();
+    const getworkshops = await workshops.find().populate("hall_id speaker_id");
     res.status(200).json(getworkshops.length ? getworkshops : { message: "No workshops found" });
   } catch (error) {
     console.error(error); // Log the error
@@ -54,7 +78,7 @@ const getAllWorkshops = async (req, res) => {
 // Get a single workshop by ID
 const getWorkshopById = async (req, res) => {
   try {
-    const workshop = await workshops.findById(req.params.id);
+    const workshop = await workshops.findById(req.params.id).populate("hall_id speaker_id");
     if (!workshop) {
       return res.status(404).json({ message: "Workshop not found" });
     }
@@ -68,12 +92,18 @@ const getWorkshopById = async (req, res) => {
 // Update a workshop
 const updateWorkshop = async (req, res) => {
   try {
-    const { title, description, image, total_sessions, start_date, end_date, hall_id, no_of_attendees } = req.body;
-
-    // Ensure at least one field is provided for update
-    if (!title && !description && !image && !total_sessions && !start_date && !end_date && !hall_id && !no_of_attendees) {
-      return res.status(400).json({ message: "Please provide data to update" });
-    }
+    const {
+      title,
+      description,
+      image,
+      total_sessions,
+      start_date,
+      end_date,
+      hall_id,
+      no_of_attendees,
+      price,
+      speaker_id,
+    } = req.body;
 
     if (total_sessions && (isNaN(total_sessions) || total_sessions <= 0)) {
       return res.status(400).json({ message: "Total sessions must be a positive number" });
@@ -95,6 +125,8 @@ const updateWorkshop = async (req, res) => {
           ...(end_date && { end_date }),
           ...(hall_id && { hall_id }),
           ...(no_of_attendees && { no_of_attendees }),
+          ...(price && { price }),
+          ...(speaker_id && { speaker_id }),
         },
       },
       { new: true, runValidators: true }

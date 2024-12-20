@@ -4,23 +4,17 @@ const testimonials = require("../Models/Testimonial");
 // Create a new testimonial
 const createTestimonial = async (req, res) => {
   try {
-    const { username, feedback, date, time, image, user_id } = req.body;
+    const { username, feedback,image } = req.body;
 
-    if (!username || !feedback || !date || !time || !image || !user_id) {
+    if (!username || !feedback  || !image) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(user_id)) {
-      return res.status(400).json({ message: "Invalid User ID" });
-    }
 
     const newTestimonial = new testimonials({
       username,
       feedback,
-      date,
-      time,
       image,
-      user_id,
     });
 
     await newTestimonial.save();
@@ -36,7 +30,7 @@ const createTestimonial = async (req, res) => {
 // Get all testimonials
 const getAllTestimonials = async (req, res) => {
   try {
-    const allTestimonials = await testimonials.find().populate("user_id");
+    const allTestimonials = await testimonials.find();
     res.status(200).json(allTestimonials.length ? allTestimonials : { message: "No testimonials found" });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch testimonials", error: error.message });
@@ -50,7 +44,7 @@ const getTestimonialById = async (req, res) => {
       return res.status(400).json({ message: "Invalid Testimonial ID" });
     }
 
-    const testimonial = await testimonials.findById(req.params.id).populate("user_id");
+    const testimonial = await testimonials.findById(req.params.id);
     if (!testimonial) {
       return res.status(404).json({ message: "Testimonial not found" });
     }
@@ -67,7 +61,7 @@ const updateTestimonial = async (req, res) => {
       return res.status(400).json({ message: "Invalid Testimonial ID" });
     }
 
-    const { username, feedback, date, time, image } = req.body;
+    const { username, feedback,  image } = req.body;
 
     const updatedTestimonial = await testimonials.findByIdAndUpdate(
       req.params.id,
@@ -75,8 +69,6 @@ const updateTestimonial = async (req, res) => {
         $set: {
           ...(username && { username }),
           ...(feedback && { feedback }),
-          ...(date && { date }),
-          ...(time && { time }),
           ...(image && { image }),
         },
       },
