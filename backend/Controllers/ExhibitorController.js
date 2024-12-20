@@ -5,15 +5,15 @@ exhibitor = require("../Models/Exhibitor");
 // Description --  CREATE EXHIBITOR FUNCTION
 const createExhibitor = async (req, res) => {
   try {
-    const { company_id, image, contact, product, user_id, booth_id } = req.body;
+    const { company_id, image, contact, product ,rating , user_id, event_id } = req.body;
 
     // Validate required fields
-    if (!company_id || !image || !contact || !product || !user_id || !booth_id) {
+    if (!company_id || !image || !contact || !product || !user_id || !event_id) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
     // Create new exhibitor
-    const newExhibitor = new exhibitor({ company_id, image, contact, product, user_id, booth_id });
+    const newExhibitor = new exhibitor({ company_id, image, contact, product,rating, user_id, event_id });
     const savedExhibitor = await newExhibitor.save();
 
     return res.status(201).json({ success: true, data: savedExhibitor });
@@ -31,7 +31,7 @@ const getAllExhibitors = async (req, res) => {
   try {
     const getexhibitors = await exhibitor.find()
       .populate("user_id", "name email") // Populate user details
-      .populate("booth_id", "booth_name location"); // Populate booth details
+      .populate("event_id", "title date"); // Populate booth details
 
     return res.status(200).json({ success: true, data: getexhibitors });
   } catch (error) {
@@ -50,7 +50,7 @@ const getExhibitorById = async (req, res) => {
 
     const exhibitor = await exhibitor.findById(id)
       .populate("user_id", "name email")
-      .populate("booth_id", "booth_name location");
+      .populate("event_id", "title date");
 
     if (!exhibitor) {
       return res.status(404).json({ success: false, message: "Exhibitor not found" });
@@ -74,7 +74,7 @@ const updateExhibitor = async (req, res) => {
 
     const updatedExhibitor = await exhibitor.findByIdAndUpdate(id, updates, { new: true })
       .populate("user_id", "name email")
-      .populate("booth_id", "booth_name location");
+      .populate("event_id", "title date");
 
     if (!updatedExhibitor) {
       return res.status(404).json({ success: false, message: "Exhibitor not found" });

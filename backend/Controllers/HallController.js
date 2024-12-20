@@ -3,13 +3,13 @@ const halls = require("../Models/Hall");
 // Create a new hall
 const createHall = async (req, res) => {
   try {
-    const { hall_name, total_booths } = req.body;
+    const { hall_name, total_booths ,event_id } = req.body;
 
-    if (!hall_name || !total_booths) {
+    if (!hall_name || !total_booths || !event_id) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newHall = new halls({ hall_name, total_booths });
+    const newHall = new halls({ hall_name, total_booths , event_id });
     await newHall.save();
     res.status(201).json({
       message: "Hall created successfully",
@@ -49,9 +49,9 @@ const getHallById = async (req, res) => {
 // Update a hall
 const updateHall = async (req, res) => {
   try {
-    const { hall_name, total_booths } = req.body;
+    const { hall_name, total_booths , event_id  } = req.body;
 
-    if (!hall_name && !total_booths) {
+    if (!hall_name && !total_booths  && !event_id) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -61,6 +61,7 @@ const updateHall = async (req, res) => {
         $set: {
           ...(hall_name && { hall_name }),
           ...(total_booths && { total_booths }),
+          ...(event_id && { event_id }),
         },
       },
       { new: true, runValidators: true }

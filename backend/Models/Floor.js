@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const Floor_Schema = mongoose.Schema(
   {
-    hall_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "halls", // Reference to the halls collection
-      required: [true, "Hall ID is required"],
+    floor_name:{
+      type: String,
+      required: [true, "floor name is required"],
+      trim: true,
     },
     total_halls: {
       type: Number,

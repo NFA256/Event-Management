@@ -33,6 +33,14 @@ const Event_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    status: {
+      type: String,
+      required: [true, "Status is required"],
+      enum: {
+        values: ["Active", "Completed", "Upcoming"],
+        message: "Status must be either 'Active', 'Completed', or 'Upcoming'",
+      },
+    },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

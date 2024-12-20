@@ -3,9 +3,9 @@ const events = require("../Models/Event");
 // Create a new event
 const createEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors, image } = req.body;
+    const { title, description, time, date, no_of_visitors, image ,status } = req.body;
 
-    if (!title || !description || !time || !date || !no_of_visitors || !image) {
+    if (!title || !description || !time || !date || !no_of_visitors || !image , !status) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -16,6 +16,7 @@ const createEvent = async (req, res) => {
       date,
       no_of_visitors,
       image,
+      status
     });
 
     await newEvent.save();
@@ -57,10 +58,10 @@ const getEventById = async (req, res) => {
 // Update an event
 const updateEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors, image } = req.body;
+    const { title, description, time, date, no_of_visitors, image,status } = req.body;
 
     // Ensure at least one field is provided for update
-    if (!title && !description && !time && !date && !no_of_visitors && !image) {
+    if (!title && !description && !time && !date && !no_of_visitors && !image && !status) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -74,6 +75,7 @@ const updateEvent = async (req, res) => {
           ...(date && { date }),
           ...(no_of_visitors && { no_of_visitors }),
           ...(image && { image }),
+          ...(status && { status }),
         },
       },
       { new: true, runValidators: true }

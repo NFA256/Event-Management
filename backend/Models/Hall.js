@@ -12,6 +12,11 @@ const Hall_Schema = mongoose.Schema(
       required: [true, "Total booths count is required"],
       min: [1, "There must be at least one booth"],
     },
+    event_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "events", // Reference to the halls collection
+      required: [true, "Event ID is required"],
+    },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );
