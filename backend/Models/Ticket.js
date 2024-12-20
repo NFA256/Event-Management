@@ -2,11 +2,16 @@ const mongoose = require("mongoose");
 
 const Ticket_Schema = mongoose.Schema(
   {
-    event_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "events", // Reference to the halls collection
-        required: [true, "Event ID is required"],
-      },
+    seminar_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "seminars", // Reference to the halls collection
+      required: [true, "Event ID is required"],
+    },
+    workshop_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "workshops", // Reference to the halls collection
+      required: [true, "Event ID is required"],
+    },
       user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users", // Reference to the user collection

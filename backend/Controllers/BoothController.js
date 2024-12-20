@@ -6,22 +6,21 @@ const booths = require("../Models/Booth"); // Adjust path as needed
 // Create a new booth
 const createBooth = async (req, res) => {
   try {
-    const { hall_id, floor_id, exhibitor_id, reserved_bool } = req.body;
+    const { floor_id, exhibitor_id, reserved_bool } = req.body;
 
     // Validate the data
-    if (!hall_id || !floor_id || !exhibitor_id) {
-      return res.status(400).json({ message: "All fields (hall_id, floor_id, exhibitor_id) are required" });
+    if ( !floor_id || !exhibitor_id) {
+      return res.status(400).json({ message: "All fields ( floor_id, exhibitor_id) are required" });
     }
 
     // Check if the booth already exists with the same combination of hall, floor, and exhibitor
-    const existingBooth = await booths.findOne({ hall_id, floor_id, exhibitor_id });
+    const existingBooth = await booths.findOne({  floor_id, exhibitor_id });
     if (existingBooth) {
       return res.status(400).json({ message: "Booth already exists with this combination of hall, floor, and exhibitor" });
     }
 
     // Create the new booth
     const newBooth = new booths({
-      hall_id,
       floor_id,
       exhibitor_id,
       reserved_bool: reserved_bool || false, // default to false if not provided
@@ -43,7 +42,7 @@ const createBooth = async (req, res) => {
 // Get all booths
 const getAllBooths = async (req, res) => {
   try {
-    const getbooths = await booths.find().populate("hall_id floor_id exhibitor_id");
+    const getbooths = await booths.find().populate("floor_id exhibitor_id");
     res.status(200).json(getbooths.length ? getbooths : { message: "No booths found" });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch booths", error: error.message });
@@ -55,7 +54,7 @@ const getAllBooths = async (req, res) => {
 // Get a specific booth by ID
 const getBoothById = async (req, res) => {
   try {
-    const booth = await booths.findById(req.params.id).populate("hall_id floor_id exhibitor_id");
+    const booth = await booths.findById(req.params.id).populate("floor_id exhibitor_id");
 
     if (!booth) {
       return res.status(404).json({ message: "Booth not found" });
@@ -71,7 +70,7 @@ const getBoothById = async (req, res) => {
 // Update a booth by ID (including reserved_bool update)
 const updateBooth = async (req, res) => {
   try {
-    const { hall_id, floor_id, exhibitor_id, reserved_bool } = req.body;
+    const { floor_id, exhibitor_id, reserved_bool } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid Booth ID" });
@@ -79,7 +78,6 @@ const updateBooth = async (req, res) => {
 
     // Check if the combination of hall, floor, and exhibitor already exists for another booth
     const duplicateBooth = await booths.findOne({
-      hall_id,
       floor_id,
       exhibitor_id,
       _id: { $ne: req.params.id }, // Exclude the current booth being updated
@@ -92,7 +90,6 @@ const updateBooth = async (req, res) => {
       req.params.id,
       {
         $set: {
-          ...(hall_id && { hall_id }),
           ...(floor_id && { floor_id }),
           ...(exhibitor_id && { exhibitor_id }),
           ...(reserved_bool !== undefined && { reserved_bool }), // Update only if provided

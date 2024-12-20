@@ -7,15 +7,18 @@ const Hall_Schema = mongoose.Schema(
       required: [true, "Hall name is required"],
       trim: true,
     },
-    total_booths: {
-      type: Number,
-      required: [true, "Total booths count is required"],
-      min: [1, "There must be at least one booth"],
-    },
-    event_id: {
+    // total_booths: {
+    //   type: Number,
+    //   required: [true, "Total booths count is required"],
+    //   min: [1, "There must be at least one booth"],
+    // },
+    seminar_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "events", // Reference to the halls collection
-      required: [true, "Event ID is required"],
+      ref: "seminars",
+    },
+    workshop_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "workshops",
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt

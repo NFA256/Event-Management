@@ -19,11 +19,11 @@ const Exhibitor_Schema = mongoose.Schema(
         "Please provide a valid contact number (e.g., +12345678901 or 12345678901)",
       ],
     },
-    product: {
-      type: String,
-      required: [true, "Product is required"],
-      trim: true,
-    },
+    // product: {
+    //   type: String,
+    //   required: [true, "Product is required"],
+    //   trim: true,
+    // },
     rating: {
       type: String,
       trim: true,

@@ -7,6 +7,11 @@ const Speaker_Schema = mongoose.Schema(
       required: [true, "Speaker name is required"],
       trim: true, // Removes extra spaces
     },
+    description: {
+      type: String,
+      required: [true, "Speaker description is required"],
+      trim: true,
+    },
     image: {
       type: String,
       required: [true, "Speaker image URL is required"],

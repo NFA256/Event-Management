@@ -5,15 +5,15 @@ exhibitor = require("../Models/Exhibitor");
 // Description --  CREATE EXHIBITOR FUNCTION
 const createExhibitor = async (req, res) => {
   try {
-    const { company_id, image, contact, product ,rating , user_id, event_id } = req.body;
+    const { company_id, image, contact ,rating , user_id, event_id } = req.body;
 
     // Validate required fields
-    if (!company_id || !image || !contact || !product || !user_id || !event_id) {
+    if (!company_id || !image || !contact ||  !user_id || !event_id) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
     // Create new exhibitor
-    const newExhibitor = new exhibitor({ company_id, image, contact, product,rating, user_id, event_id });
+    const newExhibitor = new exhibitor({ company_id, image, contact,rating, user_id, event_id });
     const savedExhibitor = await newExhibitor.save();
 
     return res.status(201).json({ success: true, data: savedExhibitor });

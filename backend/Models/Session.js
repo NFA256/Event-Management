@@ -8,6 +8,11 @@ const Session_Schema = mongoose.Schema(
       ref: 'workshops', // The model name of the Workshop schema
       required: [true, "Workshop ID is required"]
     },
+    title: {
+      type: String,
+      required: [true, "Title is required"],
+      trim: true,
+    },
     day_no: {
       type: Number,
       required: [true, "Day number is required"],
@@ -25,11 +30,11 @@ const Session_Schema = mongoose.Schema(
       type: String,
       required: [true, "End time is required"],
     },
-    speaker_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Speaker', // Reference to the Speaker model (if you have one)
-      required: [true, "Speaker ID is required"],
+    duration: {
+      type: String,
+      required: [true, "Duration is required"],
     },
+  
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );

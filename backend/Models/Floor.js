@@ -7,10 +7,15 @@ const Floor_Schema = mongoose.Schema(
       required: [true, "floor name is required"],
       trim: true,
     },
-    total_halls: {
+    // total_halls: {
+    //   type: Number,
+    //   required: [true, "Total halls are required"],
+    //   min: [1, "There must be at least one hall"],
+    // },
+     total_booths: {
       type: Number,
-      required: [true, "Total halls are required"],
-      min: [1, "There must be at least one hall"],
+      required: [true, "Total booths count is required"],
+      min: [1, "There must be at least one booth"],
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

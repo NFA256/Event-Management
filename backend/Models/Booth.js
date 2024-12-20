@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const Booth_Schema = mongoose.Schema(
   {
-    hall_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "halls", // Assuming you have a Halls model
-      required: [true, "Hall ID is required"],
-    },
+    // hall_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "halls", // Assuming you have a Halls model
+    //   required: [true, "Hall ID is required"],
+    // },
     floor_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "floors", // Assuming you have a Floors model

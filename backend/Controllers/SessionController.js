@@ -2,10 +2,13 @@ const sessions = require("../Models/Session"); // Import the Session model
 const workshops = require("../Models/Workshop"); // Import the Workshop model
 
 // Helper function to check for time conflicts
-const checkTimeConflict = async (workshop_id, day_no, start_time, end_time) => {
+const checkTimeConflict = async (workshop_id,title, day_no,duration,date, start_time, end_time) => {
   const conflictingSession = await sessions.findOne({
     workshop_id,
     day_no,
+    title,
+    duration,
+    date,
     $or: [
       { start_time: { $lt: end_time }, end_time: { $gt: start_time } }, // check if times overlap
     ],
@@ -16,10 +19,10 @@ const checkTimeConflict = async (workshop_id, day_no, start_time, end_time) => {
 // Create a new session
 const createSession = async (req, res) => {
   try {
-    const { workshop_id, day_no, date, start_time, end_time, speaker_id } = req.body;
+    const { workshop_id,title, day_no,duration, date, start_time, end_time } = req.body;
 
     // Validate the input data
-    if (!workshop_id || !day_no || !date || !start_time || !end_time || !speaker_id) {
+    if (!workshop_id ||!title || !day_no || !date || !start_time || !end_time ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -83,9 +86,9 @@ const getSessionById = async (req, res) => {
 // Update a session
 const updateSession = async (req, res) => {
   try {
-    const { day_no, date, start_time, end_time, speaker_id } = req.body;
+    const {  workshop_id,title, day_no,duration, date, start_time, end_time } = req.body;
 
-    if (!day_no && !date && !start_time && !end_time && !speaker_id) {
+    if (!day_no && !date && !start_time && !end_time ) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -97,6 +100,9 @@ const updateSession = async (req, res) => {
 
     const timeConflict = await checkTimeConflict(
       sessionToUpdate.workshop_id,
+      title || sessionToUpdate.title,
+      duration || sessionToUpdate.duration,
+      date || sessionToUpdate.date,
       day_no || sessionToUpdate.day_no,
       start_time || sessionToUpdate.start_time,
       end_time || sessionToUpdate.end_time

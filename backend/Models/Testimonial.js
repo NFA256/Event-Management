@@ -12,23 +12,15 @@ const Testimonial_Schema = mongoose.Schema(
       required: [true, "Feedback is required"],
       trim: true,
     },
-    date: {
-      type: Date,
-      required: [true, "Date is required"],
-    },
-    time: {
-      type: String,
-      required: [true, "Time is required"],
-    },
     image: {
       type: String,
       required: [true, "Image is required"],
     },
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-      required: [true, "User ID is required"],
-    },
+    // user_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "users",
+    //   required: [true, "User ID is required"],
+    // },
   },
   { timestamps: true }
 );

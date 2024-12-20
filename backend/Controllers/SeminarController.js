@@ -3,9 +3,9 @@ const seminars = require('../Models/Seminar');  // Import the Seminar model
 // Create a new seminar
 const createSeminar = async (req, res) => {
   try {
-    const { date, title, purpose, start_time, end_time, no_of_attendees, speaker_id, hall_id } = req.body;
+    const { date, title, purpose, start_time, end_time, capacity,price,is_paid, speaker_id, hall_id } = req.body;
 
-    if (!date || !title || !purpose || !start_time || !end_time || !no_of_attendees || !speaker_id || !hall_id) {
+    if (!date || !title || !purpose || !start_time || !end_time || !capacity || !speaker_id || !hall_id) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -15,9 +15,11 @@ const createSeminar = async (req, res) => {
       purpose,
       start_time,
       end_time,
-      no_of_attendees,
+      capacity,
       speaker_id,
       hall_id,
+      price,
+      is_paid,
     });
 
     await newSeminar.save();
@@ -56,10 +58,10 @@ const getSeminarById = async (req, res) => {
 // Update a seminar
 const updateSeminar = async (req, res) => {
   try {
-    const { date, title, purpose, start_time, end_time, no_of_attendees, speaker_id, hall_id } = req.body;
+    const { date, title, purpose, start_time, end_time, capacity, price,is_paid, speaker_id, hall_id  } = req.body;
 
     // Ensure at least one field is provided for update
-    if (!date && !title && !purpose && !start_time && !end_time && !no_of_attendees && !speaker_id && !hall_id) {
+    if (!date && !title && !purpose && !start_time && !end_time && !capacity && !speaker_id && !hall_id) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -72,9 +74,11 @@ const updateSeminar = async (req, res) => {
           ...(purpose && { purpose }),
           ...(start_time && { start_time }),
           ...(end_time && { end_time }),
-          ...(no_of_attendees && { no_of_attendees }),
+          ...(capacity && { capacity }),
           ...(speaker_id && { speaker_id }),
           ...(hall_id && { hall_id }),
+          ...(is_paid && { is_paid }),
+          ...(price && { price }),
         },
       },
       { new: true, runValidators: true }
