@@ -42,6 +42,7 @@ const Event_Schema = mongoose.Schema(
       },
     ImageID: { 
       type:String 
+    }
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
