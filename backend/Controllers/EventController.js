@@ -3,9 +3,15 @@ const events = require("../Models/Event");
 // Create a new event
 const createEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors, image ,status } = req.body;
+    const { title, description, time, date, no_of_visitors ,status } = req.body;
+    const eventImage = req.file;
+    if (!eventImage) {
+      return res.status(400).json({ message: "Event image is required" });
+    }
+    const Event_Image = eventImage.path;
+    const fileID = eventImage.filename;
 
-    if (!title || !description || !time || !date || !no_of_visitors || !image , !status) {
+    if (!title || !description || !time || !date || !no_of_visitors  , !status ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -15,7 +21,8 @@ const createEvent = async (req, res) => {
       time,
       date,
       no_of_visitors,
-      image,
+      image : Event_Image,
+      ImageID: fileID,
       status
     });
 
@@ -58,13 +65,34 @@ const getEventById = async (req, res) => {
 // Update an event
 const updateEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors, image,status } = req.body;
+    const { title, description, time, date, no_of_visitors ,oldImage,  Imagefilename,status } = req.body;
+    const eventImage = req.file
+    console.log(eventImage)
+    let Event_Image ;
+    let fileID;
 
+    if (eventImage) {
+      Event_Image= eventImage.path;
+      fileID  = eventImage.filename;
+      try {
+        await cloudinary.uploader.destroy(Imagefilename);
+      } catch (error) {
+        console.error("Error deleting old image:", error.message);
+        return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+      }
+  }
+  else {
+    Event_Image = oldImage;
+      fileID = Imagefilename
+  }
     // Ensure at least one field is provided for update
-    if (!title && !description && !time && !date && !no_of_visitors && !image && !status) {
+    if (!title && !description && !time && !date && !no_of_visitors && !status ) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
-
+    const eventToUpdate = await events.findById(req.params.id);
+    if (!eventToUpdate) {
+      return res.status(404).json({ message: "Event not found" });
+    }
     const updatedEvent = await events.findByIdAndUpdate(
       req.params.id,
       {
@@ -74,7 +102,8 @@ const updateEvent = async (req, res) => {
           ...(time && { time }),
           ...(date && { date }),
           ...(no_of_visitors && { no_of_visitors }),
-          ...(image && { image }),
+          ...(Event_Image && { image: Event_Image }),
+          ...(fileID && { ImageID: fileID }),
           ...(status && { status }),
         },
       },
