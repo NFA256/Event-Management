@@ -1,23 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const { createSeminar, getAllSeminars, getSeminarById, updateSeminar, deleteSeminar } = require("../Controllers/SeminarController");
+const { ImageUpload } = require("../Middlewares/SeminarImages");
+const upload = ImageUpload(); // Image upload middleware
+const upload2 = ImageUpload(); // Image upload middleware
 
-// Importing the controllers
-const {
-  createSeminar,
-  getAllSeminars,
-  getSeminarById,
-  updateSeminar,
-  deleteSeminar,
-} = require("../Controllers/SeminarController");
-
-// Define routes for Seminars
+// Create seminar with image upload
 router.route("/seminars")
-  .post(createSeminar)
+  .post(upload.single('seminarImage'), createSeminar)
   .get(getAllSeminars);
 
+// Update and delete seminar
 router.route("/seminars/:id")
   .get(getSeminarById)
-  .put(updateSeminar)
+  .put(upload2.single('seminarImage'), updateSeminar)
   .delete(deleteSeminar);
 
 module.exports = router;

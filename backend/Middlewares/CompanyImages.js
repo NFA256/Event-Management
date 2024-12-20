@@ -16,7 +16,7 @@ function ImageUpload(){
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-      folder: 'event', 
+      folder: 'company', 
       allowed_formats: ['jpg', 'png'],
     },
   });
@@ -29,15 +29,13 @@ const storage = new CloudinaryStorage({
 
 async function ImageDelete(req, res, next) {
   try {
-    const { OLDimageID } = req.body;  // Destructure the OLDimageID from req.body
+    const { OLDimageID } = req.body; 
     console.log("Extracted imageID:", OLDimageID);
-    
     if (!OLDimageID) {
       return res.status(400).json({ error: "Image ID is required." });
     }
-
     await cloudinary.uploader.destroy(OLDimageID);
-    next();
+    next(); 
   } catch (error) {
     console.error("Error deleting image:", error);
     res.status(500).json({ error: "Failed to delete image from Cloudinary." });

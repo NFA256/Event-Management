@@ -1,20 +1,25 @@
 // Import the Testimonial model
 const testimonials = require("../Models/Testimonial");
+const { ImageDelete } = require("../Middlewares/TestimonialImages");
 
 // Create a new testimonial
 const createTestimonial = async (req, res) => {
   try {
-    const { username, feedback,image } = req.body;
+    const { username, feedback } = req.body;
+    const imageFile = req.file;
 
-    if (!username || !feedback  || !image) {
+    if (!username || !feedback || !imageFile) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    const image = imageFile.path;
+    const ImageID = imageFile.filename;
 
     const newTestimonial = new testimonials({
       username,
       feedback,
       image,
+      ImageID,
     });
 
     await newTestimonial.save();
@@ -40,10 +45,6 @@ const getAllTestimonials = async (req, res) => {
 // Get a specific testimonial by ID
 const getTestimonialById = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "Invalid Testimonial ID" });
-    }
-
     const testimonial = await testimonials.findById(req.params.id);
     if (!testimonial) {
       return res.status(404).json({ message: "Testimonial not found" });
@@ -57,11 +58,34 @@ const getTestimonialById = async (req, res) => {
 // Update a testimonial
 const updateTestimonial = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "Invalid Testimonial ID" });
-    }
+    const { username, feedback, oldImage, oldImageID } = req.body;
+    const imageFile = req.file;
 
-    const { username, feedback,  image } = req.body;
+    let updatedImage;
+    let updatedImageID;
+ // Find the event by ID
+ const testimonialToUpdate = await testimonials.findById(req.params.id);
+ if (!testimonialToUpdate) {
+   return res.status(404).json({ message: "Event not found" });
+ }
+    if (imageFile) {
+      updatedImage = imageFile.path;
+      updatedImageID = imageFile.filename;
+
+      // Delete the old image from Cloudinary
+      if (testimonialToUpdate.ImageID) {
+        try {
+          req.body.OLDimageID = testimonialToUpdate.ImageID;  // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {});  // Call ImageDelete with the updated req.body
+        } catch (error) {
+          console.error("Error deleting old image:", error.message);
+          return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+        }
+      }
+    } else {
+      updatedImage = oldImage;
+      updatedImageID = oldImageID;
+    }
 
     const updatedTestimonial = await testimonials.findByIdAndUpdate(
       req.params.id,
@@ -69,7 +93,8 @@ const updateTestimonial = async (req, res) => {
         $set: {
           ...(username && { username }),
           ...(feedback && { feedback }),
-          ...(image && { image }),
+          ...(updatedImage && { image: updatedImage }),
+          ...(updatedImageID && { ImageID: updatedImageID }),
         },
       },
       { new: true, runValidators: true }
@@ -91,14 +116,21 @@ const updateTestimonial = async (req, res) => {
 // Delete a testimonial
 const deleteTestimonial = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "Invalid Testimonial ID" });
-    }
-
     const deletedTestimonial = await testimonials.findByIdAndDelete(req.params.id);
 
     if (!deletedTestimonial) {
       return res.status(404).json({ message: "Testimonial not found" });
+    }
+
+    // Delete the associated image from Cloudinary
+    if (deletedTestimonial.ImageID) {
+      try {
+        req.body.OLDimageID = deletedTestimonial.ImageID;  // Pass the ImageID to the next middleware
+        await ImageDelete(req, res, () => {});  // Call ImageDelete with the updated req.body
+      } catch (error) {
+        console.error("Error deleting old image:", error.message);
+        return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+      }
     }
 
     res.status(200).json({ message: "Testimonial deleted successfully" });

@@ -40,10 +40,10 @@ const Event_Schema = mongoose.Schema(
         values: ["Active", "Completed", "Upcoming"],
         message: "Status must be either 'Active', 'Completed', or 'Upcoming'",
       },
+    },
     ImageID: { 
       type:String 
     }
-    },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

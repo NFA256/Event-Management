@@ -1,24 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const { createWorkshop, getAllWorkshops, getWorkshopById, updateWorkshop, deleteWorkshop } = require("../Controllers/WorkshopController");
+const { ImageUpload } = require("../Middlewares/WorkshopImages");
+const upload = ImageUpload(); // Image upload middleware
 
-// Importing the controller functions for workshops
-const {
-  createWorkshop,
-  getAllWorkshops,
-  getWorkshopById,
-  updateWorkshop,
-  deleteWorkshop,
-} = require("../Controllers/WorkshopController");
-
-// Route to create a new workshop and get all workshops
+// Create workshop with image upload
 router.route("/workshops")
-  .post(createWorkshop)   // Create a new workshop
-  .get(getAllWorkshops);  // Get all workshops
+  .post(upload.single('workshopImage'), createWorkshop)
+  .get(getAllWorkshops);
 
-// Route to get, update, or delete a workshop by its ID
+// Update and delete workshop
 router.route("/workshops/:id")
-  .get(getWorkshopById)   // Get a workshop by ID
-  .put(updateWorkshop)    // Update a workshop by ID
-  .delete(deleteWorkshop); // Delete a workshop by ID
+  .get(getWorkshopById)
+  .put(upload.single('workshopImage'), updateWorkshop)
+  .delete(deleteWorkshop);
 
 module.exports = router;

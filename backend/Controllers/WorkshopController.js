@@ -1,4 +1,5 @@
-const workshops = require("../Models/Workshop"); // Adjust the path as necessary
+const workshops = require("../Models/Workshop"); // Import the Workshop model
+const {  ImageDelete } = require("../Middlewares/WorkshopImages"); // Image upload and delete middleware
 
 // Create a new workshop
 const createWorkshop = async (req, res) => {
@@ -6,7 +7,6 @@ const createWorkshop = async (req, res) => {
     const {
       title,
       description,
-      image,
       total_sessions,
       start_date,
       end_date,
@@ -15,21 +15,10 @@ const createWorkshop = async (req, res) => {
       price,
       speaker_id,
     } = req.body;
+    const workshopImage = req.file; // Get the uploaded image
 
-    // Validate the incoming data
-    if (
-      !title ||
-      !description ||
-      !image ||
-      !total_sessions ||
-      !start_date ||
-      !end_date ||
-      !hall_id ||
-      !no_of_attendees ||
-      !price ||
-      !speaker_id
-    ) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!workshopImage) {
+      return res.status(400).json({ message: "Workshop image is required" });
     }
 
     if (isNaN(total_sessions) || total_sessions <= 0) {
@@ -40,10 +29,12 @@ const createWorkshop = async (req, res) => {
       return res.status(400).json({ message: "Start date cannot be after end date" });
     }
 
+    // Create new workshop
     const newWorkshop = new workshops({
       title,
       description,
-      image,
+      image: workshopImage.path, // Save image path
+      ImageID: workshopImage.filename, // Save image filename
       total_sessions,
       start_date,
       end_date,
@@ -59,7 +50,7 @@ const createWorkshop = async (req, res) => {
       workshop: newWorkshop,
     });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to create workshop", error: error.message });
   }
 };
@@ -67,10 +58,10 @@ const createWorkshop = async (req, res) => {
 // Get all workshops
 const getAllWorkshops = async (req, res) => {
   try {
-    const getworkshops = await workshops.find().populate("hall_id speaker_id");
-    res.status(200).json(getworkshops.length ? getworkshops : { message: "No workshops found" });
+    const getWorkshops = await workshops.find().populate("hall_id speaker_id");
+    res.status(200).json(getWorkshops.length ? getWorkshops : { message: "No workshops found" });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch workshops", error: error.message });
   }
 };
@@ -84,7 +75,7 @@ const getWorkshopById = async (req, res) => {
     }
     res.status(200).json(workshop);
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch workshop", error: error.message });
   }
 };
@@ -95,7 +86,6 @@ const updateWorkshop = async (req, res) => {
     const {
       title,
       description,
-      image,
       total_sessions,
       start_date,
       end_date,
@@ -103,7 +93,12 @@ const updateWorkshop = async (req, res) => {
       no_of_attendees,
       price,
       speaker_id,
+      oldImage,
+      Imagefilename,
     } = req.body;
+    const workshopImage = req.file; // Get the uploaded image if any
+    let imagePath = oldImage;
+    let imageID = Imagefilename;
 
     if (total_sessions && (isNaN(total_sessions) || total_sessions <= 0)) {
       return res.status(400).json({ message: "Total sessions must be a positive number" });
@@ -113,13 +108,34 @@ const updateWorkshop = async (req, res) => {
       return res.status(400).json({ message: "Start date cannot be after end date" });
     }
 
+    const workshopToUpdate = await workshops.findById(req.params.id);
+    if (!workshopToUpdate) {
+      return res.status(404).json({ message: "Workshop not found" });
+    }
+
+    // If a new image is uploaded, delete the old one from Cloudinary
+    if (workshopImage) {
+      imagePath = workshopImage.path;
+      imageID = workshopImage.filename;
+
+      try {
+        if (workshopToUpdate.ImageID) {
+          await ImageDelete({ OLDimageID: workshopToUpdate.ImageID });
+        }
+      } catch (error) {
+        console.error("Error deleting old image:", error.message);
+        return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+      }
+    }
+
     const updatedWorkshop = await workshops.findByIdAndUpdate(
       req.params.id,
       {
         $set: {
           ...(title && { title }),
           ...(description && { description }),
-          ...(image && { image }),
+          ...(imagePath && { image: imagePath }),
+          ...(imageID && { ImageID: imageID }),
           ...(total_sessions && { total_sessions }),
           ...(start_date && { start_date }),
           ...(end_date && { end_date }),
@@ -141,7 +157,7 @@ const updateWorkshop = async (req, res) => {
       workshop: updatedWorkshop,
     });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to update workshop", error: error.message });
   }
 };
@@ -149,15 +165,27 @@ const updateWorkshop = async (req, res) => {
 // Delete a workshop
 const deleteWorkshop = async (req, res) => {
   try {
-    const deletedWorkshop = await workshops.findByIdAndDelete(req.params.id);
-
-    if (!deletedWorkshop) {
+    const workshopToDelete = await workshops.findById(req.params.id);
+    if (!workshopToDelete) {
       return res.status(404).json({ message: "Workshop not found" });
     }
 
+    // Delete the image from Cloudinary if it exists
+    if (workshopToDelete.ImageID) {
+      try {
+        await ImageDelete({ OLDimageID: workshopToDelete.ImageID });
+      } catch (error) {
+        console.error("Error deleting image:", error.message);
+        return res.status(500).json({ message: "Failed to delete image", error: error.message });
+      }
+    }
+
+    // Delete the workshop
+    await workshops.findByIdAndDelete(req.params.id);
+
     res.status(200).json({ message: "Workshop deleted successfully" });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to delete workshop", error: error.message });
   }
 };

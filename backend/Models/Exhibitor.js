@@ -11,6 +11,9 @@ const Exhibitor_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    ImageID: { 
+      type:String 
+    },
     contact: {
       type: String,
       required: [true, "Contact information is required"],
