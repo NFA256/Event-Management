@@ -345,7 +345,7 @@ const Home = () => {
         </div>
       </section>
       <ScheduleContent />
-     <Testimonial/>
+     <Testimonial cards="3" />
       <AboutPricing />
       {/* <!--? Brand Area Start--> */}
       <section

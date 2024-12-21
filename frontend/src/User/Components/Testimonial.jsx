@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link } from "react-router-dom";
 
 // Modal component
 const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
@@ -140,7 +140,7 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
 };
 
 
-const Testimonial = () => {
+const Testimonial = (props) => {
   const [TestimonialsData, setTestimonialsData] = useState([])
   useEffect(() => {
       // ----Fetching roles from backend
@@ -187,7 +187,8 @@ const Testimonial = () => {
           <div className="row justify-content-center">
 
 {
-  TestimonialsData.map((data, index)=>{
+
+  (props.cards === "3" ? TestimonialsData.slice(0, 3) : TestimonialsData).map((data, index)=>{
 return (
   <div className="col-lg-4 col-md-6 mb-4 col-sm-7">
     <div className="card2">
@@ -219,15 +220,29 @@ return (
           </div>
         </div>
         <div className="section-tittle section-tittle2 ">
-          <p>
-            Wanna Share Your Experience? <br />
-            <button
-              className=" btn-outline-info text-white btn-md "
-              onClick={openModal}
-            >
-              Share Feedback
-            </button>
-          </p>
+         
+          
+
+            {
+props.cards === "3" ?
+<button className="btn-light  btn-md mb-3">
+ <Link to='/testimonial' className="text-info"
+
+>
+See More
+</Link> 
+</button>
+
+:  <p> Wanna Share Your Experience? <br />
+<button
+  className=" btn-outline-info text-white btn-md "
+  onClick={openModal}
+>
+  Share Feedback
+</button></p>
+
+            }
+          
         </div>
         <br />
       </section>
