@@ -16,7 +16,7 @@ const createUser = async (req, res) => {
     }
 
     // Validate NIC format
-    const nicRegex = /^\d{4}-\d{7}-\d{1}$/;
+    const nicRegex = /^\d{4}-\d{8}-\d{1}$/;
     if (!nicRegex.test(cnic)) {
       return res.status(400).json({
         success: false,

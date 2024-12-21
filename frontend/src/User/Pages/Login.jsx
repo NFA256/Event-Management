@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import bcrypt from "bcryptjs";
 // API
 // http://localhost:5000/users
 
@@ -12,7 +12,17 @@ const Login = () => {
   const [Password, setPassword] = useState("");
   const [Error, setError] = useState("");
   const [Success, setSuccess] = useState("");
-
+ // ----function for Password visiblity 
+ const [IsPswrdVissible, setIsPswrdVissible] = useState('notVissible')
+ const showHidePassword = () => {
+   // ----- checking if the state of password is vissible or not vissible
+   if (IsPswrdVissible == "notVissible") {
+     setIsPswrdVissible("yesVissible") //---setting the state of passwrd vissiblity
+   }
+   else {
+     setIsPswrdVissible("notVissible")//---setting the state of passwrd vissiblity
+   }
+ }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,12 +40,16 @@ const Login = () => {
 
         // Ensure that we're working with the array inside 'data'
         const user = users.data.find(
-          (user) => user.email === Email && user.password === Password
+          (user) => user.email === Email 
         );
-
         console.log("User found:", user); // Log found user
-
+        
         if (user) {
+          const match = await bcrypt.compare(Password, user.password);
+          if(!match){
+            setError("Invalid Email or password");
+      return;
+    }
           setSuccess("Login Successful");
           setError("");
 
@@ -99,17 +113,27 @@ const Login = () => {
             />
           </div>
 
-          <div className="form-group mb-3">
+          <div className="input-group form-group mb-3">
             <input
               className="form-control"
               name="password"
               id="password"
-              type="password"
+              type={IsPswrdVissible == "yesVissible"
+                ? "text"
+                : "password"}
               placeholder="Enter your password"
               value={Password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+              <span onClick={() => showHidePassword()} className=" input-group-text" style={{ cursor: "pointer" }}>
+              <i class="fas fa-eye"
+                className={
+                  IsPswrdVissible == "yesVissible"
+                    ? "fas fa-eye-slash"
+                    : "fas fa-eye"}
+              ></i>
+            </span>
           </div>
 
           <div className=" mb-3">

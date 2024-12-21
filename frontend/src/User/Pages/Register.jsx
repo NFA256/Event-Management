@@ -59,11 +59,47 @@ const Register = () => {
   //   // Return the CNIC as-is if it's not 13 digits long
   //   return cnic;
   // };
-
+  const [IsPswrdVissible, setIsPswrdVissible] = useState('notVissible')
+  const showHidePassword = () => {
+    // ----- checking if the state of password is vissible or not vissible
+    if (IsPswrdVissible == "notVissible") {
+      setIsPswrdVissible("yesVissible") //---setting the state of passwrd vissiblity
+    }
+    else {
+      setIsPswrdVissible("notVissible")//---setting the state of passwrd vissiblity
+    }
+  }
+  // -----function for Confrm Password visiblity 
+  const [IsCPswrdVissible, setIsCPswrdVissible] = useState('notVissible')
+  const showHideCPassword = () => {
+    // ----- checking if the state of password is vissible or not vissible
+    if (IsCPswrdVissible == "notVissible") {
+      setIsCPswrdVissible("yesVissible")//---setting the state of passwrd vissiblity
+    }
+    else {
+      setIsCPswrdVissible("notVissible") //---setting the state of passwrd vissiblity
+    }
+  }
   const handleCnicChange = (e) => {
-    const value = e.target.value;
-    setCnic(value); // Store the raw input value
+    let inputValue = e.target.value;
+  
+    // Remove all non-numeric characters
+    inputValue = inputValue.replace(/\D/g, "");
+  
+    // Enforce the correct CNIC format: 1234-1234567-1
+    if (inputValue.length > 4) {
+      inputValue = inputValue.slice(0, 4) + "-" + inputValue.slice(4);
+    }
+    if (inputValue.length > 12) {
+      inputValue = inputValue.slice(0, 13) + "-" + inputValue.slice(13);
+    }
+  
+    // Only allow valid CNIC length
+    if (inputValue.length <= 15) {
+      setCnic(inputValue);
+    }
   };
+  
 
   // Update the CNIC when the user moves away from the field
   const handleBlur = () => {
@@ -104,7 +140,7 @@ const Register = () => {
       setError("Invalid role selected.");
       return;
     }
-    console.log("Fetched Roles:", GetRoles); // Add this log to verify
+    // console.log("Fetched Roles:", GetRoles); // Add this log to verify
 
     // Create user object
     const newUser = {
@@ -225,29 +261,50 @@ const Register = () => {
             </select>
           </div>
 
-          <div className="form-group mb-3">
+          <div className="input-group form-group mb-3">
             <input
               className="form-control"
               name="password"
               id="password"
-              type="password"
+              type={IsPswrdVissible == "yesVissible"
+                ? "text"
+                : "password"}
               placeholder="Enter your password"
               value={Password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+             <span onClick={() => showHidePassword()} className=" input-group-text" style={{ cursor: "pointer" }}>
+              <i class="fas fa-eye"
+                className={
+                  IsPswrdVissible == "yesVissible"
+                    ? "fas fa-eye-slash"
+                    : "fas fa-eye"}
+              ></i>
+            </span>
           </div>
-          <div className="form-group mb-3">
+          <div className="form-group input-group mb-3">
             <input
               className="form-control"
               name="confirmPassword"
               id="confirmPassword"
-              type="password"
+              type={IsCPswrdVissible == "yesVissible"
+                ? "text"
+                : "password"}
               placeholder="Confirm your password"
               value={Cpassword}
               onChange={(e) => setCpassword(e.target.value)}
               required
             />
+               <span onClick={() => showHideCPassword()
+            } className=" input-group-text" style={{ cursor: "pointer" }}>
+              <i class="fas fa-eye"
+                className={
+                  IsCPswrdVissible == "yesVissible"
+                    ? "fas fa-eye-slash"
+                    : "fas fa-eye"}
+              ></i>
+            </span>
           </div>
 
           <div className="form-group mt-3 text-center">
