@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AboutContent, AboutPricing } from "../Components/About";
 import { ScheduleContent } from "../Components/Schedule";
+import Testimonial from "../Components/Testimonial";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
@@ -61,22 +62,20 @@ const Home = () => {
         <div className="slider-active">
           {/* <!-- Single Slider --> */}
           <div className="single-slider slider-height d-flex align-items-center">
-            <div className="container ">
+            <div className="container">
               <div className="row">
                 <div className="col-xl-8 col-lg-8 col-md-9 col-sm-10">
                   <div className="hero__caption">
                     <span data-animation="fadeInLeft" data-delay=".1s">
-                      Committed to success
+                      Discover. Learn. Enjoy !!!
                     </span>
                     <h1
-                      className="text-capitalize"
+                      className="text-capitalize mx-5"
                       data-animation="fadeInLeft"
                       data-delay=".5s"
                     >
                       Hey, {userName ? userName : "Guest"}!
-                      <h3 className="text-white mt-2 mx-4">
-                        Discover. Learn. Enjoy !!!
-                      </h3>
+                      <span className="text-white  mx-4"></span>
                     </h1>
 
                     {/* <!-- Hero-btn --> */}
@@ -102,7 +101,7 @@ const Home = () => {
                         data-animation="fadeInRight"
                         data-delay="1.0s"
                       >
-                        Story Vidoe
+                        Story Video
                         <br />
                         Watch
                       </p>
@@ -137,6 +136,7 @@ const Home = () => {
         </div>
         {/* <!-- Counter Section End --> */}
       </div>
+
       {/* <!-- slider Area End--> */}
       <AboutContent />
       <section className="team-area pt-180 pb-100 section-bg bg-info">
@@ -345,6 +345,7 @@ const Home = () => {
         </div>
       </section>
       <ScheduleContent />
+     <Testimonial/>
       <AboutPricing />
       {/* <!--? Brand Area Start--> */}
       <section

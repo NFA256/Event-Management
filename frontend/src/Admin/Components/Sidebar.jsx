@@ -80,7 +80,7 @@ const Sidebar = () => {
               <>
                 <li className="nav-item fs-4 fw-medium">
                   <Link
-                    to="add-user"
+                    to="calendar"
                     style={{
                       padding: "15px 20px",
                       textDecoration: "none",
@@ -97,7 +97,7 @@ const Sidebar = () => {
                       (e.target.style.backgroundColor = "#218fb1")
                     }
                   >
-                    Add User
+                    Event Schedule
                   </Link>
                 </li>
                 <li className="nav-item fs-4 fw-medium">
