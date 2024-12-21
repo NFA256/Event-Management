@@ -35,6 +35,11 @@ const Exhibitor_Schema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "events", // Reference to the booth collection
       required: [true, "Event ID is required"],
+    }, 
+      booth_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "booths", // Reference to the booth collection
+      required: [true, "Booth ID is required"],
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

@@ -7,14 +7,7 @@ const Hall_Schema = mongoose.Schema(
       required: [true, "Hall name is required"],
       trim: true,
     },
-    seminar_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "seminars",
-    },
-    workshop_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "workshops",
-    },
+   
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

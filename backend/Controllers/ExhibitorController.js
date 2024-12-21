@@ -6,7 +6,7 @@ const { ImageDelete } = require("../Middlewares/ImageUploading");
 // Description --  CREATE EXHIBITOR FUNCTION
 const createExhibitor = async (req, res) => {
   try {
-    const { company_id, contact, rating, user_id, event_id } = req.body;
+    const { company_id, contact, rating, user_id, event_id,booth_id } = req.body;
     const exhibitorImage = req.file;
 
     // Check if image is uploaded
@@ -17,7 +17,7 @@ const createExhibitor = async (req, res) => {
     const ImageID = exhibitorImage.filename;
 
     // Validate required fields
-    if (!company_id || !contact || !user_id || !event_id) {
+    if (!company_id || !contact || !user_id || !event_id ||!booth_id) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
@@ -30,6 +30,7 @@ const createExhibitor = async (req, res) => {
       rating,
       user_id,
       event_id,
+      booth_id
     });
     const savedExhibitor = await newExhibitor.save();
 
@@ -47,7 +48,9 @@ const getAllExhibitors = async (req, res) => {
   try {
     const exhibitors = await exhibitor.find()
       .populate("user_id", "name email") // Populate user details
-      .populate("event_id", "title date"); // Populate event details
+      .populate("event_id", "title date") // Populate event details
+      .populate("booth_id", "name"); // Populate event details
+      
 
     return res.status(200).json({ success: true, data: exhibitors });
   } catch (error) {
@@ -65,7 +68,8 @@ const getExhibitorById = async (req, res) => {
 
     const exhibitorData = await exhibitor.findById(id)
       .populate("user_id", "name email")
-      .populate("event_id", "title date");
+      .populate("event_id", "title date")
+      .populate("booth_id", "name");
 
     if (!exhibitorData) {
       return res.status(404).json({ success: false, message: "Exhibitor not found" });
@@ -84,7 +88,7 @@ const getExhibitorById = async (req, res) => {
 const updateExhibitor = async (req, res) => {
   try {
     const { id } = req.params;
-    const { company_id, contact, rating, user_id, event_id, oldImage, Imagefilename } = req.body;
+    const { company_id, contact, rating, user_id, event_id, oldImage, Imagefilename,booth_id } = req.body;
     const exhibitorImage = req.file;
 
     let image;
@@ -120,6 +124,7 @@ const updateExhibitor = async (req, res) => {
           ...(rating && { rating }),
           ...(user_id && { user_id }),
           ...(event_id && { event_id }),
+          ...(booth_id && { booth_id }),
         },
       },
       { new: true, runValidators: true }
