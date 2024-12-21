@@ -1,5 +1,5 @@
 const seminars = require('../Models/Seminar'); // Import the Seminar model
-const { ImageDelete } = require("../Middlewares/SeminarImages"); // Image middleware
+const { ImageDelete } = require("../Middlewares/ImageUploading"); // Image middleware
 
 // Create a new seminar
 const createSeminar = async (req, res) => {
@@ -87,7 +87,8 @@ const updateSeminar = async (req, res) => {
       // Delete the old image from Cloudinary
       try {
         if (seminarToUpdate.ImageID) {
-          await ImageDelete({ OLDimageID: seminarToUpdate.ImageID });
+          req.body.OLDimageID = seminarToUpdate.ImageID;  // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {}); 
         }
       } catch (error) {
         console.error("Error deleting old image:", error.message);
@@ -141,7 +142,8 @@ const deleteSeminar = async (req, res) => {
     // Delete the image from Cloudinary if it exists
     if (seminarToDelete.ImageID) {
       try {
-        await ImageDelete({ OLDimageID: seminarToDelete.ImageID });
+        req.body.OLDimageID = seminarToDelete.ImageID;  // Pass the ImageID to the next middleware
+        await ImageDelete(req, res, () => {}); 
       } catch (error) {
         console.error("Error deleting image:", error.message);
         return res.status(500).json({ message: "Failed to delete image", error: error.message });

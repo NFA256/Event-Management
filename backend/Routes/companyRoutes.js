@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { ImageUpload } = require("../Middlewares/CompanyImages");
+const { ImageUpload } = require("../Middlewares/ImageUploading");
 const {
   createCompany,
   getAllCompanies,
@@ -9,8 +9,8 @@ const {
   deleteCompany,
 } = require("../Controllers/CompanyController");
 // Initialize upload middleware
-const upload = ImageUpload();
-const upload2 = ImageUpload();
+const upload = ImageUpload("companies");
+const upload2 = ImageUpload("companies");
 // Route to create a new company
 router.post("/company", upload.single("companyImage"), createCompany);
 

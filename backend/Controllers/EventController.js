@@ -1,5 +1,5 @@
 const events = require("../Models/Event");
-const { ImageDelete } = require("../Middlewares/EventImages");
+const { ImageDelete } = require("../Middlewares/ImageUploading");
 // Create a new event
 const createEvent = async (req, res) => {
   try {
@@ -141,7 +141,7 @@ const updateEvent = async (req, res) => {
 // Delete an event
 const deleteEvent = async (req, res) => {
   try {
-    const deletedEvent = await events.findByIdAndDelete(req.params.id);
+    const deletedEvent =await events.findById(req.params.id);
 
     if (!deletedEvent) {
       return res.status(404).json({ message: "Event not found" });
@@ -156,6 +156,7 @@ const deleteEvent = async (req, res) => {
         return res.status(500).json({ message: "Failed to delete old image", error: error.message });
       }
     }
+    await events.findByIdAndDelete(req.params.id)
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (error) {
     console.error(error); // Log the error

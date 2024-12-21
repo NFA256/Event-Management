@@ -1,6 +1,6 @@
 // Import required modules
 const express = require("express");
-const { ImageUpload } = require("../Middlewares/TestimonialImages"); // Import image upload middleware
+const { ImageUpload } = require("../Middlewares/ImageUploading"); // Import image upload middleware
 const {
   createTestimonial,
   getAllTestimonials,
@@ -13,8 +13,8 @@ const {
 const router = express.Router();
 
 // Initialize upload middleware
-const upload = ImageUpload();
-const upload2 = ImageUpload();
+const upload = ImageUpload("testimonials");
+const upload2 = ImageUpload("testimonials");
 // Define CRUD routes
 
 // Create a testimonial with image upload

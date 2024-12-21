@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { createSeminar, getAllSeminars, getSeminarById, updateSeminar, deleteSeminar } = require("../Controllers/SeminarController");
-const { ImageUpload } = require("../Middlewares/SeminarImages");
-const upload = ImageUpload(); // Image upload middleware
-const upload2 = ImageUpload(); // Image upload middleware
+const { ImageUpload } = require("../Middlewares/ImageUploading");
+const upload = ImageUpload("seminars"); // Image upload middleware
+const upload2 = ImageUpload("seminars"); // Image upload middleware
 
 // Create seminar with image upload
 router.route("/seminars")

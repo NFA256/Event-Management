@@ -1,5 +1,5 @@
 const exhibitor = require("../Models/Exhibitor");
-const cloudinary = require("cloudinary").v2; // Assuming you're using Cloudinary for image handling
+const { ImageDelete } = require("../Middlewares/ImageUploading");
 
 // Method -------  POST
 // API   --------  http://localhost:5000/exhibitors
@@ -89,17 +89,20 @@ const updateExhibitor = async (req, res) => {
 
     let image;
     let ImageID;
+    const exhibitorToUpdate = await exhibitor.findById(id);
 
     if (exhibitorImage) {
       image = exhibitorImage.path;
       ImageID = exhibitorImage.filename;
 
-      // Delete old image from Cloudinary
-      try {
-        await cloudinary.uploader.destroy(Imagefilename);
-      } catch (error) {
-        console.error("Error deleting old image:", error.message);
-        return res.status(500).json({ success: false, message: "Failed to delete old image", error: error.message });
+      if (exhibitorToUpdate.ImageID) {
+        try {
+          req.body.OLDimageID = exhibitorToUpdate.ImageID;  // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {});  // Call ImageDelete with the updated req.body
+        } catch (error) {
+          console.error("Error deleting old image:", error.message);
+          return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+        }
       }
     } else {
       image = oldImage;
@@ -140,12 +143,20 @@ const deleteExhibitor = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedExhibitor = await exhibitor.findByIdAndDelete(id);
-
+    const deletedExhibitor = await exhibitor.findById(req.params.id);
     if (!deletedExhibitor) {
       return res.status(404).json({ success: false, message: "Exhibitor not found" });
     }
-
+    if (deletedExhibitor.ImageID) {
+      try {
+        req.body.OLDimageID = deletedExhibitor.ImageID;  // Pass the ImageID to the next middleware
+        await ImageDelete(req, res, () => {});  // Call ImageDelete with the updated req.body
+      } catch (error) {
+        console.error("Error deleting old image:", error.message);
+        return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+      }
+    }
+    await exhibitor.findByIdAndDelete(id);
     return res.status(200).json({ success: true, message: "Exhibitor deleted successfully" });
   } catch (error) {
     console.error(error);

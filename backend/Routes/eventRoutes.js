@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const {ImageUpload,ImageDelete} = require("../Middlewares/EventImages");
-const upload = ImageUpload();
+const {ImageUpload,ImageDelete} = require("../Middlewares/ImageUploading");
+const upload = ImageUpload("events");
 // Importing the controllers
 const {
   createEvent,
@@ -17,7 +17,7 @@ router.route("/events")
   .get(getAllEvents);
 
 
-const upload2 = ImageUpload();
+const upload2 = ImageUpload("events");
 
 router.route("/events/:id")
   .get(getEventById)

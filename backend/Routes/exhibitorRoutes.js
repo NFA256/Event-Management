@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { ImageUpload, ImageDelete } = require("../Middlewares/ExhibitorImages");
-const upload = ImageUpload(); // Middleware for handling image uploads
-const upload2 = ImageUpload();
+const { ImageUpload, ImageDelete } = require("../Middlewares/ImageUploading");
+const upload = ImageUpload("exhibitors"); // Middleware for handling image uploads
+const upload2 = ImageUpload("exhibitors");
 // Import controller methods for exhibitors
 const {
   createExhibitor,

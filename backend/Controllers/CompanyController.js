@@ -1,5 +1,5 @@
 const Company = require("../Models/Company"); // Adjust the path as necessary
-const {  ImageDelete } = require("../Middlewares/EventImages"); // Assuming your image middleware is shared
+const {  ImageDelete } = require("../Middlewares/ImageUploading"); // Assuming your image middleware is shared
 
 // Create a new company
 const createCompany = async (req, res) => {
@@ -105,7 +105,8 @@ const updateCompany = async (req, res) => {
       if (companyToUpdate.ImageID) {
         try {
           // Use ImageDelete middleware to remove the old image from Cloudinary
-          await ImageDelete({ OLDimageID: companyToUpdate.ImageID });
+          req.body.OLDimageID = companyToUpdate.ImageID;  // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {}); 
         } catch (error) {
           console.error("Error deleting old image:", error.message);
           return res.status(500).json({ message: "Failed to delete old image", error: error.message });
@@ -166,8 +167,8 @@ const deleteCompany = async (req, res) => {
     // Delete the image from Cloudinary if it exists
     if (companyToDelete.ImageID) {
       try {
-        // Use ImageDelete middleware to remove the image from Cloudinary
-        await ImageDelete({ OLDimageID: companyToDelete.ImageID });
+        req.body.OLDimageID = companyToDelete.ImageID;
+        await ImageDelete(req, res, () => {});
       } catch (error) {
         console.error("Error deleting image:", error.message);
         return res.status(500).json({ message: "Failed to delete image", error: error.message });

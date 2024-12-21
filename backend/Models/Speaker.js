@@ -16,6 +16,9 @@ const Speaker_Schema = mongoose.Schema(
       type: String,
       required: [true, "Speaker image URL is required"],
     },
+    ImageID: { 
+      type:String 
+    },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );

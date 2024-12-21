@@ -1,5 +1,5 @@
 const workshops = require("../Models/Workshop"); // Import the Workshop model
-const {  ImageDelete } = require("../Middlewares/WorkshopImages"); // Image upload and delete middleware
+const {  ImageDelete } = require("../Middlewares/ImageUploading"); // Image upload and delete middleware
 
 // Create a new workshop
 const createWorkshop = async (req, res) => {
@@ -120,7 +120,8 @@ const updateWorkshop = async (req, res) => {
 
       try {
         if (workshopToUpdate.ImageID) {
-          await ImageDelete({ OLDimageID: workshopToUpdate.ImageID });
+          req.body.OLDimageID = workshopToUpdate.ImageID;  // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {}); 
         }
       } catch (error) {
         console.error("Error deleting old image:", error.message);
@@ -173,7 +174,8 @@ const deleteWorkshop = async (req, res) => {
     // Delete the image from Cloudinary if it exists
     if (workshopToDelete.ImageID) {
       try {
-        await ImageDelete({ OLDimageID: workshopToDelete.ImageID });
+        req.body.OLDimageID = workshopToDelete.ImageID;  // Pass the ImageID to the next middleware
+        await ImageDelete(req, res, () => {});
       } catch (error) {
         console.error("Error deleting image:", error.message);
         return res.status(500).json({ message: "Failed to delete image", error: error.message });

@@ -1,6 +1,6 @@
 // Import the Testimonial model
 const testimonials = require("../Models/Testimonial");
-const { ImageDelete } = require("../Middlewares/TestimonialImages");
+const { ImageDelete } = require("../Middlewares/ImageUploading");
 
 // Create a new testimonial
 const createTestimonial = async (req, res) => {
@@ -116,8 +116,8 @@ const updateTestimonial = async (req, res) => {
 // Delete a testimonial
 const deleteTestimonial = async (req, res) => {
   try {
-    const deletedTestimonial = await testimonials.findByIdAndDelete(req.params.id);
 
+    const deletedTestimonial = await testimonials.findById(req.params.id);
     if (!deletedTestimonial) {
       return res.status(404).json({ message: "Testimonial not found" });
     }
@@ -132,7 +132,7 @@ const deleteTestimonial = async (req, res) => {
         return res.status(500).json({ message: "Failed to delete old image", error: error.message });
       }
     }
-
+    await testimonials.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Testimonial deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete testimonial", error: error.message });
