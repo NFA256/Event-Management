@@ -137,9 +137,9 @@ const getUserByEmail = async (req, res) => {
         message: "User not found",
       });
     }
-    const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
-    OTPs[email] = otp; // Save OTP temporarily
-    console.log(`OTP for ${email}: ${otp}`); // Debug log (send this OTP via email in production)
+    // const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+    // OTPs[email] = otp; // Save OTP temporarily
+    // console.log(`OTP for ${email}: ${otp}`); // Debug log (send this OTP via email in production)
   
     // res.status(200).json({ message: "OTP sent to your email" });
     return res.status(200).json({
@@ -265,36 +265,36 @@ const deleteUser = async (req, res) => {
 // const OTPs = {}; // Store OTPs temporarily for simplicity
 
 // Forgot Password
-app.post("/forgot-password", async (req, res) => {
-  const { email } = req.body;
+// app.post("/forgot-password", async (req, res) => {
+//   const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ message: "Email is required" });
-  }
+//   if (!email) {
+//     return res.status(400).json({ message: "Email is required" });
+//   }
 
-  const user = await users.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
+//   const user = await users.findOne({ email });
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
-  OTPs[email] = otp; // Save OTP temporarily
-  console.log(`OTP for ${email}: ${otp}`); // Debug log (send this OTP via email in production)
+//   const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+//   OTPs[email] = otp; // Save OTP temporarily
+//   console.log(`OTP for ${email}: ${otp}`); // Debug log (send this OTP via email in production)
 
-  res.status(200).json({ message: "OTP sent to your email" });
-});
+//   res.status(200).json({ message: "OTP sent to your email" });
+// });
 
-// Verify OTP
-app.post("/verify-otp", (req, res) => {
-  const { email, otp } = req.body;
+// // Verify OTP
+// app.post("/verify-otp", (req, res) => {
+//   const { email, otp } = req.body;
 
-  if (OTPs[email] && OTPs[email] === parseInt(otp)) {
-    delete OTPs[email]; // Remove OTP after successful verification
-    return res.status(200).json({ message: "OTP verified successfully" });
-  }
+//   if (OTPs[email] && OTPs[email] === parseInt(otp)) {
+//     delete OTPs[email]; // Remove OTP after successful verification
+//     return res.status(200).json({ message: "OTP verified successfully" });
+//   }
 
-  res.status(400).json({ message: "Invalid or expired OTP" });
-});
+//   res.status(400).json({ message: "Invalid or expired OTP" });
+// });
 
 // Export all controllers
 module.exports = {

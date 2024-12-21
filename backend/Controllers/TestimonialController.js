@@ -36,7 +36,11 @@ const createTestimonial = async (req, res) => {
 const getAllTestimonials = async (req, res) => {
   try {
     const allTestimonials = await testimonials.find();
-    res.status(200).json(allTestimonials.length ? allTestimonials : { message: "No testimonials found" });
+    if (allTestimonials.length > 0) {
+      res.status(200).json(allTestimonials);
+    } else {
+      res.status(404).json({ message: "No testimonials found" });
+    }
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch testimonials", error: error.message });
   }

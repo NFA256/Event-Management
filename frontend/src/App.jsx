@@ -11,8 +11,8 @@ import Login from "./User/Pages/Login";
 import Register from "./User/Pages/Register";
 import Sidebar from "./Admin/Components/Sidebar";
 import Error from "./User/Pages/Error";
-import EventCalendar from "./Admin/Pages/EventCalendar";
 import Testimonial from "./User/Components/Testimonial";
+import EventCalendar from "./Admin/pages/EventCalendar"
 
 const App = () => {
   return (

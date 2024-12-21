@@ -1,14 +1,56 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Modal component
 const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
-  if (!isOpen) return null;
+  const navigate = useNavigate();
+  const [feedback, setfeedback] = useState("");
+  const [username, setusername] = useState("");
+  const [imageFile, setimageFile] = useState("");
+  const [IMG, setIMG] = useState("");
+  const [submitBTN, setsubmitBTN] = useState("enabled");
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent the form from refreshing the page
-    onSubmit(); // Call the onSubmit prop passed from the parent component
-    onClose(); // Close the modal after submitting
+  const handleImageChange = (e) => {
+    setIMG(URL.createObjectURL(e.target.files[0])); // Show Image
+    setimageFile(e.target.files[0]);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent the form from refreshing the page
+    if (username === "" || feedback === "" || imageFile === "") {
+      alert("Fill the form first!");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("feedback", feedback);
+    formData.append("username", username);
+    formData.append("imageFile", imageFile);
+
+    try {
+      setsubmitBTN("disabled")
+      const response = await fetch("http://localhost:5000/testimonials", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (response.status === 201) {
+        onSubmit(); // Call the onSubmit prop
+        onClose(); // Close the modal after submitting
+      setsubmitBTN("enabled")
+      setIMG("")
+      } else {
+        console.log(result.error);
+      }
+    } catch (error) {
+      console.log("Error: " + error.message);
+    }
+
+    
+  };
+
+  if (!isOpen) return null; // Ensure hooks are still executed before this check
 
   return (
     <div className="modal show" style={{ display: "block" }}>
@@ -21,26 +63,57 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
             </button>
           </div>
           <div className="modal-body">
-            <form onSubmit={handleSubmit}>
+            <form id="feedbackForm" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input
+                  onChange={(e) => setusername(e.target.value)}
                   type="text"
                   className="form-control"
-                  id="name"
+                  id="username"
                   placeholder="Enter your name"
-                  required
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="feedback">Your Feedback</label>
                 <textarea
+                  onChange={(e) => setfeedback(e.target.value)}
                   className="form-control"
                   id="feedback"
                   rows="4"
                   placeholder="Write your feedback here"
-                  required
                 />
+              </div>
+              <div className="row mb-3 mt-2">
+                <div className="col-8">
+                  <div className="form-group">
+                    <label htmlFor="feedback">Image</label>
+                    <input
+                      name="imageFile"
+                      onChange={handleImageChange}
+                      type="file"
+                      className="form-control"
+                    />
+                  </div>
+                </div>
+                <div className="col-4">
+                  {IMG ? (
+                    <img style={{ maxWidth: "120px" }} alt="" className="img-thumbnail" src={IMG} />
+                  ) : (
+                    <div
+                      style={{
+                        backgroundColor: "#98939378",
+                        width: "100px",
+                        height: "100px",
+                        color: "grey",
+                        fontSize: "13px",
+                      }}
+                      className="px-3 py-4 text-center"
+                    >
+                      No Image selected
+                    </div>
+                  )}
+                </div>
               </div>
             </form>
           </div>
@@ -48,12 +121,16 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
             <button type="button" className="btn" onClick={onClose}>
               Close
             </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              form="feedbackForm"
-            >
-              Submit Feedback
+            <button 
+            disabled={submitBTN === "disabled"}
+             type="submit" className="btn btn-primary" form="feedbackForm">
+               {
+              submitBTN === "disabled"
+              ?
+            'Submiting ...'
+              :'Submit Feedback'
+            }
+              
             </button>
           </div>
         </div>
@@ -62,7 +139,26 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
+
 const Testimonial = () => {
+  const [TestimonialsData, setTestimonialsData] = useState([])
+  useEffect(() => {
+      // ----Fetching roles from backend
+      const fetchingTestimonials = async () => {
+          try {
+              const Response = await fetch("http://localhost:5000/testimonials");
+              const fetchData = await Response.json()
+              if (Response.status === 200) {
+                setTestimonialsData(fetchData)
+                console.log("testtimonial",TestimonialsData)
+              }
+          } catch (error) {
+              console.log({ "Error": error })
+          }
+
+      }
+      fetchingTestimonials()
+  },[])
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -89,76 +185,37 @@ const Testimonial = () => {
         {/* <!-- Card Container --> */}
         <div className="container col-8 text-center mt-5">
           <div className="row justify-content-center">
-            {/* <!-- Card 1 --> */}
-            <div className="col-lg-4 col-md-6 mb-4 col-sm-7">
-              <div className="card2">
-                <div className="face front-face">
-                  <img
-                    src="https://images.unsplash.com/photo-1557862921-37829c790f19?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1051&q=80"
-                    alt=""
-                    className="profile rounded-circle img-fluid"
-                  />
-                  <div className="pt-3 text-uppercase name">
-                    Robert Garrison
-                  </div>
-                </div>
-                <div className="face back-face">
-                  <span className="fas fa-quote-left"></span>
-                  <div className="testimonial">
-                    I made back the purchase price in just 48 hours! Thank you
-                    for making it painless and pleasant. The service was
-                    excellent. I will refer everyone I know.
-                  </div>
-                  <span className="fas fa-quote-right"></span>
-                </div>
-              </div>
-            </div>
 
-            {/* <!-- Card 2 --> */}
-            <div className="col-lg-4 col-md-6 mb-4 col-sm-7">
-              <div className="card2">
-                <div className="face front-face">
-                  <img
-                    src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
-                    alt=""
-                    className="profile rounded-circle img-fluid"
-                  />
-                  <div className="pt-3 text-uppercase name">Jeffery Kennan</div>
-                </div>
-                <div className="face back-face">
-                  <span className="fas fa-quote-left"></span>
-                  <div className="testimonial">
-                    Really good, you have saved our business! I made back the
-                    purchase price in just 48 hours! Man, this thing is getting
-                    better and better as I learn more about it.
-                  </div>
-                  <span className="fas fa-quote-right"></span>
-                </div>
-              </div>
-            </div>
+{
+  TestimonialsData.map((data, index)=>{
+return (
+  <div className="col-lg-4 col-md-6 mb-4 col-sm-7">
+    <div className="card2">
+      <div className="face front-face">
+        <img
+          src={data.image}
+          alt=""
+          className="profile rounded-circle img-fluid"
+        />
+        <div className="pt-3 text-uppercase name">
+         {data.username}
+        </div>
+      </div>
+      <div className="face back-face">
+        <span className="fas fa-quote-left"></span>
+        <div className="testimonial">
+        {data.feedback}
+        </div>
+        <span className="fas fa-quote-right"></span>
+      </div>
+    </div>
+  </div>)
+  })
+}
 
-            {/* <!-- Card 3 --> */}
-            <div className="col-lg-4 col-md-6 col-sm-7 mb-4">
-              <div className="card2">
-                <div className="face front-face">
-                  <img
-                    src="https://images.unsplash.com/photo-1614574762522-6ac2fbba2208?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MjY2fHxtYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                    alt=""
-                    className="profile rounded-circle img-fluid"
-                  />
-                  <div className="pt-3 text-uppercase name">Issac Maxwell</div>
-                </div>
-                <div className="face back-face">
-                  <span className="fas fa-quote-left"></span>
-                  <div className="testimonial">
-                    Account keeper is the most valuable business research we
-                    have EVER purchased. Without an electrician, we would have
-                    gone bankrupt by now.
-                  </div>
-                  <span className="fas fa-quote-right"></span>
-                </div>
-              </div>
-            </div>
+           
+
+           
           </div>
         </div>
         <div className="section-tittle section-tittle2 ">
