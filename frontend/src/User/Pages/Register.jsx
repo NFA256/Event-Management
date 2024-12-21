@@ -87,10 +87,10 @@ const Register = () => {
     inputValue = inputValue.replace(/\D/g, "");
   
     // Enforce the correct CNIC format: 1234-1234567-1
-    if (inputValue.length > 4) {
-      inputValue = inputValue.slice(0, 4) + "-" + inputValue.slice(4);
+    if (inputValue.length > 5) {
+      inputValue = inputValue.slice(0, 5) + "-" + inputValue.slice(5);
     }
-    if (inputValue.length > 12) {
+    if (inputValue.length > 13) {
       inputValue = inputValue.slice(0, 13) + "-" + inputValue.slice(13);
     }
   
