@@ -16,6 +16,9 @@ const Workshop_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    ImageID: { 
+      type:String 
+    },
     total_sessions: {
       type: Number,
       required: [true, "Total sessions are required"],

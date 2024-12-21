@@ -4,13 +4,11 @@ const Ticket_Schema = mongoose.Schema(
   {
     seminar_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "seminars", // Reference to the halls collection
-      required: [true, "Event ID is required"],
+      ref: "seminars",
     },
     workshop_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "workshops", // Reference to the halls collection
-      required: [true, "Event ID is required"],
+      ref: "workshops", 
     },
       user_id: {
         type: mongoose.Schema.Types.ObjectId,

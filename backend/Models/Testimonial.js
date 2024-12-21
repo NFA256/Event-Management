@@ -16,7 +16,18 @@ const Testimonial_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+<<<<<<< HEAD
    
+=======
+    ImageID: { 
+      type:String 
+    },
+    // user_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "users",
+    //   required: [true, "User ID is required"],
+    // },
+>>>>>>> a44e02d77bd439f607e7acaabbdeda6051b19448
   },
   { timestamps: true }
 );

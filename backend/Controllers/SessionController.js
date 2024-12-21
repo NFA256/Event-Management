@@ -2,15 +2,13 @@ const sessions = require("../Models/Session"); // Import the Session model
 const workshops = require("../Models/Workshop"); // Import the Workshop model
 
 // Helper function to check for time conflicts
-const checkTimeConflict = async (workshop_id,title, day_no,duration,date, start_time, end_time) => {
+const checkTimeConflict = async (workshop_id, day_no, date, start_time, end_time) => {
   const conflictingSession = await sessions.findOne({
     workshop_id,
     day_no,
-    title,
-    duration,
     date,
     $or: [
-      { start_time: { $lt: end_time }, end_time: { $gt: start_time } }, // check if times overlap
+      { start_time: { $lt: end_time }, end_time: { $gt: start_time } }, // Times overlap
     ],
   });
   return conflictingSession;
@@ -33,18 +31,19 @@ const createSession = async (req, res) => {
     }
 
     // Check for time conflicts with the same workshop and day
-    const timeConflict = await checkTimeConflict(workshop_id, day_no, start_time, end_time);
+    const timeConflict = await checkTimeConflict(workshop_id, day_no, date, start_time, end_time);
     if (timeConflict) {
       return res.status(400).json({ message: "Time conflict with another session" });
     }
 
     const newSession = new sessions({
       workshop_id,
+      title,
       day_no,
       date,
       start_time,
       end_time,
-      speaker_id,
+      duration,
     });
 
     await newSession.save();
@@ -61,7 +60,7 @@ const createSession = async (req, res) => {
 // Get all sessions
 const getAllSessions = async (req, res) => {
   try {
-    const allSessions = await sessions.find().populate('workshop_id speaker_id');
+    const allSessions = await sessions.find().populate('workshop_id');
     res.status(200).json(allSessions.length ? allSessions : { message: "No sessions found" });
   } catch (error) {
     console.error(error); // Log the error
@@ -72,7 +71,7 @@ const getAllSessions = async (req, res) => {
 // Get a single session by ID
 const getSessionById = async (req, res) => {
   try {
-    const session = await sessions.findById(req.params.id).populate('workshop_id speaker_id');
+    const session = await sessions.findById(req.params.id).populate('workshop_id');
     if (!session) {
       return res.status(404).json({ message: "Session not found" });
     }
@@ -100,10 +99,8 @@ const updateSession = async (req, res) => {
 
     const timeConflict = await checkTimeConflict(
       sessionToUpdate.workshop_id,
-      title || sessionToUpdate.title,
-      duration || sessionToUpdate.duration,
-      date || sessionToUpdate.date,
       day_no || sessionToUpdate.day_no,
+      date || sessionToUpdate.date,
       start_time || sessionToUpdate.start_time,
       end_time || sessionToUpdate.end_time
     );
@@ -115,11 +112,11 @@ const updateSession = async (req, res) => {
       req.params.id,
       {
         $set: {
-          ...(day_no && { day_no }),
+          ...(title && { title }),
           ...(date && { date }),
           ...(start_time && { start_time }),
           ...(end_time && { end_time }),
-          ...(speaker_id && { speaker_id }),
+          ...(duration && { duration }),
         },
       },
       { new: true, runValidators: true }

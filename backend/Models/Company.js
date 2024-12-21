@@ -11,6 +11,9 @@ const Company_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    ImageID: { 
+      type:String 
+    },
     description: {
       type: String,
       required: [true, "Description is required"],

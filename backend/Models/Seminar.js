@@ -11,6 +11,13 @@ const Seminar_Schema = mongoose.Schema(
       required: [true, "Title is required"],
       trim: true,
     },
+    image: {
+      type: String,
+      required: [true, "Image is required"],
+    },
+    ImageID: { 
+      type:String 
+    },
     purpose: {
       type: String,
       required: [true, "Purpose is required"],
