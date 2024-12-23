@@ -11,6 +11,7 @@ import Login from './User/Pages/Login';
 import Register from './User/Pages/Register';
 import Sidebar from './Admin/Components/Sidebar';
 import Error from './User/Pages/Error';
+import Faq from './User/Pages/Faq';
 
 const App = () => {
   
@@ -22,6 +23,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/speaker" element={<Speakers />} />
+        <Route path="/faq" element={<Faq />} />
+
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />

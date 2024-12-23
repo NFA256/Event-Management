@@ -30,6 +30,10 @@ const testimonialRoutes = require("./Routes/testimonialRoutes");
 const feedbackRoutes = require("./Routes/feedbackRoutes");
 const boothRoutes = require("./Routes/boothRoutes");
 const contactRoutes = require("./Routes/contactRoutes");
+const informationRoutes = require("./Routes/InfoRoutes");
+const faqRoutes = require("./Routes/faqRoutes");
+
+
 
 
 
@@ -56,6 +60,10 @@ app.use("/", testimonialRoutes); // For testimonial-related routes
 app.use("/", feedbackRoutes); // For feedback-related routes
 app.use("/", boothRoutes); // For feedback-related routes
 app.use("/", contactRoutes); // For contact-related routes
+app.use("/", informationRoutes); // For info-related routes
+app.use("/", faqRoutes); // For faq-related routes
+
+
 
 
 //--------server listen
