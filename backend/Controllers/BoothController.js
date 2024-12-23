@@ -6,17 +6,34 @@ const booths = require("../Models/Booth"); // Adjust path as needed
 // Create a new booth
 const createBooth = async (req, res) => {
   try {
-    const { floor_id ,reserved_bool ,name} = req.body;
+    const { floor_id, reserved_bool, name } = req.body;
 
     // Validate the data
-    if ( !floor_id ) {
-      return res.status(400).json({ message: "All fields ( floor_id) are required" });
+    if (!floor_id) {
+      return res
+        .status(400)
+        .json({ message: "All fields (floor_id) are required" });
     }
 
-    // Check if the booth already exists with the same combination of hall, floor, and exhibitor
-    const existingBooth = await booths.findOne({  floor_id });
+    // Check the total number of booths on the specified floor
+    const totalBooths = await booths.countDocuments({ floor_id });
+    if (totalBooths >= 25) {
+      return res
+        .status(400)
+        .json({
+          message: "A maximum of 25 booths can be added to this floor.",
+        });
+    }
+
+    // Check if a booth with the same name already exists on the specified floor
+    const existingBooth = await booths.findOne({ floor_id, name });
     if (existingBooth) {
-      return res.status(400).json({ message: "Booth already exists with this combination of hall, floor, and exhibitor" });
+      return res
+        .status(400)
+        .json({
+          message:
+            "A booth with this name already exists on the selected floor.",
+        });
     }
 
     // Create the new booth
@@ -33,9 +50,12 @@ const createBooth = async (req, res) => {
       booth: newBooth,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to create booth", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to create booth", error: error.message });
   }
 };
+
 
 // Method -------  GET
 // API   --------  http://localhost:5000/booths

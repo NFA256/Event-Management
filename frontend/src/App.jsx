@@ -12,7 +12,18 @@ import Register from "./User/Pages/Register";
 import Sidebar from "./Admin/Components/Sidebar";
 import Error from "./User/Pages/Error";
 import Testimonial from "./User/Components/Testimonial";
-import EventCalendar from "./Admin/pages/EventCalendar"
+import Speaker from "./Admin/Pages/Speaker";
+import Addspeaker from "./Admin/Pages/Addspeaker";
+import Showspeaker from "./Admin/Pages/Showspeaker";
+import Addhall from "./Admin/Pages/Addhall";
+import Showhall from "./Admin/Pages/Showhall";
+import Addbooth from "./Admin/Pages/Addbooth";
+import Showbooth from "./Admin/Pages/Showbooth";
+import Addfloor from "./Admin/Pages/Addfloor";
+import Showfloor from "./Admin/Pages/Showfloor";
+import Addworkshop from "./Admin/Pages/Addworkshop";
+import Showworkshop from "./Admin/Pages/Showworkshop";
+// import EventCalendar from "./Admin/pages/EventCalendar";
 
 const App = () => {
   return (
@@ -30,7 +41,17 @@ const App = () => {
 
         {/* //------Admin */}
         <Route path="/admin" element={<Sidebar />}>
-          <Route path="calendar" element={<EventCalendar />} />
+          <Route path="addspeaker" element={<Addspeaker />} />
+          <Route path="showspeaker" element={<Showspeaker />} />
+          <Route path="addhall" element={<Addhall />} />
+          <Route path="showhall" element={<Showhall />} />
+          <Route path="addbooth" element={<Addbooth />} />
+          <Route path="showbooth" element={<Showbooth />} />
+          <Route path="addfloor" element={<Addfloor />} />
+          <Route path="showfloor" element={<Showfloor />} />
+          <Route path="addworkshop" element={<Addworkshop />} />
+          <Route path="showworkshop" element={<Showworkshop />} />
+          {/* <Route path="calendar" element={<EventCalendar />} /> */}
         </Route>
 
         {/* Fallback route */}

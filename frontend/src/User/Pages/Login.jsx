@@ -13,7 +13,7 @@ const Login = () => {
   const [Password, setPassword] = useState("");
   const [Error, setError] = useState("");
   const [Success, setSuccess] = useState("");
-  
+
   // Forgot password modal state
   const [IsForgotPassword, setIsForgotPassword] = useState(false);
   const [ForgotEmail, setForgotEmail] = useState("");
@@ -21,11 +21,11 @@ const Login = () => {
   const [ForgotSuccess, setForgotSuccess] = useState("");
 
   const [IsOTPModal, setIsOTPModal] = useState(false);
-const [OTP, setOTP] = useState("");
-const [OTPError, setOTPError] = useState("");
-const [OTPSuccess, setOTPSuccess] = useState("");
+  const [OTP, setOTP] = useState("");
+  const [OTPError, setOTPError] = useState("");
+  const [OTPSuccess, setOTPSuccess] = useState("");
 
-  // ----function for Password visibility 
+  // ----function for Password visibility
   const [IsPswrdVissible, setIsPswrdVissible] = useState("notVissible");
   const showHidePassword = () => {
     if (IsPswrdVissible === "notVissible") {
@@ -54,7 +54,7 @@ const [OTPSuccess, setOTPSuccess] = useState("");
         // Ensure that we're working with the array inside 'data'
         const user = users.data.find((user) => user.email === Email);
         console.log("User found:", user); // Log found user
-        
+
         if (user) {
           const match = await bcrypt.compare(Password, user.password);
           if (!match) {
@@ -85,58 +85,63 @@ const [OTPSuccess, setOTPSuccess] = useState("");
   // Handle Forgot Password Submit
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!ForgotEmail) {
       setForgotError("Please enter your email.");
       return;
     }
-  
+
     try {
-      const response = await fetch(`http://localhost:5000/users/email/${ForgotEmail}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-  
+      const response = await fetch(
+        `http://localhost:5000/users/email/${ForgotEmail}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
       if (!response.ok) {
         const data = await response.json();
         setForgotError(data.message || "Error in sending reset email.");
         return;
       }
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setForgotSuccess("Password reset link sent to your email.");
       setForgotError("");
       setIsForgotPassword(false); // Close the modal
-      setIsOTPModal(true); 
+      setIsOTPModal(true);
     } catch (error) {
       setForgotError("Network error. Please try again.");
     }
   };
   const handleOTPSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!OTP) {
       setOTPError("Please enter the OTP.");
       return;
     }
-  
+
     try {
       const response = await fetch(`http://localhost:5000/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: ForgotEmail, otp: OTP }),
       });
-  
+
       if (!response.ok) {
         const data = await response.json();
         setOTPError(data.message || "Invalid OTP.");
         return;
       }
-  
+
       const data = await response.json();
       console.log(data);
-  
-      setOTPSuccess("OTP verified successfully. Proceed to reset your password.");
+
+      setOTPSuccess(
+        "OTP verified successfully. Proceed to reset your password."
+      );
       setOTPError("");
       setIsOTPModal(false); // Close the OTP modal
       navigate("/reset-password"); // Navigate to the reset password page
@@ -144,19 +149,35 @@ const [OTPSuccess, setOTPSuccess] = useState("");
       setOTPError("Network error. Please try again.");
     }
   };
-  
 
   return (
-    <div className="d-flex mb-5 justify-content-center align-items-center" style={{ minHeight: "70vh" }}>
+    <div
+      className="d-flex mb-5 justify-content-center align-items-center"
+      style={{ minHeight: "70vh" }}
+    >
       <div className="container shadow-lg p-5" style={{ maxWidth: "450px" }}>
         <div className="text-center mb-4">
-          <u><h2>Login</h2></u>
+          <u>
+            <h2>Login</h2>
+          </u>
         </div>
 
-        {Error && <div className="alert alert-danger fs-6" role="alert"><p>{Error}</p></div>}
-        {Success && <div className="alert alert-success fs-6" role="alert"><p>{Success}</p></div>}
+        {Error && (
+          <div className="alert alert-danger fs-6" role="alert">
+            <p>{Error}</p>
+          </div>
+        )}
+        {Success && (
+          <div className="alert alert-success fs-6" role="alert">
+            <p>{Success}</p>
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="form-contact contact_form" id="contactForm">
+        <form
+          onSubmit={handleSubmit}
+          className="form-contact contact_form"
+          id="contactForm"
+        >
           <div className="form-group mb-3">
             <input
               className="form-control"
@@ -181,41 +202,81 @@ const [OTPSuccess, setOTPSuccess] = useState("");
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <span onClick={showHidePassword} className="input-group-text" style={{ cursor: "pointer" }}>
-              <i className={IsPswrdVissible === "yesVissible" ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+            <span
+              onClick={showHidePassword}
+              className="input-group-text"
+              style={{ cursor: "pointer" }}
+            >
+              <i
+                className={
+                  IsPswrdVissible === "yesVissible"
+                    ? "fas fa-eye-slash"
+                    : "fas fa-eye"
+                }
+              ></i>
             </span>
           </div>
 
           <div className="mb-3">
-            <Link to="#" onClick={() => setIsForgotPassword(true)} className="text-end text-info">
+            <Link
+              to="#"
+              onClick={() => setIsForgotPassword(true)}
+              className="text-end text-info"
+            >
               Forgot password?
             </Link>
           </div>
 
           <div className="form-group mt-3 text-center">
-            <button type="submit" className="btn w-100">Login</button>
+            <button type="submit" className="btn w-100">
+              Login
+            </button>
           </div>
 
           <div className="text-center mt-3">
-            Don't have an account? <Link to="/register" className="text-info">Register</Link>
+            Don't have an account?{" "}
+            <Link to="/register" className="text-info">
+              Register
+            </Link>
           </div>
         </form>
       </div>
 
       {/* Forgot Password Modal */}
       {IsForgotPassword && (
-        <div className="modal show" style={{ display: "block", position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div
+          className="modal show"
+          style={{
+            display: "block",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Forgot Password</h5>
-                <button type="button" className="close" onClick={() => setIsForgotPassword(false)}>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => setIsForgotPassword(false)}
+                >
                   <span>&times;</span>
                 </button>
               </div>
               <div className="modal-body">
-                {ForgotError && <div className="alert alert-danger fs-6">{ForgotError}</div>}
-                {ForgotSuccess && <div className="alert alert-success fs-6">{ForgotSuccess}</div>}
+                {ForgotError && (
+                  <div className="alert alert-danger fs-6">{ForgotError}</div>
+                )}
+                {ForgotSuccess && (
+                  <div className="alert alert-success fs-6">
+                    {ForgotSuccess}
+                  </div>
+                )}
                 <form onSubmit={handleForgotPasswordSubmit}>
                   <div className="form-group mb-3">
                     <input
@@ -228,7 +289,9 @@ const [OTPSuccess, setOTPSuccess] = useState("");
                     />
                   </div>
                   <div className="text-center">
-                    <button type="submit" className="btn w-100">Send Reset Link</button>
+                    <button type="submit" className="btn w-100">
+                      Send Reset Link
+                    </button>
                   </div>
                 </form>
               </div>
@@ -237,43 +300,60 @@ const [OTPSuccess, setOTPSuccess] = useState("");
         </div>
       )}
       {/* OTP Modal */}
-{IsOTPModal && (
-  <div
-    className="modal show"
-    style={{ display: "block", position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)" }}
-  >
-    <div className="modal-dialog">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title">Enter OTP</h5>
-          <button type="button" className="close" onClick={() => setIsOTPModal(false)}>
-            <span>&times;</span>
-          </button>
-        </div>
-        <div className="modal-body">
-          {OTPError && <div className="alert alert-danger fs-6">{OTPError}</div>}
-          {OTPSuccess && <div className="alert alert-success fs-6">{OTPSuccess}</div>}
-          <form onSubmit={handleOTPSubmit}>
-            <div className="form-group mb-3">
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Enter OTP"
-                value={OTP}
-                onChange={(e) => setOTP(e.target.value)}
-                required
-              />
+      {IsOTPModal && (
+        <div
+          className="modal show"
+          style={{
+            display: "block",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Enter OTP</h5>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => setIsOTPModal(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                {OTPError && (
+                  <div className="alert alert-danger fs-6">{OTPError}</div>
+                )}
+                {OTPSuccess && (
+                  <div className="alert alert-success fs-6">{OTPSuccess}</div>
+                )}
+                <form onSubmit={handleOTPSubmit}>
+                  <div className="form-group mb-3">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Enter OTP"
+                      value={OTP}
+                      onChange={(e) => setOTP(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="text-center">
+                    <button type="submit" className="btn w-100">
+                      Verify OTP
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className="text-center">
-              <button type="submit" className="btn w-100">Verify OTP</button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };

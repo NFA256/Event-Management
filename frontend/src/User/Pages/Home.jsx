@@ -55,6 +55,35 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
+  //speaker work
+   const [speakers, setSpeakers] = useState([]);
+   const [error, setError] = useState("");
+
+   useEffect(() => {
+     const fetchSpeakers = async () => {
+       try {
+         const response = await fetch("http://localhost:5000/speakers");
+         if (response.ok) {
+           const data = await response.json();
+           if (Array.isArray(data)) {
+             setSpeakers(data);
+           } else {
+             console.error("API response is not an array:", data);
+             setSpeakers([]);
+           }
+         } else {
+           console.error("Failed to fetch speakers");
+         }
+       } catch (error) {
+         console.error("Error fetching speakers:", error);
+         setError("Failed to fetch speakers.");
+       }
+     };
+     fetchSpeakers();
+   }, []);
+
+   // Get only the last 6 speakers
+   const lastSixSpeakers = speakers.slice(-6);
   return (
     <>
       {/* <!--? slider Area Start--> */}
@@ -139,213 +168,73 @@ const Home = () => {
 
       {/* <!-- slider Area End--> */}
       <AboutContent />
+      {/* ///-------------------- */}
       <section className="team-area pt-180 pb-100 section-bg bg-info">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-9">
-              {/* <!-- Section Tittle --> */}
+              {/* Section Title */}
               <div className="section-tittle section-tittle2 mb-50">
-                <h2>The Most Importent Speakers.</h2>
+                <h2>The Most Important Speakers.</h2>
                 <p>
-                  There arge many variations ohf passages of sorem gpsum ilable,
-                  but the majority have suffered alteration in.
+                  There are many variations of passages of Lorem Ipsum
+                  available, but the majority have suffered alteration in some
+                  form.
                 </p>
                 <a href="#" className="btn white-btn mt-30">
-                  View Spackert
+                  View Speakers
                 </a>
               </div>
             </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
-              <div className="single-team mb-30">
-                <div className="team-img">
-                  <img src="assets/img/gallery/team1.png" alt="" />
-                  {/* <!-- Blog Social --> */}
-                  <ul className="team-social">
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-facebook-f"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fas fa-globe"></i>
-                      </a>
-                    </li>
-                  </ul>
+
+            {/* Speaker Cards */}
+            {lastSixSpeakers.length > 0 ? (
+              lastSixSpeakers.map((speaker) => (
+                <div key={speaker._id} className="col-lg-3 col-md-4 col-sm-6">
+                  <div className="single-team mb-30">
+                    <div className="team-img">
+                      <img
+                        src={speaker.image || "assets/img/default-avatar.png"}
+                        alt={speaker.name}
+                      />
+                      {/* Social Icons */}
+                      <ul className="team-social">
+                        <li>
+                          <a href="#">
+                            <i className="fab fa-facebook-f"></i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i className="fab fa-twitter"></i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i className="fas fa-globe"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="team-caption">
+                      <h3>
+                        <a href="#">{speaker.name}</a>
+                      </h3>
+                      <p>{speaker.description}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="team-caption">
-                  <h3>
-                    <a href="#">Jesscia brown</a>
-                  </h3>
-                  <p>Co Founder</p>
-                </div>
+              ))
+            ) : (
+              <div className="col-12">
+                <p>No speakers available.</p>
               </div>
-            </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
-              <div className="single-team mb-30">
-                <div className="team-img">
-                  <img src="assets/img/gallery/team2.png" alt="" />
-                  {/* <!-- Blog Social --> */}
-                  <ul className="team-social">
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-facebook-f"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fas fa-globe"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="team-caption">
-                  <h3>
-                    <a href="#">Jesscia brown</a>
-                  </h3>
-                  <p>Co Founder</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
-              <div className="single-team mb-30">
-                <div className="team-img">
-                  <img src="assets/img/gallery/team3.png" alt="" />
-                  {/* <!-- Blog Social --> */}
-                  <ul className="team-social">
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-facebook-f"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fas fa-globe"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="team-caption">
-                  <h3>
-                    <a href="#">brown Rulsan</a>
-                  </h3>
-                  <p>Co Founder</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
-              <div className="single-team mb-30">
-                <div className="team-img">
-                  <img src="assets/img/gallery/team4.png" alt="" />
-                  {/* <!-- Blog Social --> */}
-                  <ul className="team-social">
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-facebook-f"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fas fa-globe"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="team-caption">
-                  <h3>
-                    <a href="#">Jesscia brown</a>
-                  </h3>
-                  <p>Co Founder</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
-              <div className="single-team mb-30">
-                <div className="team-img">
-                  <img src="assets/img/gallery/team5.png" alt="" />
-                  {/* <!-- Blog Social --> */}
-                  <ul className="team-social">
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-facebook-f"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fas fa-globe"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="team-caption">
-                  <h3>
-                    <a href="#">Jesscia brown</a>
-                  </h3>
-                  <p>Co Founder</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-4 col-sm-6">
-              <div className="single-team mb-30">
-                <div className="team-img">
-                  <img src="assets/img/gallery/team6.png" alt="" />
-                  {/* <!-- Blog Social --> */}
-                  <ul className="team-social">
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-facebook-f"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fab fa-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="fas fa-globe"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="team-caption">
-                  <h3>
-                    <a href="#">wndfert droit</a>
-                  </h3>
-                  <p>Co Founder</p>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
       <ScheduleContent />
-     <Testimonial cards="3" />
+      <Testimonial />
       <AboutPricing />
       {/* <!--? Brand Area Start--> */}
       <section

@@ -26,7 +26,9 @@ const createSpeaker = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to create speaker", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to create speaker", error: error.message });
   }
 };
 
@@ -34,10 +36,16 @@ const createSpeaker = async (req, res) => {
 const getAllSpeakers = async (req, res) => {
   try {
     const allSpeakers = await speakers.find();
-    res.status(200).json(allSpeakers.length ? allSpeakers : { message: "No speakers found" });
+    res
+      .status(200)
+      .json(
+        allSpeakers.length ? allSpeakers : { message: "No speakers found" }
+      );
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to fetch speakers", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch speakers", error: error.message });
   }
 };
 
@@ -53,7 +61,9 @@ const getSpeakerById = async (req, res) => {
     res.status(200).json(speaker);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to fetch speaker", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch speaker", error: error.message });
   }
 };
 
@@ -81,12 +91,17 @@ const updateSpeaker = async (req, res) => {
 
       try {
         if (speakerToUpdate.ImageID) {
-          req.body.OLDimageID = speakerToUpdate.ImageID;  // Pass the ImageID to the next middleware
-          await ImageDelete(req, res, () => {}); 
+          req.body.OLDimageID = speakerToUpdate.ImageID; // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {});
         }
       } catch (error) {
         console.error("Error deleting old image:", error.message);
-        return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+        return res
+          .status(500)
+          .json({
+            message: "Failed to delete old image",
+            error: error.message,
+          });
       }
     }
 
@@ -114,7 +129,9 @@ const updateSpeaker = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to update speaker", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to update speaker", error: error.message });
   }
 };
 
@@ -129,11 +146,13 @@ const deleteSpeaker = async (req, res) => {
     // Delete the image from Cloudinary if it exists
     if (speakerToDelete.ImageID) {
       try {
-        req.body.OLDimageID = speakerToDelete .ImageID;  // Pass the ImageID to the next middleware
-        await ImageDelete(req, res, () => {}); 
+        req.body.OLDimageID = speakerToDelete.ImageID; // Pass the ImageID to the next middleware
+        await ImageDelete(req, res, () => {});
       } catch (error) {
         console.error("Error deleting image:", error.message);
-        return res.status(500).json({ message: "Failed to delete image", error: error.message });
+        return res
+          .status(500)
+          .json({ message: "Failed to delete image", error: error.message });
       }
     }
 
@@ -143,7 +162,9 @@ const deleteSpeaker = async (req, res) => {
     res.status(200).json({ message: "Speaker deleted successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to delete speaker", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to delete speaker", error: error.message });
   }
 };
 

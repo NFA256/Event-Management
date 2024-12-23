@@ -62,7 +62,7 @@ const Register = () => {
   const [IsPswrdVissible, setIsPswrdVissible] = useState('notVissible')
   const showHidePassword = () => {
     // ----- checking if the state of password is vissible or not vissible
-    if (IsPswrdVissible == "notVissible") {
+    if (IsPswrdVissible === "notVissible") {
       setIsPswrdVissible("yesVissible") //---setting the state of passwrd vissiblity
     }
     else {
@@ -73,7 +73,7 @@ const Register = () => {
   const [IsCPswrdVissible, setIsCPswrdVissible] = useState('notVissible')
   const showHideCPassword = () => {
     // ----- checking if the state of password is vissible or not vissible
-    if (IsCPswrdVissible == "notVissible") {
+    if (IsCPswrdVissible === "notVissible") {
       setIsCPswrdVissible("yesVissible")//---setting the state of passwrd vissiblity
     }
     else {
@@ -266,7 +266,7 @@ const Register = () => {
               className="form-control"
               name="password"
               id="password"
-              type={IsPswrdVissible == "yesVissible"
+              type={IsPswrdVissible === "yesVissible"
                 ? "text"
                 : "password"}
               placeholder="Enter your password"
@@ -277,7 +277,7 @@ const Register = () => {
              <span onClick={() => showHidePassword()} className=" input-group-text" style={{ cursor: "pointer" }}>
               <i class="fas fa-eye"
                 className={
-                  IsPswrdVissible == "yesVissible"
+                  IsPswrdVissible === "yesVissible"
                     ? "fas fa-eye-slash"
                     : "fas fa-eye"}
               ></i>
@@ -288,7 +288,7 @@ const Register = () => {
               className="form-control"
               name="confirmPassword"
               id="confirmPassword"
-              type={IsCPswrdVissible == "yesVissible"
+              type={IsCPswrdVissible === "yesVissible"
                 ? "text"
                 : "password"}
               placeholder="Confirm your password"
@@ -300,7 +300,7 @@ const Register = () => {
             } className=" input-group-text" style={{ cursor: "pointer" }}>
               <i class="fas fa-eye"
                 className={
-                  IsCPswrdVissible == "yesVissible"
+                  IsCPswrdVissible === "yesVissible"
                     ? "fas fa-eye-slash"
                     : "fas fa-eye"}
               ></i>
