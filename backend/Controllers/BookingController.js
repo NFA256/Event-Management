@@ -3,10 +3,31 @@ const bookings = require("../Models/Bookings"); // Import the Booking model
 // Create a new booking
 const createBooking = async (req, res) => {
   try {
-    const newBooking = new bookings(req.body);
+    // Extract the fields from the request body
+    const { user_id, workshop_id, seminar_id, date, total_cost, payment_status } = req.body;
+
+    // Check if required fields are provided
+    if (!user_id || !date || !total_cost) {
+      return res.status(400).json({ success: false, message: "User ID, Date, and Total Cost are required" });
+    }
+
+    // Create a new booking
+    const newBooking = new bookings({
+      user_id,
+      workshop_id,
+      seminar_id,
+      date,
+      total_cost,
+      payment_status
+    });
+
+    // Save the new booking
     await newBooking.save();
+    
+    // Return success response
     return res.status(201).json({ success: true, data: newBooking });
   } catch (error) {
+    // Return error response if something goes wrong
     return res.status(500).json({ success: false, message: "Error creating booking", error: error.message });
   }
 };
