@@ -32,6 +32,12 @@ const boothRoutes = require("./Routes/boothRoutes");
 const contactRoutes = require("./Routes/contactRoutes");
 const companyRoutes = require("./Routes/companyRoutes");
 const ticketRoutes = require("./Routes/ticketRoutes");
+const informationRoutes = require("./Routes/InfoRoutes");
+const faqRoutes = require("./Routes/faqRoutes");
+
+
+
+
 
 
 
