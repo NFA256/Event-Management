@@ -1,17 +1,22 @@
 const events = require("../Models/Event");
 const { ImageDelete } = require("../Middlewares/ImageUploading");
+
 // Create a new event
 const createEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors ,status } = req.body;
+    const { title, description, time, date, no_of_visitors, status } = req.body;
     const eventImage = req.file;
+
+    // Check if event image is provided
     if (!eventImage) {
       return res.status(400).json({ message: "Event image is required" });
     }
+
     const Event_Image = eventImage.path;
     const fileID = eventImage.filename;
 
-    if (!title || !description || !time || !date || !no_of_visitors  , !status ) {
+    // Check if all required fields are provided
+    if (!title || !description || !time || !date || !no_of_visitors || !status) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -21,9 +26,9 @@ const createEvent = async (req, res) => {
       time,
       date,
       no_of_visitors,
-      image : Event_Image,
+      image: Event_Image,
       ImageID: fileID,
-      status
+      status,
     });
 
     await newEvent.save();
@@ -32,7 +37,7 @@ const createEvent = async (req, res) => {
       event: newEvent,
     });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to create event", error: error.message });
   }
 };
@@ -43,7 +48,7 @@ const getAllEvents = async (req, res) => {
     const getevents = await events.find();
     res.status(200).json(getevents.length ? getevents : { message: "No events found" });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch events", error: error.message });
   }
 };
@@ -57,7 +62,7 @@ const getEventById = async (req, res) => {
     }
     res.status(200).json(getevent);
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch event", error: error.message });
   }
 };
@@ -66,7 +71,7 @@ const getEventById = async (req, res) => {
 const updateEvent = async (req, res) => {
   try {
     const { title, description, time, date, no_of_visitors, oldImage, Imagefilename, status } = req.body;
-    const eventImage = req.file; // Check if a new image is uploaded
+    const eventImage = req.file;
     let Event_Image;
     let fileID;
 
@@ -76,34 +81,32 @@ const updateEvent = async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    // If a new image is provided, delete the old image from Cloudinary
+    // If a new image is uploaded, handle old image deletion
     if (eventImage) {
-      Event_Image = eventImage.path; // Path of the new image
-      fileID = eventImage.filename; // Filename for Cloudinary
+      Event_Image = eventImage.path;
+      fileID = eventImage.filename;
 
-      // Ensure ImageID exists before trying to delete the old image
       if (eventToUpdate.ImageID) {
         try {
-          console.log("Deleting old image with ID:", eventToUpdate.ImageID); // Debug log the ImageID
-          req.body.OLDimageID = eventToUpdate.ImageID;  // Pass the ImageID to the next middleware
-          await ImageDelete(req, res, () => {});  // Call ImageDelete with the updated req.body
+          req.body.OLDimageID = eventToUpdate.ImageID;
+          await ImageDelete(req, res, () => {});
         } catch (error) {
           console.error("Error deleting old image:", error.message);
           return res.status(500).json({ message: "Failed to delete old image", error: error.message });
         }
       }
     } else {
-      // If no new image is uploaded, keep the existing image
+      // If no new image is uploaded, retain the old image
       Event_Image = oldImage;
-      fileID = Imagefilename; // Use the image filename from the database
+      fileID = Imagefilename;
     }
 
     // Ensure at least one field is provided for update
-    if (!title && !description && !time && !date && !no_of_visitors && !status) {
+    if (!title && !description && !time && !date && !no_of_visitors && !status && !eventImage) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
-    // Update the event in the database
+    // Update the event with new data
     const updatedEvent = await events.findByIdAndUpdate(
       req.params.id,
       {
@@ -130,36 +133,35 @@ const updateEvent = async (req, res) => {
       event: updatedEvent,
     });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to update event", error: error.message });
   }
 };
 
-
-
-
 // Delete an event
 const deleteEvent = async (req, res) => {
   try {
-    const deletedEvent =await events.findById(req.params.id);
+    const deletedEvent = await events.findById(req.params.id);
 
     if (!deletedEvent) {
       return res.status(404).json({ message: "Event not found" });
     }
+
     // Delete the associated image from Cloudinary
     if (deletedEvent.ImageID) {
       try {
-        req.body.OLDimageID = deletedEvent.ImageID;  // Pass the ImageID to the next middleware
-        await ImageDelete(req, res, () => {});  // Call ImageDelete with the updated req.body
+        req.body.OLDimageID = deletedEvent.ImageID;
+        await ImageDelete(req, res, () => {});
       } catch (error) {
         console.error("Error deleting old image:", error.message);
         return res.status(500).json({ message: "Failed to delete old image", error: error.message });
       }
     }
-    await events.findByIdAndDelete(req.params.id)
+
+    await events.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (error) {
-    console.error(error); // Log the error
+    console.error(error);
     res.status(500).json({ message: "Failed to delete event", error: error.message });
   }
 };

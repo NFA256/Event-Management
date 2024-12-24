@@ -41,6 +41,10 @@ const App = () => {
           <Route path="showfloor" element={<Showfloor />} />
           <Route path="addworkshop" element={<Addworkshop />} />
           <Route path="showworkshop" element={<Showworkshop />} />
+          <Route path="addevent" element={<Addevent />} />
+          <Route path="showevent" element={<Showevent />} />
+
+
           {/* <Route path="calendar" element={<EventCalendar />} /> */}
         </Route>
 
