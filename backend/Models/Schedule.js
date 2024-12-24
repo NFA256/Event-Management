@@ -1,22 +1,21 @@
-// const express = require("express");
-// const router = express.Router();
+const mongoose = require("mongoose");
 
-// const {
-//   createSchedule,
-//   getAllSchedules,
-//   getScheduleById,
-//   updateSchedule,
-//   deleteSchedule,
-// } = require("../Controllers/ScheduleController");
+const Schedule_Schema = mongoose.Schema(
+  {
+    date: {
+      type: Date,
+      required: [true, "Date is required"],
+    },
+    reserved_for: {
+      type: String,
+      required: [true, "Reserved For field is required"],
+      trim: true, // Remove extra spaces
+    },
+  },
+  { timestamps: true } // Automatically adds createdAt and updatedAt fields
+);
 
-// // Routes for schedule
-// router.route("/schedules")
-//   .post(createSchedule)
-//   .get(getAllSchedules);
+// Create the Schedule model
+const schedules = mongoose.model("schedules", Schedule_Schema);
 
-// router.route("/schedules/:id")
-//   .get(getScheduleById)
-//   .put(updateSchedule)
-//   .delete(deleteSchedule);
-
-// module.exports = router;
+module.exports = schedules;

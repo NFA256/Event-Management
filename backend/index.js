@@ -34,6 +34,10 @@ const companyRoutes = require("./Routes/companyRoutes");
 const ticketRoutes = require("./Routes/ticketRoutes");
 const informationRoutes = require("./Routes/InfoRoutes");
 const faqRoutes = require("./Routes/faqRoutes");
+const scheduleRoutes = require("./Routes/scheduleRoutes");
+const BookingRoutes = require("./Routes/bookingRoutes");
+
+
 
 
 
@@ -66,6 +70,10 @@ app.use("/", boothRoutes); // For feedback-related routes
 app.use("/", contactRoutes); // For contact-related routes
 app.use("/", informationRoutes); // For info-related routes
 app.use("/", faqRoutes); // For faq-related routes
+app.use("/", scheduleRoutes); // For schedule-related routes
+app.use("/", boothRoutes); // For BooK-related routes
+
+
 
 
 
