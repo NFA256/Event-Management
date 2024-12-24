@@ -5,323 +5,89 @@ const Sidebar = () => {
   const [role, setRole] = useState("");
 
   useEffect(() => {
-    // Fetch user role from local storage
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.role) {
-      setRole(storedUser.role.RoleName); // Access RoleName within the role object
+    if (storedUser?.role?.RoleName) {
+      setRole(storedUser.role.RoleName);
     }
   }, []);
 
+  const sidebarStyle = {
+    height: "100vh", // Full height for the sidebar
+    backgroundColor: "#218fb1ee",
+    padding: "20px 0",
+    boxShadow: "3px 0 7px rgba(0, 0, 0, 0.1)",
+    overflowY: "auto", // Enable scrolling
+  };
+
+  const linkStyle = {
+    padding: "15px 20px",
+    textDecoration: "none",
+    display: "block",
+    borderRadius: "4px",
+    color: "#fff",
+    backgroundColor: "#218fb1",
+    transition: "background-color 0.3s",
+  };
+
+  const linkHoverStyle = "#043544ee";
+
+  const scrollbarStyle = `
+    ::-webkit-scrollbar {
+      width: 6px; /* Thin scrollbar width */
+    }
+    ::-webkit-scrollbar-track {
+      background: #218fb1ee; /* Background of the scrollbar track */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #043544ee; /* Scrollbar thumb color */
+      border-radius: 10px; /* Rounded edges */
+    }
+  `;
+
   return (
     <div style={{ minHeight: "100vh", margin: 0 }}>
+      <style>{scrollbarStyle}</style> {/* Inline CSS for the scrollbar */}
       <div className="row" style={{ minHeight: "100vh", margin: 0 }}>
-        <div
-          className="col-2"
-          style={{
-            height: "100vh",
-            backgroundColor: "#218fb1ee",
-            padding: "20px 0",
-            boxShadow: "3px 0 7px rgba(0, 0, 0, 0.1)",
-          }}
-        >
+        <div className="col-2" style={sidebarStyle}>
           <div className="text-center text-white mb-4">
             <h2>{role === "exhibitor" ? "Exhibitor" : "Admin"}</h2>
           </div>
 
           <ul className="nav text-center nav-pills mt-2 flex-column">
-            {role === "exhibitor" ? (
-              <>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="exhibitor-dashboard"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Dashboard
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="manage-exhibits"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Manage Exhibits
-                  </Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="calendar"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Event Schedule
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="addspeaker"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Add Speaker
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="Showspeaker"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Show Speaker
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="addhall"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Add Hall
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="showhall"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Show Hall
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="addbooth"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Add Booth
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="showbooth"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Show Booth
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="addfloor"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Add Floor
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="showfloor"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Show Floor
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="addworkshop"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Add Workshop
-                  </Link>
-                </li>
-                <li className="nav-item fs-4 fw-medium">
-                  <Link
-                    to="showworkshop"
-                    style={{
-                      padding: "15px 20px",
-                      textDecoration: "none",
-                      display: "block",
-                      borderRadius: "4px",
-                      color: "#fff",
-                      backgroundColor: "#218fb1",
-                      transition: "background-color 0.3s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#043544ee")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#218fb1")
-                    }
-                  >
-                    Show Workshop
-                  </Link>
-                </li>
-              </>
-            )}
+            {(role === "exhibitor"
+              ? [
+                  { path: "exhibitor-dashboard", label: "Dashboard" },
+                  { path: "manage-exhibits", label: "Manage Exhibits" },
+                ]
+              : [
+                  { path: "calendar", label: "Event Schedule" },
+                  { path: "addspeaker", label: "Add Speaker" },
+                  { path: "Showspeaker", label: "Show Speaker" },
+                  { path: "addhall", label: "Add Hall" },
+                  { path: "showhall", label: "Show Hall" },
+                  { path: "addbooth", label: "Add Booth" },
+                  { path: "showbooth", label: "Show Booth" },
+                  { path: "addfloor", label: "Add Floor" },
+                  { path: "showfloor", label: "Show Floor" },
+                  { path: "addworkshop", label: "Add Workshop" },
+                  { path: "showworkshop", label: "Show Workshop" },
+                  { path: "addevent", label: "Add Event" },
+                  { path: "showevent", label: "Show Event" },
+
+
+                ]
+            ).map(({ path, label }) => (
+              <li key={path} className="nav-item fs-4 fw-medium">
+                <Link
+                  to={path}
+                  style={linkStyle}
+                  onMouseOver={(e) => (e.target.style.backgroundColor = linkHoverStyle)}
+                  onMouseOut={(e) => (e.target.style.backgroundColor = linkStyle.backgroundColor)}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

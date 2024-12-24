@@ -23,6 +23,10 @@ import Addfloor from "./Admin/Pages/Addfloor";
 import Showfloor from "./Admin/Pages/Showfloor";
 import Addworkshop from "./Admin/Pages/Addworkshop";
 import Showworkshop from "./Admin/Pages/Showworkshop";
+import Addevent from "./Admin/Pages/Addevent";
+import Showevent from "./Admin/Pages/Showevent";
+
+
 // import EventCalendar from "./Admin/pages/EventCalendar";
 
 const App = () => {
@@ -51,6 +55,10 @@ const App = () => {
           <Route path="showfloor" element={<Showfloor />} />
           <Route path="addworkshop" element={<Addworkshop />} />
           <Route path="showworkshop" element={<Showworkshop />} />
+          <Route path="addevent" element={<Addevent />} />
+          <Route path="showevent" element={<Showevent />} />
+
+
           {/* <Route path="calendar" element={<EventCalendar />} /> */}
         </Route>
 
