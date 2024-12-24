@@ -1,25 +1,33 @@
-const seminars = require('../Models/Seminar');  // Import the Seminar model
+const seminars = require('../Models/Seminar'); // Import the Seminar model
+const { ImageDelete } = require("../Middlewares/ImageUploading"); // Image middleware
 
 // Create a new seminar
 const createSeminar = async (req, res) => {
   try {
-    const { date, title, purpose, start_time, end_time, no_of_attendees, speaker_id, hall_id } = req.body;
+    const { date, title, purpose, start_time, end_time, capacity, price, is_paid, speaker_id, hall_id } = req.body;
+    const seminarImage = req.file; // Getting the uploaded image
 
-    if (!date || !title || !purpose || !start_time || !end_time || !no_of_attendees || !speaker_id || !hall_id) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!seminarImage) {
+      return res.status(400).json({ message: "Seminar image is required" });
     }
 
+    // Create a new seminar document
     const newSeminar = new seminars({
       date,
       title,
       purpose,
       start_time,
       end_time,
-      no_of_attendees,
+      capacity,
+      price,
+      is_paid,
       speaker_id,
       hall_id,
+      image: seminarImage.path, // Save the image path
+      ImageID: seminarImage.filename, // Save the image filename for future deletion
     });
 
+    // Save the seminar
     await newSeminar.save();
     res.status(201).json({
       message: "Seminar created successfully",
@@ -44,7 +52,7 @@ const getAllSeminars = async (req, res) => {
 const getSeminarById = async (req, res) => {
   try {
     const getSeminar = await seminars.findById(req.params.id).populate('speaker_id').populate('hall_id');
-    if (!seminar) {
+    if (!getSeminar) {
       return res.status(404).json({ message: "Seminar not found" });
     }
     res.status(200).json(getSeminar);
@@ -53,16 +61,42 @@ const getSeminarById = async (req, res) => {
   }
 };
 
-// Update a seminar
+// Update a seminar by ID
 const updateSeminar = async (req, res) => {
   try {
-    const { date, title, purpose, start_time, end_time, no_of_attendees, speaker_id, hall_id } = req.body;
+    const { date, title, purpose, start_time, end_time, capacity, price, is_paid, speaker_id, hall_id, oldImage, Imagefilename } = req.body;
+    const seminarImage = req.file; // Check if a new image is uploaded
+    let seminarImagePath = oldImage;
+    let fileID = Imagefilename;
 
     // Ensure at least one field is provided for update
-    if (!date && !title && !purpose && !start_time && !end_time && !no_of_attendees && !speaker_id && !hall_id) {
+    if (!date && !title && !purpose && !start_time && !end_time && !capacity && !speaker_id && !hall_id) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
+    const seminarToUpdate = await seminars.findById(req.params.id);
+    if (!seminarToUpdate) {
+      return res.status(404).json({ message: "Seminar not found" });
+    }
+
+    // If a new image is uploaded, delete the old one from Cloudinary
+    if (seminarImage) {
+      seminarImagePath = seminarImage.path;
+      fileID = seminarImage.filename;
+
+      // Delete the old image from Cloudinary
+      try {
+        if (seminarToUpdate.ImageID) {
+          req.body.OLDimageID = seminarToUpdate.ImageID;  // Pass the ImageID to the next middleware
+          await ImageDelete(req, res, () => {}); 
+        }
+      } catch (error) {
+        console.error("Error deleting old image:", error.message);
+        return res.status(500).json({ message: "Failed to delete old image", error: error.message });
+      }
+    }
+
+    // Update the seminar
     const updatedSeminar = await seminars.findByIdAndUpdate(
       req.params.id,
       {
@@ -72,9 +106,13 @@ const updateSeminar = async (req, res) => {
           ...(purpose && { purpose }),
           ...(start_time && { start_time }),
           ...(end_time && { end_time }),
-          ...(no_of_attendees && { no_of_attendees }),
+          ...(capacity && { capacity }),
+          ...(price && { price }),
+          ...(is_paid && { is_paid }),
           ...(speaker_id && { speaker_id }),
           ...(hall_id && { hall_id }),
+          ...(seminarImagePath && { image: seminarImagePath }),
+          ...(fileID && { ImageID: fileID }),
         },
       },
       { new: true, runValidators: true }
@@ -93,14 +131,27 @@ const updateSeminar = async (req, res) => {
   }
 };
 
-// Delete a seminar
+// Delete a seminar by ID
 const deleteSeminar = async (req, res) => {
   try {
-    const deletedSeminar = await seminars.findByIdAndDelete(req.params.id);
-
-    if (!deletedSeminar) {
+    const seminarToDelete = await seminars.findById(req.params.id);
+    if (!seminarToDelete) {
       return res.status(404).json({ message: "Seminar not found" });
     }
+
+    // Delete the image from Cloudinary if it exists
+    if (seminarToDelete.ImageID) {
+      try {
+        req.body.OLDimageID = seminarToDelete.ImageID;  // Pass the ImageID to the next middleware
+        await ImageDelete(req, res, () => {}); 
+      } catch (error) {
+        console.error("Error deleting image:", error.message);
+        return res.status(500).json({ message: "Failed to delete image", error: error.message });
+      }
+    }
+
+    // Delete the seminar from the database
+    await seminars.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: "Seminar deleted successfully" });
   } catch (error) {

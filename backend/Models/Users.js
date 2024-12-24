@@ -26,8 +26,8 @@ const User_Schema = mongoose.Schema(
       required: [true, "CNIC is required"],
       unique: true,
       match: [
-        /^\d{4}-\d{7}-\d{1}$/,
-        "CNIC format must be 1234-1234567-1",
+        /^\d{5}-\d{7}-\d{1}$/,
+        "CNIC format must be 1234-12345678-1",
       ],
     },
     password: {

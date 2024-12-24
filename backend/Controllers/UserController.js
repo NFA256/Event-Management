@@ -1,4 +1,4 @@
-const users = require("../Models/Users"); 
+const users = require("../Models/Users");
 const bcrypt = require("bcrypt");
 
 // Method -------  GET
@@ -10,11 +10,13 @@ const createUser = async (req, res) => {
 
     // Validate required fields
     if (!name || !email || !cnic || !password || !role) {
-      return res.status(400).json({ success: false, message: "All fields are required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required." });
     }
 
     // Validate NIC format
-    const nicRegex = /^\d{4}-\d{7}-\d{1}$/;
+    const nicRegex = /^\d{5}-\d{7}-\d{1}$/;
     if (!nicRegex.test(cnic)) {
       return res.status(400).json({
         success: false,
@@ -27,20 +29,25 @@ const createUser = async (req, res) => {
     if (!nameRegex.test(name)) {
       return res.status(400).json({
         success: false,
-        message: "Name must be at least 3 characters long and contain only alphabets.",
+        message:
+          "Name must be at least 3 characters long and contain only alphabets.",
       });
     }
 
     // Check if email already exists
     const existingEmail = await users.findOne({ email });
     if (existingEmail) {
-      return res.status(400).json({ success: false, message: "Email already exists." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already exists." });
     }
 
     // Check if CNIC already exists
     const existingCNIC = await users.findOne({ cnic });
     if (existingCNIC) {
-      return res.status(400).json({ success: false, message: "CNIC already exists." });
+      return res
+        .status(400)
+        .json({ success: false, message: "CNIC already exists." });
     }
 
     // Hash the password
@@ -64,7 +71,11 @@ const createUser = async (req, res) => {
     //   const field = Object.keys(error.keyValue)[0];
     //   return res.status(400).json({ success: false, message: `${field} already exists.` });
     // }
-    return res.status(500).json({ success: false, message: "Error creating user", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Error creating user",
+      error: error.message,
+    });
   }
 };
 
@@ -76,7 +87,11 @@ const getAllUsers = async (req, res) => {
     const getusers = await users.find().populate("role", "RoleName Status"); // Populate role details
     return res.status(200).json({ success: true, data: getusers });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Error fetching users", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching users",
+      error: error.message,
+    });
   }
 };
 
@@ -87,14 +102,57 @@ const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const foundUser = await users.findById(id).populate("roles", "RoleName Status");
+    const foundUser = await users
+      .findById(id)
+      .populate("roles", "RoleName Status");
     if (!foundUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     return res.status(200).json({ success: true, data: foundUser });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Error fetching user", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching user",
+      error: error.message,
+    });
+  }
+};
+const OTPs = {};
+// Method -------  GET
+// API   --------  http://localhost:5000/users/:id
+// Description --  GET USER BY ID FUNCTION
+const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const foundUser = await users
+      .findOne({ email })
+      .populate("role", "RoleName");
+
+    if (!foundUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    // const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+    // OTPs[email] = otp; // Save OTP temporarily
+    // console.log(`OTP for ${email}: ${otp}`); // Debug log (send this OTP via email in production)
+  
+    // res.status(200).json({ message: "OTP sent to your email" });
+    return res.status(200).json({
+      success: true,
+      message: "User found",
+      data: foundUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching user",
+      error: error.message,
+    });
   }
 };
 
@@ -109,7 +167,9 @@ const updateUser = async (req, res) => {
     // Check if user exists
     const existingUser = await users.findById(id);
     if (!existingUser) {
-      return res.status(404).json({ success: false, message: "User not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
     }
 
     // Validate Name (if being updated)
@@ -118,7 +178,8 @@ const updateUser = async (req, res) => {
       if (!nameRegex.test(updates.name)) {
         return res.status(400).json({
           success: false,
-          message: "Name must be at least 3 characters long and contain only alphabets.",
+          message:
+            "Name must be at least 3 characters long and contain only alphabets.",
         });
       }
     }
@@ -160,9 +221,11 @@ const updateUser = async (req, res) => {
     }
 
     // Update the user
-    const updatedUser = await users.findByIdAndUpdate(id, updates, {
-      new: true,
-    }).populate("roles", "RoleName Status");
+    const updatedUser = await users
+      .findByIdAndUpdate(id, updates, {
+        new: true,
+      })
+      .populate("roles", "RoleName Status");
 
     return res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
@@ -183,20 +246,62 @@ const deleteUser = async (req, res) => {
 
     const deletedUser = await users.findByIdAndDelete(id);
     if (!deletedUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
-    return res.status(200).json({ success: true, message: "User deleted successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "User deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Error deleting user", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+      error: error.message,
+    });
   }
 };
+// const OTPs = {}; // Store OTPs temporarily for simplicity
+
+// Forgot Password
+// app.post("/forgot-password", async (req, res) => {
+//   const { email } = req.body;
+
+//   if (!email) {
+//     return res.status(400).json({ message: "Email is required" });
+//   }
+
+//   const user = await users.findOne({ email });
+//   if (!user) {
+//     return res.status(404).json({ message: "User not found" });
+//   }
+
+//   const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+//   OTPs[email] = otp; // Save OTP temporarily
+//   console.log(`OTP for ${email}: ${otp}`); // Debug log (send this OTP via email in production)
+
+//   res.status(200).json({ message: "OTP sent to your email" });
+// });
+
+// // Verify OTP
+// app.post("/verify-otp", (req, res) => {
+//   const { email, otp } = req.body;
+
+//   if (OTPs[email] && OTPs[email] === parseInt(otp)) {
+//     delete OTPs[email]; // Remove OTP after successful verification
+//     return res.status(200).json({ message: "OTP verified successfully" });
+//   }
+
+//   res.status(400).json({ message: "Invalid or expired OTP" });
+// });
 
 // Export all controllers
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
+  getUserByEmail,
   updateUser,
   deleteUser,
 };

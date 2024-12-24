@@ -6,7 +6,7 @@ const {
   getBoothById,
   updateBooth,
   deleteBooth,
-} = require("../controllers/BoothController"); // Adjust the path as needed
+} = require("../Controllers/BoothController"); // Adjust the path as needed
 
 // Route to create a new booth
 router.post("/booths", createBooth);

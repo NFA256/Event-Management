@@ -1,79 +1,167 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  // State to track login status
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(""); // To track the user's role
+  const navigate = useNavigate();
 
-  // Function to toggle login/logout state
-  const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
+  useEffect(() => {
+    // Check login state on component mount
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setIsLoggedIn(true);
+      setRole(user.role?.RoleName || "guest"); // Default to "guest" if role is undefined
+    } else {
+      setRole("guest");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // Clear user info
+    setIsLoggedIn(false);
+    setRole("guest");
+    navigate("/login"); // Redirect to login page
+  };
+
+  const renderMenu = () => {
+    if (role === "admin") {
+      return (
+        <>
+          <li className="nav-item">
+            <Link to="/" className="nav-link">
+              Dashboard
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/manage-users" className="nav-link">
+              Manage Users
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/reports" className="nav-link">
+              Reports
+            </Link>
+          </li>
+        </>
+      );
+    } else if (role === "exhibitor") {
+      return (
+        <>
+          <li className="nav-item">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/manage-exhibits" className="nav-link">
+              Manage Exhibits
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/schedule" className="nav-link">
+              Schedule
+            </Link>
+          </li>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <li className="nav-item">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/about" className="nav-link">
+              About
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/speakers" className="nav-link">
+              Speakers
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/schedule" className="nav-link">
+              Schedule
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/contact" className="nav-link">
+              Contact
+            </Link>
+          </li>
+        </>
+      );
+    }
   };
 
   return (
-    <>
-      {/* Header Start */}
-      <div className="header-area">
-        <div className="main-header header-sticky">
-          <div className="container-fluid">
-            <div className="row align-items-center">
-              {/* Logo */}
-              <div className="col-xl-2 col-lg-2 col-md-1">
-  <div className="logo mb-5">
-    <Link to="/">
-      <img
-        src="assets/img/logo/logo.png"
-        alt="Logo"
-        style={{
-          maxWidth: "400px", // Adjust size as needed
-          height: "60px",
-          color:'black'
-        }}
-      />
-  
-    </Link>
-  </div>
-</div>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container-fluid mx-5">
+        {/* Logo */}
+        <Link className="navbar-brand" to="/">
+          <img
+            src="assets/img/logo/logo.png"
+            alt="Logo"
+            style={{
+              height: "50px",
+            }}
+          />
+        </Link>
 
-              <div className="col-xl-10 col-lg-10 col-md-10">
-                <div className="menu-main d-flex align-items-center justify-content-end">
-                  {/* Main-menu */}
-                  <div className="main-menu f-right d-none d-lg-block">
-                    <nav>
-                      <ul id="navigation">
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/about">About</Link></li>
-                        <li><Link to="/speaker">Speakers</Link></li>
-                        <li><Link to="/schedule">Schedule</Link></li>
-                        <li><Link to="/contact">Contact</Link></li>
-                      </ul>
-                    </nav>
-                  </div>
+        {/* Hamburger for mobile */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-                  {/* Login/Logout Button */}
-                  <div className="header-right-btn f-right d-none d-lg-block ml-30">
-                    <Link
-                      to="#"
-                      className="btn header-btn"
-                      onClick={toggleLogin}
-                    >
-                      {isLoggedIn ? "Log Out" : "Log In"}
-                    </Link>
-                  </div>
-                </div>
-              </div>
+        {/* Collapsible Menu */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav mx-auto">{renderMenu()}</ul>
 
-              {/* Mobile Menu */}
-              <div className="col-12">
-                <div className="mobile_menu d-block d-lg-none"></div>
-              </div>
-            </div>
+          {/* Buttons on the Right */}
+          <div className="d-flex">
+            {isLoggedIn ? (
+              <button
+                className="btn btn-primary me-2"
+                style={{ fontSize: "14px" }}
+                onClick={handleLogout}
+              >
+                Log Out
+              </button>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="btn  mx-2"
+                  style={{ fontSize: "14px" }}
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  className="btn "
+                  style={{ fontSize: "14px" }}
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
-      {/* Header End */}
-    </>
+    </nav>
   );
-}
+};
 
 export default Navbar;

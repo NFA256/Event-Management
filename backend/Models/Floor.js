@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const Floor_Schema = mongoose.Schema(
   {
-    hall_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "halls", // Reference to the halls collection
-      required: [true, "Hall ID is required"],
+    floor_name:{
+      type: String,
+      required: [true, "floor name is required"],
+      trim: true,
     },
-    total_halls: {
+     total_booths: {
       type: Number,
-      required: [true, "Total halls are required"],
-      min: [1, "There must be at least one hall"],
+      required: [true, "Total booths count is required"],
+      min: [1, "There must be at least one booth"],
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

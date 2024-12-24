@@ -22,7 +22,7 @@ const Event_Schema = mongoose.Schema(
     },
     date: {
       type: Date,
-      required: [true, "Date is required"],
+      // required: [true, "Date is required"],
     },
     no_of_visitors: {
       type: Number,
@@ -33,6 +33,17 @@ const Event_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    status: {
+      type: String,
+      required: [true, "Status is required"],
+      enum: {
+        values: ["Active", "Completed", "Upcoming"],
+        message: "Status must be either 'Active', 'Completed', or 'Upcoming'",
+      },
+    },
+    ImageID: { 
+      type:String 
+    }
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

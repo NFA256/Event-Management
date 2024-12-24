@@ -11,6 +11,13 @@ const Seminar_Schema = mongoose.Schema(
       required: [true, "Title is required"],
       trim: true,
     },
+    image: {
+      type: String,
+      required: [true, "Image is required"],
+    },
+    ImageID: { 
+      type:String 
+    },
     purpose: {
       type: String,
       required: [true, "Purpose is required"],
@@ -31,10 +38,19 @@ const Seminar_Schema = mongoose.Schema(
         "Please provide a valid end time (HH:MM)",
       ],
     },
-    no_of_attendees: {
+    capacity: {
       type: Number,
       required: [true, "Number of attendees is required"],
       min: [1, "Attendees count must be at least 1"],
+    },
+    is_paid: {
+      type: Boolean,
+      default: false, // Defaults to false, meaning not reserved
+      required: true,
+    },
+    price: {
+      type: String,
+      trim: true,
     },
     speaker_id: {
       type: mongoose.Schema.Types.ObjectId,

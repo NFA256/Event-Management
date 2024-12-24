@@ -16,6 +16,9 @@ const Workshop_Schema = mongoose.Schema(
       type: String,
       required: [true, "Image is required"],
     },
+    ImageID: { 
+      type:String 
+    },
     total_sessions: {
       type: Number,
       required: [true, "Total sessions are required"],
@@ -36,6 +39,16 @@ const Workshop_Schema = mongoose.Schema(
     no_of_attendees: {
       type: Number,
       required: [true, "Number of attendees is required"],
+    },
+    price: {
+      type: String,
+      required: [true, "Price is required"],
+      trim: true,
+    },
+    speaker_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Speaker', // Reference to the Speaker model (if you have one)
+      required: [true, "Speaker ID is required"],
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

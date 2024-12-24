@@ -3,15 +3,15 @@ const floors = require("../Models/Floor"); // Assuming the Floor model is in Mod
 // Create a new floor
 const createFloor = async (req, res) => {
   try {
-    const { hall_id, total_halls } = req.body;
+    const { floor_name, total_booths } = req.body;
 
-    if (!hall_id || !total_halls) {
+    if (!floor_name || !total_booths) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const newFloor = new floors({
-      hall_id,
-      total_halls,
+      floor_name,
+      total_booths,
     });
 
     await newFloor.save();
@@ -53,9 +53,9 @@ const getFloorById = async (req, res) => {
 // Update a floor
 const updateFloor = async (req, res) => {
   try {
-    const { hall_id, total_halls } = req.body;
+    const { floor_name, total_booths } = req.body;
 
-    if (!hall_id && !total_halls) {
+    if (!floor_name && !total_booths) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -63,8 +63,8 @@ const updateFloor = async (req, res) => {
       req.params.id,
       {
         $set: {
-          ...(hall_id && { hall_id }),
-          ...(total_halls && { total_halls }),
+          ...(floor_name && { floor_name }),
+          ...(total_booths && { total_booths }),
         },
       },
       { new: true, runValidators: true }

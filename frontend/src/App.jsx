@@ -14,8 +14,6 @@ import Error from './User/Pages/Error';
 import Faq from './User/Pages/Faq';
 
 const App = () => {
-  
-
   return (
     <BrowserRouter>
       <Navbar />
@@ -29,9 +27,15 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<Sidebar />} />
-  {/* Fallback route */}
-  <Route path="*" element={<Error />} />
+        <Route path="/testimonial" element={<Testimonial />} />
+
+        {/* //------Admin */}
+        <Route path="/admin" element={<Sidebar />}>
+          <Route path="calendar" element={<EventCalendar />} />
+        </Route>
+
+        {/* Fallback route */}
+        <Route path="*" element={<Error />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -25,15 +25,13 @@ const hallRoutes = require("./Routes/hallsRoutes");
 const floorRoutes = require("./Routes/floorRoutes");
 const workshopRoutes = require("./Routes/workshopsRoutes");
 const sessionRoutes = require("./Routes/sessionsRoute");
-const speakerRoutes = require("./Routes/speakersRoute");
+const speakerRoutes = require("./Routes/speakerRoute");
 const testimonialRoutes = require("./Routes/testimonialRoutes");
 const feedbackRoutes = require("./Routes/feedbackRoutes");
 const boothRoutes = require("./Routes/boothRoutes");
 const contactRoutes = require("./Routes/contactRoutes");
-const informationRoutes = require("./Routes/InfoRoutes");
-const faqRoutes = require("./Routes/faqRoutes");
-
-
+const companyRoutes = require("./Routes/companyRoutes");
+const ticketRoutes = require("./Routes/ticketRoutes");
 
 
 

@@ -8,7 +8,11 @@ const createContact = async (req, res) => {
 
     // Validate the data
     if (!user_id || !subject || !message) {
-      return res.status(400).json({ message: "All fields (user_id, subject, message) are required" });
+      return res
+        .status(400)
+        .json({
+          message: "All fields (user_id, subject, message) are required",
+        });
     }
 
     // Create a new contact message
@@ -21,11 +25,16 @@ const createContact = async (req, res) => {
     // Save the contact message to the database
     await newContact.save();
     res.status(201).json({
-      message: "Contact message created successfully",
+      message: "Message sent successfully!",
       contact: newContact,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to create contact message", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Failed to create contact message",
+        error: error.message,
+      });
   }
 };
 
@@ -33,9 +42,20 @@ const createContact = async (req, res) => {
 const getAllContacts = async (req, res) => {
   try {
     const allContacts = await contacts.find().populate("user_id");
-    res.status(200).json(allContacts.length ? allContacts : { message: "No contact messages found" });
+    res
+      .status(200)
+      .json(
+        allContacts.length
+          ? allContacts
+          : { message: "No contact messages found" }
+      );
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch contact messages", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Failed to fetch contact messages",
+        error: error.message,
+      });
   }
 };
 
@@ -50,7 +70,12 @@ const getContactById = async (req, res) => {
 
     res.status(200).json(contact);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch contact message", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Failed to fetch contact message",
+        error: error.message,
+      });
   }
 };
 
@@ -83,7 +108,12 @@ const updateContact = async (req, res) => {
       contact: updatedContact,
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to update contact message", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Failed to update contact message",
+        error: error.message,
+      });
   }
 };
 
@@ -98,7 +128,12 @@ const deleteContact = async (req, res) => {
 
     res.status(200).json({ message: "Contact message deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete contact message", error: error.message });
+    res
+      .status(500)
+      .json({
+        message: "Failed to delete contact message",
+        error: error.message,
+      });
   }
 };
 
