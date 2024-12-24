@@ -14,7 +14,7 @@ const createFloor = async (req, res) => {
       total_booths,
     });
 
-    await newFloor.save();
+    await newFloor.save();t
     res.status(201).json({
       message: "Floor created successfully",
       floor: newFloor,
@@ -28,7 +28,7 @@ const createFloor = async (req, res) => {
 // Get all floors
 const getAllFloors = async (req, res) => {
   try {
-    const getFloors = await floors.find().populate('hall_id'); // Populate hall_id for more details from halls collection
+    const getFloors = await floors.find()// Populate hall_id for more details from halls collection
     res.status(200).json(getFloors.length ? getFloors : { message: "No floors found" });
   } catch (error) {
     console.error(error); // Log the error

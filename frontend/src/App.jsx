@@ -31,7 +31,17 @@ const App = () => {
 
         {/* //------Admin */}
         <Route path="/admin" element={<Sidebar />}>
-          <Route path="calendar" element={<EventCalendar />} />
+          <Route path="addspeaker" element={<Addspeaker />} />
+          <Route path="showspeaker" element={<Showspeaker />} />
+          <Route path="addhall" element={<Addhall />} />
+          <Route path="showhall" element={<Showhall />} />
+          <Route path="addbooth" element={<Addbooth />} />
+          <Route path="showbooth" element={<Showbooth />} />
+          <Route path="addfloor" element={<Addfloor />} />
+          <Route path="showfloor" element={<Showfloor />} />
+          <Route path="addworkshop" element={<Addworkshop />} />
+          <Route path="showworkshop" element={<Showworkshop />} />
+          {/* <Route path="calendar" element={<EventCalendar />} /> */}
         </Route>
 
         {/* Fallback route */}

@@ -1,17 +1,17 @@
 const express = require("express");
 const app = express();
-const cors =require("cors")
+const cors = require("cors");
 
 //----------env connect
 require("dotenv").config();
 
 // --- MIDDLEWARE
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
-app.use(cors())
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 //-----db connect
-const {connectionDB} = require("./Config/Database");
+const { connectionDB } = require("./Config/Database");
 
 //-----------------------ROUTES------------------------//
 
@@ -36,14 +36,6 @@ const informationRoutes = require("./Routes/InfoRoutes");
 const faqRoutes = require("./Routes/faqRoutes");
 const scheduleRoutes = require("./Routes/scheduleRoutes");
 const BookingRoutes = require("./Routes/bookingRoutes");
-
-
-
-
-
-
-
-
 
 
 
@@ -77,10 +69,9 @@ app.use("/", boothRoutes); // For BooK-related routes
 
 
 
-
 //--------server listen
 
 app.listen(process.env.PORT, function () {
-  console.log(`Server is running on port ${process.env.PORT}`)
-  connectionDB() // invoking DB
-})
+  console.log(`Server is running on port ${process.env.PORT}`);
+  connectionDB(); // invoking DB
+});

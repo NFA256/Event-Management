@@ -1,23 +1,22 @@
-import React, { useState , useEffect } from "react";
-import { useNavigate , Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 // Modal component
 const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
-  const navigate = useNavigate();
-  const [feedback, setfeedback] = useState("");
-  const [username, setusername] = useState("");
-  const [imageFile, setimageFile] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [username, setUsername] = useState("");
+  const [imageFile, setImageFile] = useState(null);
   const [IMG, setIMG] = useState("");
-  const [submitBTN, setsubmitBTN] = useState("enabled");
+  const [submitBTN, setSubmitBTN] = useState("enabled");
 
   const handleImageChange = (e) => {
-    setIMG(URL.createObjectURL(e.target.files[0])); // Show Image
-    setimageFile(e.target.files[0]);
+    setIMG(URL.createObjectURL(e.target.files[0])); // Show Image Preview
+    setImageFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the form from refreshing the page
-    if (username === "" || feedback === "" || imageFile === "") {
+    e.preventDefault();
+    if (username === "" || feedback === "" || !imageFile) {
       alert("Fill the form first!");
       return;
     }
@@ -28,7 +27,7 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
     formData.append("imageFile", imageFile);
 
     try {
-      setsubmitBTN("disabled")
+      setSubmitBTN("disabled");
       const response = await fetch("http://localhost:5000/testimonials", {
         method: "POST",
         body: formData,
@@ -36,21 +35,22 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
 
       const result = await response.json();
       if (response.status === 201) {
-        onSubmit(); // Call the onSubmit prop
+        onSubmit(result); // Pass the result (new testimonial) to the parent
         onClose(); // Close the modal after submitting
-      setsubmitBTN("enabled")
-      setIMG("")
+        setSubmitBTN("enabled");
+        setIMG(""); // Reset Image preview
+        setFeedback(""); // Reset form state
+        setUsername(""); // Reset form state
       } else {
         console.log(result.error);
+        alert("Failed to submit the feedback.");
       }
     } catch (error) {
       console.log("Error: " + error.message);
     }
-
-    
   };
 
-  if (!isOpen) return null; // Ensure hooks are still executed before this check
+  if (!isOpen) return null;
 
   return (
     <div className="modal show" style={{ display: "block" }}>
@@ -63,31 +63,38 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
             </button>
           </div>
           <div className="modal-body">
-            <form id="feedbackForm" method="post" encType="multipart/form-data" onSubmit={handleSubmit}>
+            <form
+              id="feedbackForm"
+              method="post"
+              encType="multipart/form-data"
+              onSubmit={handleSubmit}
+            >
               <div className="form-group">
-                <label htmlFor="name">Name</label>
+                <label htmlFor="username">Name</label>
                 <input
-                  onChange={(e) => setusername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                   type="text"
                   className="form-control"
                   id="username"
                   placeholder="Enter your name"
+                  value={username}
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="feedback">Your Feedback</label>
                 <textarea
-                  onChange={(e) => setfeedback(e.target.value)}
+                  onChange={(e) => setFeedback(e.target.value)}
                   className="form-control"
                   id="feedback"
                   rows="4"
                   placeholder="Write your feedback here"
+                  value={feedback}
                 />
               </div>
               <div className="row mb-3 mt-2">
                 <div className="col-8">
                   <div className="form-group">
-                    <label htmlFor="feedback">Image</label>
+                    <label htmlFor="imageFile">Image</label>
                     <input
                       name="imageFile"
                       onChange={handleImageChange}
@@ -98,7 +105,12 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
                 </div>
                 <div className="col-4">
                   {IMG ? (
-                    <img style={{ maxWidth: "120px" }} alt="" className="img-thumbnail" src={IMG} />
+                    <img
+                      style={{ maxWidth: "120px" }}
+                      alt="Preview"
+                      className="img-thumbnail"
+                      src={IMG}
+                    />
                   ) : (
                     <div
                       style={{
@@ -121,16 +133,13 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
             <button type="button" className="btn" onClick={onClose}>
               Close
             </button>
-            <button 
-            disabled={submitBTN === "disabled"}
-             type="submit" className="btn btn-primary" form="feedbackForm">
-               {
-              submitBTN === "disabled"
-              ?
-            'Submiting ...'
-              :'Submit Feedback'
-            }
-              
+            <button
+              disabled={submitBTN === "disabled"}
+              type="submit"
+              className="btn btn-primary"
+              form="feedbackForm"
+            >
+              {submitBTN === "disabled" ? "Submitting ..." : "Submit Feedback"}
             </button>
           </div>
         </div>
@@ -139,27 +148,28 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-
-const Testimonial = (props) => {
-  const [TestimonialsData, setTestimonialsData] = useState([])
-  useEffect(() => {
-      // ----Fetching roles from backend
-      const fetchingTestimonials = async () => {
-          try {
-              const Response = await fetch("http://localhost:5000/testimonials");
-              const fetchData = await Response.json()
-              if (Response.status === 200) {
-                setTestimonialsData(fetchData)
-                console.log("testtimonial",TestimonialsData)
-              }
-          } catch (error) {
-              console.log({ "Error": error })
-          }
-
-      }
-      fetchingTestimonials()
-  },[])
+const Testimonial = () => {
+  const [TestimonialsData, setTestimonialsData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchingTestimonials = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/testimonials");
+        const fetchData = await response.json();
+        if (response.status === 200) {
+          // Sort testimonials by createdAt in descending order
+          const sortedData = fetchData.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          setTestimonialsData(sortedData.slice(0, 3)); // Only take the last 3 records
+        }
+      } catch (error) {
+        console.log({ Error: error });
+      }
+    };
+    fetchingTestimonials();
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -169,85 +179,64 @@ const Testimonial = (props) => {
     setIsModalOpen(false);
   };
 
-  const handleFeedbackSubmit = () => {
-    // Alert the user with a thank you message
-    alert("Thank you for your feedback!");
+  const handleFeedbackSubmit = (newTestimonial) => {
+    // Add the newly submitted testimonial to the list and maintain only the last 3
+    setTestimonialsData((prevData) => {
+      const updatedData = [newTestimonial, ...prevData];
+      // Keep only the latest 3 testimonials
+      return updatedData.slice(0, 3);
+    });
   };
 
   return (
     <>
       <section className="slider-area2 text-center">
         <br />
-        {/* <!-- Heading --> */}
         <div className="section-tittle section-tittle2 mb-50">
           <h2>Testimonial.</h2>
         </div>
-        {/* <!-- Card Container --> */}
         <div className="container col-8 text-center mt-5">
           <div className="row justify-content-center">
-
-{
-
-  (props.cards === "3" ? TestimonialsData.slice(0, 3) : TestimonialsData).map((data, index)=>{
-return (
-  <div className="col-lg-4 col-md-6 mb-4 col-sm-7">
-    <div className="card2">
-      <div className="face front-face">
-        <img
-          src={data.image}
-          alt=""
-          className="profile rounded-circle img-fluid"
-        />
-        <div className="pt-3 text-uppercase name">
-         {data.username}
-        </div>
-      </div>
-      <div className="face back-face">
-        <span className="fas fa-quote-left"></span>
-        <div className="testimonial">
-        {data.feedback}
-        </div>
-        <span className="fas fa-quote-right"></span>
-      </div>
-    </div>
-  </div>)
-  })
-}
-
-           
-
-           
+            {TestimonialsData.map((data, index) => (
+              <div
+                className="col-lg-4 col-md-6 mb-4 col-sm-7"
+                key={data.id || index}
+              >
+                <div className="card2">
+                  <div className="face front-face">
+                    <img
+                      src={data.image}
+                      alt=""
+                      className="profile rounded-circle img-fluid"
+                    />
+                    <div className="pt-3 text-uppercase name">
+                      {data.username}
+                    </div>
+                  </div>
+                  <div className="face back-face">
+                    <span className="fas fa-quote-left"></span>
+                    <div className="testimonial">{data.feedback}</div>
+                    <span className="fas fa-quote-right"></span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="section-tittle section-tittle2 ">
-         
-          
-
-            {
-props.cards === "3" ?
-<button className="btn-light  btn-md mb-3">
- <Link to='/testimonial' className="text-info"
-
->
-See More
-</Link> 
-</button>
-
-:  <p> Wanna Share Your Experience? <br />
-<button
-  className=" btn-outline-info text-white btn-md "
-  onClick={openModal}
->
-  Share Feedback
-</button></p>
-
-            }
-          
+        <div className="section-tittle section-tittle2">
+          <p>
+            Wanna Share Your Experience? <br />
+            <button
+              className="btn-outline-info text-white btn-md"
+              onClick={openModal}
+            >
+              Share Feedback
+            </button>
+          </p>
         </div>
         <br />
       </section>
 
-      {/* Modal Component */}
       <FeedbackModal
         isOpen={isModalOpen}
         onClose={closeModal}
