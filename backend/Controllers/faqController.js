@@ -25,7 +25,11 @@ const createFAQ = async (req, res) => {
 const getAllFAQs = async (req, res) => {
   try {
     const faqs = await FAQs.find();
-    res.status(200).json(faqs.length ? faqs : { message: "No FAQs found" });
+    if (faqs.length === 0) {
+      // Return an empty array instead of a message if no FAQs are found
+      return res.status(200).json([]);
+    }
+    res.status(200).json(faqs);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch FAQs", error: error.message });
   }

@@ -9,7 +9,7 @@ const Faq= () => {
     // Fetch FAQ data from API
     fetch("http://localhost:5000/faq")
       .then((response) => response.json())
-      .then((data) => setFaqs(data))
+      .then((data) => {console.log("Fetched FAQ data:", data); setFaqs(data)})
       .catch((error) => console.error("Error fetching FAQ data:", error));
   }, []);
 
