@@ -47,7 +47,7 @@ const Workshop_Schema = mongoose.Schema(
     },
     speaker_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Speaker', // Reference to the Speaker model (if you have one)
+      ref: 'speakers', // Reference to the Speaker model (if you have one)
       required: [true, "Speaker ID is required"],
     },
   },

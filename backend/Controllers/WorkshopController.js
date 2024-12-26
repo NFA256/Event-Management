@@ -51,7 +51,7 @@ const createWorkshop = async (req, res) => {
     await newWorkshop.save();
     res.status(201).json({
       message: "Workshop created successfully",
-      workshop: newWorkshop,
+      data: newWorkshop,
     });
   } catch (error) {
     console.error(error);

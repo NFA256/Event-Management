@@ -95,8 +95,12 @@ const Sidebar = () => {
           </ul>
         </div>
 
-        <div className="col-10">
-          <div className="container text-center mt-3">
+        <div className="col-10 p-5" >
+          <div className="container text-center mt-3" style={{
+            maxHeight: "100vh",
+            overflowY: "auto", // Enable scrolling for the Outlet section
+           
+          }}>
             <Outlet />
           </div>
         </div>

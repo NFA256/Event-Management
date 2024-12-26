@@ -193,8 +193,8 @@ const handleHideModal = () => {
                 <td>{index + 1}</td>
                 <td>{seminar.title}</td>
                 <td>{seminar.purpose}</td>
-                <td>{seminar.start_time} </td>
-                <td>{seminar.end_time}</td>
+                <td>{new Date(`1970-01-01T${seminar.start_time}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} </td>
+                <td>{new Date(`1970-01-01T${seminar.end_time}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                 <td>{new Date(seminar.date).toLocaleDateString()}</td>
                 <td>{seminar.speaker_id ? seminar.speaker_id.name : "N/A"}</td>
                 <td>{seminar.hall_id ? seminar.hall_id.hall_name : "N/A"}</td>

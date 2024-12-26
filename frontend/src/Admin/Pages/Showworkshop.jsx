@@ -69,27 +69,29 @@ const Showworkshop = () => {
     // Combining the workshops and sessions data
     const combined = workshops.map((workshop) => {
       // Find the corresponding session data for the current workshop
-      const workshopSessions = sessions.filter(
-        (session) => session.workshop_id === workshop._id
-      );
 
+      const workshopSessions = sessions.filter(
+        (session) => session.workshop_id._id === workshop._id
+      );
       // Add sessions to the workshop data
       return { ...workshop, sessions: workshopSessions };
     });
 
     setCombinedData(combined);
+    console.log(combinedData)
   }, [workshops, sessions]);
 
   // Helper function to get hall name from hallId
   const getHallName = (hallId) => {
     const hall = halls.find((hall) => hall._id === hallId);
-    return hall ? hall.cate_name : "Unknown Hall";
+    console.log("hall",halls)
+    return hall ? hall.hall_name : "Unknown Hall";
   };
 
   // Helper function to get speaker name from speakerId
   const getSpeakerName = (speakerId) => {
     const speaker = speakers.find((speaker) => speaker._id === speakerId);
-    return speaker ? speaker.speaker_name : "Unknown Speaker";
+    return speaker ? speaker.name : "Unknown Speaker";
   };
 
   return (
@@ -122,19 +124,20 @@ const Showworkshop = () => {
                 ))}
               </td>
               <td>{workshop.price}</td>
-              <td>{workshop.start_date}</td>
-              <td>{workshop.end_date}</td>
+              <td>{new Date(workshop.start_date).toLocaleDateString()}</td>
+              <td>{new Date(workshop.end_date).toLocaleDateString()}</td>
               <td>{workshop.description}</td>
               <td>
                 <img
-                  src={`http://localhost:5000/uploads/${workshop.workshopImage}`}
+                  src={workshop.image}
                   alt={workshop.title}
                   width="100"
+                  height="100"
                 />
               </td>
-              <td>{getHallName(workshop.hall_id)}</td>
+              <td>{getHallName(workshop.hall_id._id)}</td>
               <td>{workshop.no_of_attendees}</td>
-              <td>{getSpeakerName(workshop.speaker_id)}</td>
+              <td>{getSpeakerName(workshop.speaker_id._id)}</td>
             </tr>
           ))}
         </tbody>

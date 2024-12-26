@@ -6,10 +6,10 @@ const bcrypt = require("bcrypt");
 // Description --  CREATE USERS FUNCTION
 const createUser = async (req, res) => {
   try {
-    const { name, email, cnic, password, role } = req.body;
+    const { name, email, cnic, password } = req.body;
 
     // Validate required fields
-    if (!name || !email || !cnic || !password || !role) {
+    if (!name || !email || !cnic || !password ) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -60,7 +60,6 @@ const createUser = async (req, res) => {
       email,
       cnic,
       password: hashedPassword,
-      role,
     });
 
     const savedUser = await newUser.save();

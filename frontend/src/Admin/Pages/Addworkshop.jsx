@@ -180,8 +180,9 @@ const Addworkshop = () => {
         const workshopData = await workshopResponse.json();
 
         // After workshop creation, create sessions for the same workshop
-        const workshopId = workshopData._id; // Assuming workshop data contains the _id
-
+        const workshopId = workshopData.data._id; // Assuming workshop data contains the _id
+console.log("workshop",workshopData);
+console.log("workshop id",workshopId);
         const sessionPromises = sessions.map(async (session) => {
           console.log("Sending session data:", session); // Add this log to check the data
           const response = await fetch("http://localhost:5000/sessions", {

@@ -194,13 +194,13 @@ const ShowEvent = () => {
                   <td>{index + 1}</td>
                   <td>{event.title}</td>
                   <td>{event.description}</td>
-                  <td>{event.time}</td>
-                  <td>{event.date}</td>
+                  <td>{new Date(`1970-01-01T${event.time}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                  <td>{new Date(event.date).toLocaleDateString()} </td>
                   <td>{event.no_of_visitors}</td>
                   <td>{event.status}</td>
                   <td>
                     <img
-                      src={event.eventImage}
+                      src={event.image}
                       alt={event.title}
                       style={{ maxWidth: "80px" }}
                     />
@@ -295,7 +295,7 @@ const ShowEvent = () => {
                         Time
                       </label>
                       <input
-                        type="text"
+                       type="time"
                         id="modal-time"
                         className="form-control form-control-lg"
                         value={time}
