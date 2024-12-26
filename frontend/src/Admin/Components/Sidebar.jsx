@@ -73,16 +73,20 @@ const Sidebar = () => {
                   { path: "showworkshop", label: "Show Workshop" },
                   { path: "addevent", label: "Add Event" },
                   { path: "showevent", label: "Show Event" },
-
-
+                  { path: "addseminar", label: "Add Seminar" },
+                  { path: "showseminar", label: "Show Seminar" },
                 ]
             ).map(({ path, label }) => (
               <li key={path} className="nav-item fs-4 fw-medium">
                 <Link
                   to={path}
                   style={linkStyle}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = linkHoverStyle)}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = linkStyle.backgroundColor)}
+                  onMouseOver={(e) =>
+                    (e.target.style.backgroundColor = linkHoverStyle)
+                  }
+                  onMouseOut={(e) =>
+                    (e.target.style.backgroundColor = linkStyle.backgroundColor)
+                  }
                 >
                   {label}
                 </Link>

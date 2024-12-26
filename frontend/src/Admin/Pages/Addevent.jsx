@@ -99,7 +99,7 @@ const Addevent = () => {
                         <input
                           type="text"
                           id="title"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
                         />
@@ -112,7 +112,7 @@ const Addevent = () => {
                         </label>
                         <textarea
                           id="description"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                         />
@@ -128,7 +128,7 @@ const Addevent = () => {
                         <input
                           type="time"
                           id="time"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={time}
                           onChange={(e) => setTime(e.target.value)}
                         />
@@ -142,7 +142,7 @@ const Addevent = () => {
                         <input
                           type="date"
                           id="date"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={date}
                           onChange={(e) => setDate(e.target.value)}
                         />
@@ -158,7 +158,7 @@ const Addevent = () => {
                         <input
                           type="number"
                           id="no_of_visitors"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={noOfVisitors}
                           onChange={(e) => setNoOfVisitors(e.target.value)}
                         />
@@ -172,7 +172,7 @@ const Addevent = () => {
                         <input
                           type="text"
                           id="status"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={status}
                           onChange={(e) => setStatus(e.target.value)}
                         />
@@ -189,7 +189,7 @@ const Addevent = () => {
                           <input
                             type="file"
                             id="image"
-                            className="form-control form-control-lg"
+                            className="form-control text-center form-control-lg"
                             onChange={handleImageChange}
                           />
                         </div>
@@ -231,7 +231,7 @@ const Addevent = () => {
                     </div>
 
                     <div className="form-outline text-center mb-4">
-                      <button type="submit" className="btn btn-success btn-lg">
+                      <button type="submit" className="btn3">
                         Submit
                       </button>
                     </div>

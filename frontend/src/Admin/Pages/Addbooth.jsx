@@ -88,7 +88,7 @@ const AddBooth = () => {
                         Select Floor
                       </label>
                       <select
-                        className="form-control"
+                        className="form-control text-center"
                         value={floor_id}
                         onChange={(e) => setFloorId(e.target.value)}
                         required
@@ -111,7 +111,7 @@ const AddBooth = () => {
                       <label>Name</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control text-center"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
@@ -123,14 +123,14 @@ const AddBooth = () => {
                       <label>Reserved</label>
                       <input
                         type="checkbox"
-                        className="form-control"
+                        className="form-contro text-centerl"
                         checked={reserved_bool}
                         onChange={(e) => setReservedBool(e.target.checked)}
                       />
                     </div>
 
                     {/* Submit button */}
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn3 ">
                       Create Booth
                     </button>
                   </form>

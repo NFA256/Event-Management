@@ -207,13 +207,13 @@ const ShowEvent = () => {
                   </td>
                   <td>
                     <button
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-outline-warning btn-md mx-2"
                       onClick={() => handleEdit(event)}
                     >
                       Edit
                     </button>
                     <button
-                      className="btn btn-danger btn-sm ml-2"
+                      className="btn btn-outline-danger btn-md mx-2"
                       onClick={() => handleDelete(event._id)}
                     >
                       Delete
@@ -231,123 +231,155 @@ const ShowEvent = () => {
       </div>
 
       {/* Modal */}
-  <div className="modal fade" id="editModal" tabIndex="-1" aria-hidden={!modalOpen} ref={modalRef}>
-  <div className="modal-dialog">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h5 className="modal-title" id="editModalLabel">Edit Event</h5>
-        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleHideModal}></button>
+      <div
+        className="modal fade"
+        id="editModal"
+        tabIndex="-1"
+        aria-hidden={!modalOpen}
+        ref={modalRef}
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="editModalLabel">
+                Edit Event
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={handleHideModal}
+              ></button>
+            </div>
+            <div className="modal-body">
+              {error && <div className="alert alert-danger">{error}</div>}
+              {success && <div className="alert alert-success">{success}</div>}
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <div className="col-md-6 mb-4">
+                    <div className="form-outline">
+                      <label className="form-label" htmlFor="modal-title">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        id="modal-title"
+                        className="form-control form-control-lg"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6 mb-4">
+                    <div className="form-outline">
+                      <label className="form-label" htmlFor="modal-description">
+                        Description
+                      </label>
+                      <input
+                        type="text"
+                        id="modal-description"
+                        className="form-control form-control-lg"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6 mb-4">
+                    <div className="form-outline">
+                      <label className="form-label" htmlFor="modal-time">
+                        Time
+                      </label>
+                      <input
+                        type="text"
+                        id="modal-time"
+                        className="form-control form-control-lg"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6 mb-4">
+                    <div className="form-outline">
+                      <label className="form-label" htmlFor="modal-date">
+                        Date
+                      </label>
+                      <input
+                        type="text"
+                        id="modal-date"
+                        className="form-control form-control-lg"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-6 mb-4">
+                    <div className="form-outline">
+                      <label className="form-label" htmlFor="modal-visitors">
+                        No of Visitors
+                      </label>
+                      <input
+                        type="number"
+                        id="modal-visitors"
+                        className="form-control form-control-lg"
+                        value={no_of_visitors}
+                        onChange={(e) => setNoOfVisitors(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6 mb-4">
+                    <div className="form-outline">
+                      <label className="form-label" htmlFor="modal-status">
+                        Status
+                      </label>
+                      <input
+                        type="text"
+                        id="modal-status"
+                        className="form-control form-control-lg"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-outline mb-4">
+                  <label className="form-label" htmlFor="modal-image">
+                    Event Image
+                  </label>
+                  <input
+                    type="file"
+                    id="modal-image"
+                    className="form-control form-control-lg"
+                    onChange={handleImageChange}
+                  />
+                  {previewImage && (
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      className="mt-3"
+                      style={{ maxWidth: "150px" }}
+                    />
+                  )}
+                </div>
+
+                <button type="submit" className="btn btn-primary btn-lg w-100">
+                  {editMode ? "Update" : "Add Event"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="modal-body">
-        {error && <div className="alert alert-danger">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="row">
-            <div className="col-md-6 mb-4">
-              <div className="form-outline">
-                <label className="form-label" htmlFor="modal-title">Title</label>
-                <input
-                  type="text"
-                  id="modal-title"
-                  className="form-control form-control-lg"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-md-6 mb-4">
-              <div className="form-outline">
-                <label className="form-label" htmlFor="modal-description">Description</label>
-                <input
-                  type="text"
-                  id="modal-description"
-                  className="form-control form-control-lg"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-md-6 mb-4">
-              <div className="form-outline">
-                <label className="form-label" htmlFor="modal-time">Time</label>
-                <input
-                  type="text"
-                  id="modal-time"
-                  className="form-control form-control-lg"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-md-6 mb-4">
-              <div className="form-outline">
-                <label className="form-label" htmlFor="modal-date">Date</label>
-                <input
-                  type="text"
-                  id="modal-date"
-                  className="form-control form-control-lg"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-md-6 mb-4">
-              <div className="form-outline">
-                <label className="form-label" htmlFor="modal-visitors">No of Visitors</label>
-                <input
-                  type="number"
-                  id="modal-visitors"
-                  className="form-control form-control-lg"
-                  value={no_of_visitors}
-                  onChange={(e) => setNoOfVisitors(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-md-6 mb-4">
-              <div className="form-outline">
-                <label className="form-label" htmlFor="modal-status">Status</label>
-                <input
-                  type="text"
-                  id="modal-status"
-                  className="form-control form-control-lg"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="form-outline mb-4">
-            <label className="form-label" htmlFor="modal-image">Event Image</label>
-            <input
-              type="file"
-              id="modal-image"
-              className="form-control form-control-lg"
-              onChange={handleImageChange}
-            />
-            {previewImage && (
-              <img src={previewImage} alt="Preview" className="mt-3" style={{ maxWidth: "150px" }} />
-            )}
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-lg w-100">
-            {editMode ? "Update" : "Add Event"}
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
     </div>
   );
 };

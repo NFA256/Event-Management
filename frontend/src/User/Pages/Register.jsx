@@ -266,20 +266,24 @@ const Register = () => {
               className="form-control"
               name="password"
               id="password"
-              type={IsPswrdVissible === "yesVissible"
-                ? "text"
-                : "password"}
+              type={IsPswrdVissible === "yesVissible" ? "text" : "password"}
               placeholder="Enter your password"
               value={Password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-             <span onClick={() => showHidePassword()} className=" input-group-text" style={{ cursor: "pointer" }}>
-              <i class="fas fa-eye"
+            <span
+              onClick={() => showHidePassword()}
+              className=" input-group-text"
+              style={{ cursor: "pointer" }}
+            >
+              <i
+                class="fas fa-eye"
                 className={
                   IsPswrdVissible === "yesVissible"
                     ? "fas fa-eye-slash"
-                    : "fas fa-eye"}
+                    : "fas fa-eye"
+                }
               ></i>
             </span>
           </div>
@@ -288,27 +292,30 @@ const Register = () => {
               className="form-control"
               name="confirmPassword"
               id="confirmPassword"
-              type={IsCPswrdVissible === "yesVissible"
-                ? "text"
-                : "password"}
+              type={IsCPswrdVissible === "yesVissible" ? "text" : "password"}
               placeholder="Confirm your password"
               value={Cpassword}
               onChange={(e) => setCpassword(e.target.value)}
               required
             />
-               <span onClick={() => showHideCPassword()
-            } className=" input-group-text" style={{ cursor: "pointer" }}>
-              <i class="fas fa-eye"
+            <span
+              onClick={() => showHideCPassword()}
+              className=" input-group-text"
+              style={{ cursor: "pointer" }}
+            >
+              <i
+                class="fas fa-eye"
                 className={
                   IsCPswrdVissible === "yesVissible"
                     ? "fas fa-eye-slash"
-                    : "fas fa-eye"}
+                    : "fas fa-eye"
+                }
               ></i>
             </span>
           </div>
 
           <div className="form-group mt-3 text-center">
-            <button type="submit" className="btn w-100">
+            <button type="submit" className="btn3 w-100">
               Register
             </button>
           </div>

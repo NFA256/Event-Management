@@ -93,7 +93,7 @@ const Addspeaker = () => {
                         <input
                           type="text"
                           id="name"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
@@ -106,7 +106,7 @@ const Addspeaker = () => {
                         <input
                           type="text"
                           id="description"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                         />
@@ -153,7 +153,7 @@ const Addspeaker = () => {
                       <div className="d-flex justify-content-center">
                         <button
                           type="submit"
-                          className="btn text-white btn-block"
+                          className="btn3 text-white "
                         >
                           Add Speaker
                         </button>

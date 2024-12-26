@@ -91,7 +91,7 @@ const AddFloor = () => {
                         <input
                           type="number"
                           id="totalBoothsInput"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={totalBooths}
                           onChange={(e) => setTotalBooths(e.target.value)}
                           required
@@ -101,7 +101,7 @@ const AddFloor = () => {
                       <div className="d-flex justify-content-center">
                         <button
                           type="submit"
-                          className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                          className="btn3"
                           disabled={loading}
                         >
                           {loading ? "Adding Floor..." : "Add Floor"}

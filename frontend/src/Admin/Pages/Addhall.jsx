@@ -70,7 +70,7 @@ const AddHall = () => {
                       <input
                         type="text"
                         id="hallNameInput"
-                        className="form-control form-control-lg"
+                        className="form-control text-center form-control-lg"
                         value={hallName}
                         onChange={(e) => setHallName(e.target.value)}
                       />
@@ -79,7 +79,7 @@ const AddHall = () => {
                     <div className="d-flex justify-content-center">
                       <button
                         type="submit"
-                        className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                        className="btn3 "
                         disabled={loading}
                       >
                         {loading ? "Adding Hall..." : "Add Hall"}

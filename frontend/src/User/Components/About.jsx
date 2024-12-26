@@ -59,7 +59,7 @@ export const AboutContent = () => (
               </div>
             </div>
           </div>
-          <a href="#" className="btn mt-50">
+          <a href="#" className="btn3 mt-50">
             Get Your Ticket
           </a>
         </div>

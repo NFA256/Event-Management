@@ -185,13 +185,13 @@ const Showspeaker = () => {
                   </td>
                   <td>
                     <button
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-outline-warning btn-md mx-2 "
                       onClick={() => handleEdit(speaker)}
                     >
                       Edit
                     </button>
                     <button
-                      className="btn btn-danger btn-sm ml-2"
+                      className="btn btn-outline-danger btn-md "
                       onClick={() => handleDelete(speaker._id)}
                     >
                       Delete
@@ -298,7 +298,7 @@ const Showspeaker = () => {
                 </div>
 
                 <div className="d-flex justify-content-center">
-                  <button type="submit" className="btn btn-primary">
+                  <button type="submit" className="btn3">
                     Update Speaker
                   </button>
                 </div>

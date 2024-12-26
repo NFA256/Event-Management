@@ -113,7 +113,7 @@ const Home = () => {
                         data-animation="fadeInLeft"
                         data-delay="1.0s"
                         href="industries.html"
-                        className="btn hero-btn"
+                        className="btn3 hero-btn"
                       >
                         Get Your Ticket
                       </a>
@@ -181,7 +181,7 @@ const Home = () => {
                   available, but the majority have suffered alteration in some
                   form.
                 </p>
-                <a href="#" className="btn white-btn mt-30">
+                <a href="#" className="btn3 white-btn mt-30">
                   View Speakers
                 </a>
               </div>

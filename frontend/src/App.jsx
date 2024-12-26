@@ -12,7 +12,7 @@ import Register from "./User/Pages/Register";
 import Sidebar from "./Admin/Components/Sidebar";
 import Error from "./User/Pages/Error";
 import Testimonial from "./User/Components/Testimonial";
-import Speaker from "./Admin/Pages/Speaker";
+// import Speaker from "./Admin/Pages/Speaker";
 import Addspeaker from "./Admin/Pages/Addspeaker";
 import Showspeaker from "./Admin/Pages/Showspeaker";
 import Addhall from "./Admin/Pages/Addhall";
@@ -25,6 +25,8 @@ import Addworkshop from "./Admin/Pages/Addworkshop";
 import Showworkshop from "./Admin/Pages/Showworkshop";
 import Addevent from "./Admin/Pages/Addevent";
 import Showevent from "./Admin/Pages/Showevent";
+import Addseminar from "./Admin/Pages/Addseminar";
+import Showseminar from "./Admin/Pages/Showseminar";
 
 
 // import EventCalendar from "./Admin/pages/EventCalendar";
@@ -36,7 +38,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/speaker" element={<Speakers />} />
+        {/* <Route path="/speaker" element={<Speakers />} /> */}
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
@@ -57,7 +59,8 @@ const App = () => {
           <Route path="showworkshop" element={<Showworkshop />} />
           <Route path="addevent" element={<Addevent />} />
           <Route path="showevent" element={<Showevent />} />
-
+          <Route path="addseminar" element={<Addseminar />} />
+          <Route path="showseminar" element={<Showseminar />} />
 
           {/* <Route path="calendar" element={<EventCalendar />} /> */}
         </Route>
