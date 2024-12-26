@@ -163,7 +163,7 @@ const ShowEvent = () => {
     setDate(event.date);
     setNoOfVisitors(event.no_of_visitors); // Set no_of_visitors correctly
     setStatus(event.status);
-    setPreviewImage(event.eventImage);
+    setPreviewImage(event.image);
     handleShowModal();
   };
 
