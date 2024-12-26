@@ -11,6 +11,7 @@ import Register from "./User/Pages/Register";
 import ExhibitorRegister from "./User/Pages/ExhibitorRegister";
 import Sidebar from "./Admin/Components/Sidebar";
 import Error from "./User/Pages/Error";
+import Faq from './User/Pages/Faq';
 import Testimonial from "./User/Components/Testimonial";
 import Speaker from "./User/Components/Speakers";
 import Addspeaker from "./Admin/Pages/Addspeaker";
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/speaker" element={<Speaker />} />
+         <Route path="/faq" element={<Faq />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
