@@ -11,7 +11,7 @@ import Register from "./User/Pages/Register";
 import ExhibitorRegister from "./User/Pages/ExhibitorRegister";
 import Sidebar from "./Admin/Components/Sidebar";
 import Error from "./User/Pages/Error";
-import Faq from './User/Pages/Faq';
+import Faq from "./User/Pages/Faq";
 import Testimonial from "./User/Components/Testimonial";
 import Speaker from "./User/Components/Speakers";
 import Addspeaker from "./Admin/Pages/Addspeaker";
@@ -28,7 +28,6 @@ import Addevent from "./Admin/Pages/Addevent";
 import Showevent from "./Admin/Pages/Showevent";
 import Addseminar from "./Admin/Pages/Addseminar";
 import Showseminar from "./Admin/Pages/Showseminar";
-
 
 import EventCalendar from "./Admin/Pages/EventCalendar";
 import Workshop from "./User/Pages/Workshop";

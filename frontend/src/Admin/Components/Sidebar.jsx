@@ -104,7 +104,7 @@ const Sidebar = () => {
             className=" text-center mt-3"
             style={{
               maxHeight: "100vh",
-              overflowY: "auto", // Enable scrolling for the Outlet section
+              // overflowY: "auto", // Enable scrolling for the Outlet section
             }}
           >
             <Outlet />
