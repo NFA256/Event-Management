@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => (
   <div className="slider-area2">
@@ -59,9 +60,12 @@ export const AboutContent = () => (
               </div>
             </div>
           </div>
-          <a href="#" className="btn mt-50">
+          <a href="#" className="btn3 mt-50">
             Get Your Ticket
           </a>
+          <Link to="/becomaexhibitor" className="btn3 ml-3 mt-50">
+            Become a Exhibitor
+          </Link>
         </div>
         <div className="col-lg-6 col-md-12">
           <div className="about-img">

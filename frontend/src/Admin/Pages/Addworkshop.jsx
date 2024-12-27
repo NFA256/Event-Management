@@ -16,7 +16,7 @@ const Addworkshop = () => {
   const [speakers, setSpeakers] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [sessions, setSessions] = useState([]);  // New state for holding sessions
+  const [sessions, setSessions] = useState([]); // New state for holding sessions
 
   useEffect(() => {
     const fetchHallsAndSpeakers = async () => {
@@ -40,10 +40,46 @@ const Addworkshop = () => {
     // Dynamically set session fields based on totalSessions
     const newSessions = [];
     for (let i = 0; i < totalSessions; i++) {
-      newSessions.push({ title: "", day_no: "", date: "", start_time: "", end_time: "", duration: "" });
+      newSessions.push({
+        title: "",
+        day_no: i + 1,
+        date: "",
+        start_time: "",
+        end_time: "",
+        duration: "",
+      });
     }
     setSessions(newSessions);
-  }, [totalSessions]);  // Whenever totalSessions changes, update the sessions array
+  }, [totalSessions]); // Whenever totalSessions changes, update the sessions array
+
+  const handleStartDateChange = (e) => {
+    const newStartDate = e.target.value;
+    setStartDate(newStartDate);
+
+    // Automatically set the start date for session 1
+    setSessions((prevSessions) => {
+      const updatedSessions = [...prevSessions];
+      if (updatedSessions[0]) {
+        updatedSessions[0].date = newStartDate;
+      }
+      return updatedSessions;
+    });
+  };
+
+  const handleEndDateChange = (e) => {
+    const newEndDate = e.target.value;
+    setEndDate(newEndDate);
+
+    // Automatically set the end date for session n (last session)
+    setSessions((prevSessions) => {
+      const updatedSessions = [...prevSessions];
+      const lastSessionIndex = updatedSessions.length - 1;
+      if (updatedSessions[lastSessionIndex]) {
+        updatedSessions[lastSessionIndex].date = newEndDate;
+      }
+      return updatedSessions;
+    });
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -53,32 +89,50 @@ const Addworkshop = () => {
     }
   };
 
-  const handleSessionChange = (index, field, value) => {
-    const updatedSessions = [...sessions];
-    updatedSessions[index][field] = value;
-  
-    // If the start time or end time is changed, recalculate the duration
-    if (field === 'start_time' || field === 'end_time') {
-      const startTime = updatedSessions[index].start_time;
-      const endTime = updatedSessions[index].end_time;
-  
-      // Check if both start and end times are set
-      if (startTime && endTime) {
-        // Calculate duration in hours
-        const start = new Date(`1970-01-01T${startTime}:00`);
-        const end = new Date(`1970-01-01T${endTime}:00`);
-        
-        // Duration in hours (rounded to two decimal places)
-        const duration = (end - start) / (1000 * 60 * 60); // Convert milliseconds to hours
-        updatedSessions[index].duration = duration > 0 ? duration.toFixed(2) : ""; // Ensure positive duration
-      }
-    }
-  
-    setSessions(updatedSessions);
-  };
+ const handleSessionChange = (index, field, value) => {
+   const updatedSessions = [...sessions];
+   updatedSessions[index][field] = value;
+
+   // If the start time or end time is changed, recalculate the duration
+   if (field === "start_time" || field === "end_time") {
+     const startTime = updatedSessions[index].start_time;
+     const endTime = updatedSessions[index].end_time;
+
+     // Check if both start and end times are set
+     if (startTime && endTime) {
+       const start = new Date(`1970-01-01T${startTime}:00`);
+       const end = new Date(`1970-01-01T${endTime}:00`);
+
+       // Calculate duration in minutes
+       const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
+
+       if (durationInMinutes > 0) {
+         const hours = Math.floor(durationInMinutes / 60);
+         const minutes = durationInMinutes % 60;
+         updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+       } else {
+         updatedSessions[index].duration = ""; // Reset if duration is negative
+       }
+     } else {
+       updatedSessions[index].duration = ""; // Reset duration if either time is missing
+     }
+   }
+
+   // Automatically set first session's date to startDate
+   if (index === 0 && field === "date") {
+     updatedSessions[index].date = startDate;
+   }
+
+   // Automatically set last session's date to endDate
+   if (index === sessions.length - 1 && field === "date") {
+     updatedSessions[index].date = endDate;
+   }
+
+   setSessions(updatedSessions);
+ };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validate all fields
     if (
       !title ||
@@ -91,24 +145,26 @@ const Addworkshop = () => {
       !noOfAttendees ||
       !price ||
       !speakerId ||
-      sessions.some(session => 
-        !session.title || 
-        !session.day_no || 
-        !session.date || 
-        !session.start_time || 
-        !session.end_time || 
-        !session.duration
-      )
-      ||
-    // Ensure first session date is the same as startDate and last session date is the same as endDate
-    new Date(sessions[0].date).toISOString().split("T")[0] !== startDate ||
-    new Date(sessions[sessions.length - 1].date).toISOString().split("T")[0] !== endDate
+      sessions.some(
+        (session) =>
+          !session.title ||
+          !session.day_no ||
+          !session.date ||
+          !session.start_time ||
+          !session.end_time ||
+          !session.duration
+      ) ||
+      // Ensure first session date is the same as startDate and last session date is the same as endDate
+      new Date(sessions[0].date).toISOString().split("T")[0] !== startDate ||
+      new Date(sessions[sessions.length - 1].date)
+        .toISOString()
+        .split("T")[0] !== endDate
     ) {
       setError("All fields are required!");
       setTimeout(() => setError(""), 3000);
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -120,22 +176,24 @@ const Addworkshop = () => {
     formData.append("no_of_attendees", noOfAttendees);
     formData.append("price", price);
     formData.append("speaker_id", speakerId);
-  
+
     try {
       // Send POST request to create the workshop
       const workshopResponse = await fetch("http://localhost:5000/workshops", {
         method: "POST",
         body: formData,
       });
-  
+
       if (workshopResponse.ok) {
         const workshopData = await workshopResponse.json();
-  
+
         // After workshop creation, create sessions for the same workshop
-        const workshopId = workshopData._id; // Assuming workshop data contains the _id
-  
-        const sessionPromises = sessions.map((session) => {
-          return fetch("http://localhost:5000/sessions", {
+        const workshopId = workshopData.data._id; // Assuming workshop data contains the _id
+        console.log("workshop", workshopData);
+        console.log("workshop id", workshopId);
+        const sessionPromises = sessions.map(async (session) => {
+          console.log("Sending session data:", session); // Add this log to check the data
+          const response = await fetch("http://localhost:5000/sessions", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -150,11 +208,22 @@ const Addworkshop = () => {
               duration: session.duration,
             }),
           });
+          const result = await response.json();
+          console.log("Session Response:", result);
+          return response.ok;
         });
-  
+
+        const sessionResults = await Promise.all(sessionPromises);
+        if (sessionResults.every((res) => res === true)) {
+          console.log("All sessions added successfully!");
+        } else {
+          console.error("Error adding some sessions.");
+        }
+
         // Wait for all session creation requests to complete
         await Promise.all(sessionPromises);
-  
+        console.log("Session data before sending:", sessions);
+
         // Success feedback
         setSuccess("Workshop and sessions added successfully!");
         setError("");
@@ -173,25 +242,26 @@ const Addworkshop = () => {
         setTimeout(() => setSuccess(""), 3000);
       } else {
         const result = await workshopResponse.json();
-        setError(result.message || "An error occurred while adding the workshop.");
+        setError(
+          result.message || "An error occurred while adding the workshop."
+        );
       }
     } catch (err) {
       setError("Failed to connect to the server. Please try again.");
     }
   };
-  
 
   return (
-    <section className="vh-100 bg-image">
+    <section className="vh-100 mt-5 mb-5">
       <div className="mask d-flex align-items-center h-100 gradient-custom-3">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 mb-5">
               <div className="card">
                 <div className="card-body p-5">
-                  <h2 className="text-uppercase text-center mb-5">
+                  <h1 className="text-uppercase font-weight-bold text-center mb-5">
                     Add Workshop
-                  </h2>
+                  </h1>
 
                   {/* Error and Success messages */}
                   {error && (
@@ -215,7 +285,7 @@ const Addworkshop = () => {
                         <input
                           type="text"
                           id="title"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
                         />
@@ -227,9 +297,19 @@ const Addworkshop = () => {
                         <input
                           type="number"
                           id="total_sessions"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={totalSessions}
-                          onChange={(e) => setTotalSessions(parseInt(e.target.value, 10) || "")}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value, 10);
+                            if (value >= 1 && value <= 6) {
+                              setTotalSessions(value);
+                            } else {
+                              // Optionally, you can set an error message
+                              setError(
+                                "Total sessions must be between 1 and 6."
+                              );
+                            }
+                          }}
                         />
                       </div>
                     </div>
@@ -244,7 +324,7 @@ const Addworkshop = () => {
                         <input
                           type="number"
                           id="no_of_attendees"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={noOfAttendees}
                           onChange={(e) => setNoOfAttendees(e.target.value)}
                         />
@@ -257,14 +337,13 @@ const Addworkshop = () => {
                         <input
                           type="text"
                           id="price"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={price}
                           onChange={(e) => setPrice(e.target.value)}
                         />
                       </div>
                     </div>
                     <div className="row">
-                      {/* Start Date */}
                       <div className="col-md-6 mb-4">
                         <label className="form-label" htmlFor="start_date">
                           Start Date
@@ -272,10 +351,10 @@ const Addworkshop = () => {
                         <input
                           type="date"
                           id="start_date"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={startDate}
                           min={new Date().toISOString().split("T")[0]} // Restrict past dates
-                          onChange={(e) => setStartDate(e.target.value)}
+                          onChange={handleStartDateChange}
                         />
                       </div>
 
@@ -287,10 +366,12 @@ const Addworkshop = () => {
                         <input
                           type="date"
                           id="end_date"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={endDate}
-                          min={startDate || new Date().toISOString().split("T")[0]}
-                          onChange={(e) => setEndDate(e.target.value)}
+                          min={
+                            startDate || new Date().toISOString().split("T")[0]
+                          }
+                          onChange={handleEndDateChange}
                         />
                       </div>
                     </div>
@@ -303,7 +384,7 @@ const Addworkshop = () => {
                         </label>
                         <select
                           id="hall_id"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={hallId}
                           onChange={(e) => setHallId(e.target.value)}
                         >
@@ -327,7 +408,7 @@ const Addworkshop = () => {
                         </label>
                         <select
                           id="speaker_id"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={speakerId}
                           onChange={(e) => setSpeakerId(e.target.value)}
                         >
@@ -351,7 +432,7 @@ const Addworkshop = () => {
                           <input
                             type="file"
                             id="image"
-                            className="form-control form-control-lg"
+                            className="form-control text-center form-control-lg"
                             onChange={handleImageChange}
                           />
                         </div>
@@ -399,7 +480,7 @@ const Addworkshop = () => {
                       </label>
                       <textarea
                         id="description"
-                        className="form-control form-control-lg"
+                        className="form-control text-center form-control-lg"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                       ></textarea>
@@ -407,112 +488,175 @@ const Addworkshop = () => {
 
                     {/* Render Session Input Fields Dynamically */}
                     {sessions.map((session, index) => (
-  <>
-    <h5 className="text-center mt-3">Session {index + 1}</h5>
-    <hr />
-    <div className="row" key={index}>
-      <div className="col-md-4 form-outline mb-4">
-        <label className="form-label" htmlFor={`sessionTitle_${index}`}>
-          Session Title
-        </label>
-        <input
-          type="text"
-          id={`sessionTitle_${index}`}
-          className="form-control form-control-lg"
-          value={session.title}
-          onChange={(e) => handleSessionChange(index, "title", e.target.value)}
-        />
-      </div>
+                      <>
+                        <h5 className="text-center mt-3">
+                          Session {index + 1}
+                        </h5>
+                        <hr />
+                        <div className="row" key={index}>
+                          <div className="col-md-4 form-outline mb-4">
+                            <label
+                              className="form-label"
+                              htmlFor={`sessionTitle_${index}`}
+                            >
+                              Session Title
+                            </label>
+                            <input
+                              type="text"
+                              id={`sessionTitle_${index}`}
+                              className="form-control text-center form-control-lg"
+                              value={session.title}
+                              onChange={(e) =>
+                                handleSessionChange(
+                                  index,
+                                  "title",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
 
-      <div className="col-md-4 form-outline mb-4">
-        <label className="form-label" htmlFor={`sessionDayNo_${index}`}>
-          Day No
-        </label>
-        <input
-          type="number"
-          id={`sessionDayNo_${index}`}
-          className="form-control form-control-lg"
-          value={session.day_no}
-          onChange={(e) => handleSessionChange(index, "day_no", e.target.value)}
-        />
-      </div>
+                          <div className="col-md-4 form-outline mb-4">
+                            <label
+                              className="form-label"
+                              htmlFor={`sessionDayNo_${index}`}
+                            >
+                              Day No
+                            </label>
+                            <input
+                              type="number"
+                              id={`sessionDayNo_${index}`}
+                              className="form-control text-center form-control-lg"
+                              value={session.day_no}
+                              onChange={(e) =>
+                                handleSessionChange(
+                                  index,
+                                  "day_no",
+                                  e.target.value
+                                )
+                              }
+                              disabled
+                            />
+                          </div>
 
-      <div className="col-md-4 form-outline mb-4">
-        <label className="form-label" htmlFor={`sessionDate_${index}`}>
-          Date
-        </label>
-        <input
-          type="date"
-          id={`sessionDate_${index}`}
-          className="form-control form-control-lg"
-          value={session.date}
-          onChange={(e) => handleSessionChange(index, "date", e.target.value)}
-          min={startDate} // Restrict dates before the workshop's start date
-          max={endDate} // Restrict dates after the workshop's end date
-        />
-        {/* Error message if the session date is outside the workshop's range */}
-        {session.date && (
-          (new Date(session.date) < new Date(startDate) || new Date(session.date) > new Date(endDate)) && (
-            <div className="text-danger mt-2">Session date must be between the workshop's start and end dates.</div>
-          )
-        )}
-        {/* Additional validation: first session must match the workshop start date */}
-        {index === 0 && session.date && new Date(session.date).toISOString().split("T")[0] !== startDate && (
-          <div className="text-danger mt-2">The first session's date must match the workshop's start date.</div>
-        )}
-        {/* Additional validation: last session must match the workshop end date */}
-        {index === sessions.length - 1 && session.date && new Date(session.date).toISOString().split("T")[0] !== endDate && (
-          <div className="text-danger mt-2">The last session's date must match the workshop's end date.</div>
-        )}
-      </div>
+                          <div className="col-md-4 form-outline mb-4">
+                            <label
+                              className="form-label"
+                              htmlFor={`sessionDate_${index}`}
+                            >
+                              Date
+                            </label>
+                            <input
+                              type="date"
+                              id={`sessionDate_${index}`}
+                              className="form-control text-center form-control-lg"
+                              value={session.date}
+                              onChange={(e) =>
+                                handleSessionChange(
+                                  index,
+                                  "date",
+                                  e.target.value
+                                )
+                              }
+                              min={startDate} // Restrict dates before the workshop's start date
+                              max={endDate} // Restrict dates after the workshop's end date
+                            />
+                            {session.date &&
+                              (new Date(session.date) < new Date(startDate) ||
+                                new Date(session.date) > new Date(endDate)) && (
+                                <div className="text-danger mt-2">
+                                  Session date must be between the workshop's
+                                  start and end dates.
+                                </div>
+                              )}
+                            {index === 0 &&
+                              session.date &&
+                              new Date(session.date)
+                                .toISOString()
+                                .split("T")[0] !== startDate && (
+                                <div className="text-danger mt-2">
+                                  The first session's date must match the
+                                  workshop's start date.
+                                </div>
+                              )}
+                            {index === sessions.length - 1 &&
+                              session.date &&
+                              new Date(session.date)
+                                .toISOString()
+                                .split("T")[0] !== endDate && (
+                                <div className="text-danger mt-2">
+                                  The last session's date must match the
+                                  workshop's end date.
+                                </div>
+                              )}
+                          </div>
 
-      <div className="col-md-4 form-outline mb-4">
-        <label className="form-label" htmlFor={`sessionStartTime_${index}`}>
-          Start Time
-        </label>
-        <input
-          type="time"
-          id={`sessionStartTime_${index}`}
-          className="form-control form-control-lg"
-          value={session.start_time}
-          onChange={(e) => handleSessionChange(index, "start_time", e.target.value)}
-        />
-      </div>
+                          <div className="col-md-4 form-outline mb-4">
+                            <label
+                              className="form-label"
+                              htmlFor={`sessionStartTime_${index}`}
+                            >
+                              Start Time
+                            </label>
+                            <input
+                              type="time"
+                              id={`sessionStartTime_${index}`}
+                              className="form-control text-center form-control-lg"
+                              value={session.start_time}
+                              onChange={(e) =>
+                                handleSessionChange(
+                                  index,
+                                  "start_time",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
 
-      <div className="col-md-4 form-outline mb-4">
-        <label className="form-label" htmlFor={`sessionEndTime_${index}`}>
-          End Time
-        </label>
-        <input
-          type="time"
-          id={`sessionEndTime_${index}`}
-          className="form-control form-control-lg"
-          value={session.end_time}
-          onChange={(e) => handleSessionChange(index, "end_time", e.target.value)}
-        />
-      </div>
+                          <div className="col-md-4 form-outline mb-4">
+                            <label
+                              className="form-label"
+                              htmlFor={`sessionEndTime_${index}`}
+                            >
+                              End Time
+                            </label>
+                            <input
+                              type="time"
+                              id={`sessionEndTime_${index}`}
+                              className="form-control text-center form-control-lg"
+                              value={session.end_time}
+                              onChange={(e) =>
+                                handleSessionChange(
+                                  index,
+                                  "end_time",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
 
-      <div className="col-md-4 form-outline mb-4">
-        <label className="form-label" htmlFor={`sessionDuration_${index}`}>
-          Duration (hrs)
-        </label>
-        <input
-          type="number"
-          id={`sessionDuration_${index}`}
-          className="form-control form-control-lg"
-          value={session.duration}
-          disabled // Duration is calculated automatically
-        />
-      </div>
-    </div>
-    <hr />
-  </>
-))}
-
-
+                          <div className="col-md-4 form-outline mb-4">
+                            <label
+                              className="form-label"
+                              htmlFor={`sessionDuration_${index}`}
+                            >
+                              Duration (hrs)
+                            </label>
+                            <input
+                              type="text"
+                              id={`sessionDuration_${index}`}
+                              className="form-control text-center form-control-lg"
+                              value={session.duration}
+                              disabled // Duration is calculated automatically
+                            />
+                          </div>
+                        </div>
+                        <hr />
+                      </>
+                    ))}
 
                     <div className="form-outline text-center mb-4">
-                      <button type="submit" className="btn btn-success btn-lg">
+                      <button type="submit" className="btn3">
                         Submit
                       </button>
                     </div>

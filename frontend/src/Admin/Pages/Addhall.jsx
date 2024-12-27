@@ -40,16 +40,16 @@ const AddHall = () => {
   };
 
   return (
-    <section className="vh-100 bg-image">
+    <section className="vh-100 mt-5">
       <div className="mask d-flex align-items-center h-100 gradient-custom-3">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 col-lg-7 col-xl-6">
-              <div className="card" style={{ borderRadius: "15px" }}>
+              <div className="card">
                 <div className="card-body p-5">
-                  <h2 className="text-uppercase text-center mb-5">
+                  <h1 className="text-uppercase font-weight-bold text-center mb-5">
                     Add a New Hall
-                  </h2>
+                  </h1>
 
                   {error && (
                     <div className="alert alert-danger" role="alert">
@@ -70,7 +70,7 @@ const AddHall = () => {
                       <input
                         type="text"
                         id="hallNameInput"
-                        className="form-control form-control-lg"
+                        className="form-control text-center form-control-lg"
                         value={hallName}
                         onChange={(e) => setHallName(e.target.value)}
                       />
@@ -79,7 +79,7 @@ const AddHall = () => {
                     <div className="d-flex justify-content-center">
                       <button
                         type="submit"
-                        className="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                        className="btn3 "
                         disabled={loading}
                       >
                         {loading ? "Adding Hall..." : "Add Hall"}

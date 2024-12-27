@@ -19,46 +19,10 @@ const Register = () => {
   const [Cnic, setCnic] = useState("");
   const [Password, setPassword] = useState("");
   const [Cpassword, setCpassword] = useState("");
-  const [Role, setRole] = useState("");
   const [Error, setError] = useState("");
   const [Success, setSuccess] = useState("");
 
-  useEffect(() => {
-    // Fetch roles from API
-    async function getRoles() {
-      try {
-        const response = await fetch("http://localhost:5000/roles");
-        if (response.status === 200) {
-          const result = await response.json();
-          console.log("Fetched Roles:", result); // Log the response to check the structure
-          if (result.success) {
-            setGetRoles(result.data);
-          } else {
-            setError("Failed to fetch roles.");
-          }
-        } else {
-          setError("Failed to fetch roles.");
-        }
-      } catch (error) {
-        setError("An error occurred while fetching roles.");
-        console.log(error);
-      }
-    }
 
-    getRoles();
-  }, []);
-  // const formatCnic = (value) => {
-  //   // Remove all non-numeric characters
-  //   const cnic = value.replace(/\D/g, "");
-
-  //   // Only format CNIC if it has exactly 13 digits
-  //   if (cnic.length === 13) {
-  //     return `${cnic.slice(0, 4)}-${cnic.slice(4, 11)}-${cnic.slice(11, 12)}`;
-  //   }
-
-  //   // Return the CNIC as-is if it's not 13 digits long
-  //   return cnic;
-  // };
   const [IsPswrdVissible, setIsPswrdVissible] = useState('notVissible')
   const showHidePassword = () => {
     // ----- checking if the state of password is vissible or not vissible
@@ -129,17 +93,6 @@ const Register = () => {
       setError("Password must be equal to Confirm Password");
       return;
     }
-    if (Role === "" || Role === "none") {
-      setError("Please select a role.");
-      return;
-    }
-
-    // Check if the selected role's ObjectId is valid
-    const validRoles = GetRoles.map((role) => role._id.toString()); // Ensure _id is in string format
-    if (!validRoles.includes(Role)) {
-      setError("Invalid role selected.");
-      return;
-    }
     // console.log("Fetched Roles:", GetRoles); // Add this log to verify
 
     // Create user object
@@ -147,7 +100,6 @@ const Register = () => {
       name: Name,
       email: Email,
       password: Password,
-      role: Role,
       cnic: Cnic, // Adding CNIC to the user object
     };
     console.log("Sending User Data:", newUser);
@@ -239,47 +191,31 @@ const Register = () => {
               required
             />
           </div>
-          <div data-mdb-input-init className="form-outline mb-4">
-            <select
-              className="form-control"
-              onChange={(e) => setRole(e.target.value)} // Set the selected ObjectId
-              value={Role}
-              required
-            >
-              <option value="none">Choose Role</option>
-              {GetRoles.length > 0 ? (
-                GetRoles.map((role, index) => (
-                  <option key={index} value={role._id}>
-                    {" "}
-                    {/* Use the role's ObjectId */}
-                    {role.RoleName}
-                  </option>
-                ))
-              ) : (
-                <option disabled>No roles available</option>
-              )}
-            </select>
-          </div>
+      
 
           <div className="input-group form-group mb-3">
             <input
               className="form-control"
               name="password"
               id="password"
-              type={IsPswrdVissible === "yesVissible"
-                ? "text"
-                : "password"}
+              type={IsPswrdVissible === "yesVissible" ? "text" : "password"}
               placeholder="Enter your password"
               value={Password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-             <span onClick={() => showHidePassword()} className=" input-group-text" style={{ cursor: "pointer" }}>
-              <i class="fas fa-eye"
+            <span
+              onClick={() => showHidePassword()}
+              className=" input-group-text"
+              style={{ cursor: "pointer" }}
+            >
+              <i
+                class="fas fa-eye"
                 className={
                   IsPswrdVissible === "yesVissible"
                     ? "fas fa-eye-slash"
-                    : "fas fa-eye"}
+                    : "fas fa-eye"
+                }
               ></i>
             </span>
           </div>
@@ -288,27 +224,30 @@ const Register = () => {
               className="form-control"
               name="confirmPassword"
               id="confirmPassword"
-              type={IsCPswrdVissible === "yesVissible"
-                ? "text"
-                : "password"}
+              type={IsCPswrdVissible === "yesVissible" ? "text" : "password"}
               placeholder="Confirm your password"
               value={Cpassword}
               onChange={(e) => setCpassword(e.target.value)}
               required
             />
-               <span onClick={() => showHideCPassword()
-            } className=" input-group-text" style={{ cursor: "pointer" }}>
-              <i class="fas fa-eye"
+            <span
+              onClick={() => showHideCPassword()}
+              className=" input-group-text"
+              style={{ cursor: "pointer" }}
+            >
+              <i
+                class="fas fa-eye"
                 className={
                   IsCPswrdVissible === "yesVissible"
                     ? "fas fa-eye-slash"
-                    : "fas fa-eye"}
+                    : "fas fa-eye"
+                }
               ></i>
             </span>
           </div>
 
           <div className="form-group mt-3 text-center">
-            <button type="submit" className="btn w-100">
+            <button type="submit" className="btn3 w-100">
               Register
             </button>
           </div>

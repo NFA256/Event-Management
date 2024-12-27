@@ -58,16 +58,16 @@ const Addspeaker = () => {
 
   return (
     <>
-      <section className="vh-100 bg-image">
+      <section className="vh-100 mt-5">
         <div className="mask d-flex align-items-center h-100 gradient-custom-3">
           <div className="container h-100">
             <div className="row d-flex justify-content-center align-items-center h-100">
               <div className="col-12 col-md-9 col-lg-7 col-xl-6">
                 <div className="card">
                   <div className="card-body p-5">
-                    <h2 className="text-uppercase text-center mb-5">
+                    <h1 className="text-uppercase font-weight-bold text-center mb-5">
                       Create a Speaker
-                    </h2>
+                    </h1>
 
                     {error && (
                       <div className="alert alert-danger" role="alert">
@@ -93,7 +93,7 @@ const Addspeaker = () => {
                         <input
                           type="text"
                           id="name"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                         />
@@ -106,7 +106,7 @@ const Addspeaker = () => {
                         <input
                           type="text"
                           id="description"
-                          className="form-control form-control-lg"
+                          className="form-control text-center form-control-lg"
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                         />
@@ -151,10 +151,7 @@ const Addspeaker = () => {
                       </div>
 
                       <div className="d-flex justify-content-center">
-                        <button
-                          type="submit"
-                          className="btn text-white btn-block"
-                        >
+                        <button type="submit" className="btn3 text-white ">
                           Add Speaker
                         </button>
                       </div>

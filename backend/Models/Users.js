@@ -42,6 +42,10 @@ const User_Schema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "roles", // Reference to the roles collection
       required: [true, "Role is required"],
+      default: async function () {
+        const role = await mongoose.model("roles").findOne({ RoleName: "attende" });
+        return role ? role._id : null;
+      },
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

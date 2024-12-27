@@ -228,7 +228,7 @@ const Login = () => {
           </div>
 
           <div className="form-group mt-3 text-center">
-            <button type="submit" className="btn w-100">
+            <button type="submit" className="btn3 w-100">
               Login
             </button>
           </div>

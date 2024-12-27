@@ -57,15 +57,16 @@ const AddBooth = () => {
   };
 
   return (
-    <section className="vh-100 bg-image">
+    <section className="vh-100 mt-5">
       <div className="mask d-flex align-items-center h-100 gradient-custom-3">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 col-lg-7 col-xl-6">
               <div className="card">
                 <div className="card-body p-5">
-                  <h2>Add New Booth</h2>
-
+                    <h1 className="text-uppercase font-weight-bold text-center mb-5">
+                      Add New Booth
+                    </h1>
                   {/* Error message */}
                   {Error && (
                     <div className="alert alert-danger" role="alert">
@@ -88,7 +89,7 @@ const AddBooth = () => {
                         Select Floor
                       </label>
                       <select
-                        className="form-control"
+                        className="form-control text-center"
                         value={floor_id}
                         onChange={(e) => setFloorId(e.target.value)}
                         required
@@ -111,7 +112,7 @@ const AddBooth = () => {
                       <label>Name</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control text-center"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
@@ -123,14 +124,14 @@ const AddBooth = () => {
                       <label>Reserved</label>
                       <input
                         type="checkbox"
-                        className="form-control"
+                        className="form-contro text-centerl"
                         checked={reserved_bool}
                         onChange={(e) => setReservedBool(e.target.checked)}
                       />
                     </div>
 
                     {/* Submit button */}
-                    <button type="submit" className="btn btn-primary">
+                    <button type="submit" className="btn3 ">
                       Create Booth
                     </button>
                   </form>

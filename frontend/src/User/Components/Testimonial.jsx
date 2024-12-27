@@ -130,13 +130,17 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
             </form>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn" onClick={onClose}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-lg text-white"
+              onClick={onClose}
+            >
               Close
             </button>
             <button
               disabled={submitBTN === "disabled"}
               type="submit"
-              className="btn btn-primary"
+              className="btn3 "
               form="feedbackForm"
             >
               {submitBTN === "disabled" ? "Submitting ..." : "Submit Feedback"}

@@ -3,16 +3,17 @@ import Navbar from "./User/Components/Navbar";
 import Footer from "./User/Components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./User/Components/About";
-import Speakers from "./User/Components/Speakers";
 import Schedule from "./User/Components/Schedule";
 import Contact from "./User/Pages/Contact";
 import Home from "./User/Pages/Home";
 import Login from "./User/Pages/Login";
 import Register from "./User/Pages/Register";
+import ExhibitorRegister from "./User/Pages/ExhibitorRegister";
 import Sidebar from "./Admin/Components/Sidebar";
 import Error from "./User/Pages/Error";
+import Faq from './User/Pages/Faq';
 import Testimonial from "./User/Components/Testimonial";
-import Speaker from "./Admin/Pages/Speaker";
+import Speaker from "./User/Components/Speakers";
 import Addspeaker from "./Admin/Pages/Addspeaker";
 import Showspeaker from "./Admin/Pages/Showspeaker";
 import Addhall from "./Admin/Pages/Addhall";
@@ -25,9 +26,11 @@ import Addworkshop from "./Admin/Pages/Addworkshop";
 import Showworkshop from "./Admin/Pages/Showworkshop";
 import Addevent from "./Admin/Pages/Addevent";
 import Showevent from "./Admin/Pages/Showevent";
+import Addseminar from "./Admin/Pages/Addseminar";
+import Showseminar from "./Admin/Pages/Showseminar";
 
 
-// import EventCalendar from "./Admin/pages/EventCalendar";
+import EventCalendar from "./Admin/Pages/EventCalendar";
 
 const App = () => {
   return (
@@ -36,11 +39,13 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/speaker" element={<Speakers />} />
+        <Route path="/speaker" element={<Speaker />} />
+         <Route path="/faq" element={<Faq />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/becomaexhibitor" element={<ExhibitorRegister />} />
         <Route path="/testimonial" element={<Testimonial />} />
 
         {/* //------Admin */}
@@ -57,9 +62,10 @@ const App = () => {
           <Route path="showworkshop" element={<Showworkshop />} />
           <Route path="addevent" element={<Addevent />} />
           <Route path="showevent" element={<Showevent />} />
+          <Route path="addseminar" element={<Addseminar />} />
+          <Route path="showseminar" element={<Showseminar />} />
 
-
-          {/* <Route path="calendar" element={<EventCalendar />} /> */}
+          <Route path="calendar" element={<EventCalendar />} />
         </Route>
 
         {/* Fallback route */}

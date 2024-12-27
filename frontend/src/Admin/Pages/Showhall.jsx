@@ -30,13 +30,15 @@ const Showhall = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Hall Records</h2>
+    <div className="col-10 mx-auto text-center mt-5">
+      <h1 className="text-center text-uppercase font-weight-bold mb-3">
+        Halls
+      </h1>
       {error && <div className="alert alert-danger">{error}</div>}
       {!error && halls.length > 0 ? (
         <table className="table table-bordered">
           <thead>
-            <tr>
+            <tr className="table-info">
               <th>#</th>
               <th>Hall Name</th>
             </tr>

@@ -49,8 +49,8 @@ const Sidebar = () => {
       <style>{scrollbarStyle}</style> {/* Inline CSS for the scrollbar */}
       <div className="row" style={{ minHeight: "100vh", margin: 0 }}>
         <div className="col-2" style={sidebarStyle}>
-          <div className="text-center text-white mb-4">
-            <h2>{role === "exhibitor" ? "Exhibitor" : "Admin"}</h2>
+          <div className=" section-tittle text-center text-white mb-4">
+            <h2> {role === "exhibitor" ? "Exhibitor" : "Organizer"}</h2>
           </div>
 
           <ul className="nav text-center nav-pills mt-2 flex-column">
@@ -73,16 +73,20 @@ const Sidebar = () => {
                   { path: "showworkshop", label: "Show Workshop" },
                   { path: "addevent", label: "Add Event" },
                   { path: "showevent", label: "Show Event" },
-
-
+                  { path: "addseminar", label: "Add Seminar" },
+                  { path: "showseminar", label: "Show Seminar" },
                 ]
             ).map(({ path, label }) => (
               <li key={path} className="nav-item fs-4 fw-medium">
                 <Link
                   to={path}
                   style={linkStyle}
-                  onMouseOver={(e) => (e.target.style.backgroundColor = linkHoverStyle)}
-                  onMouseOut={(e) => (e.target.style.backgroundColor = linkStyle.backgroundColor)}
+                  onMouseOver={(e) =>
+                    (e.target.style.backgroundColor = linkHoverStyle)
+                  }
+                  onMouseOut={(e) =>
+                    (e.target.style.backgroundColor = linkStyle.backgroundColor)
+                  }
                 >
                   {label}
                 </Link>
@@ -91,8 +95,14 @@ const Sidebar = () => {
           </ul>
         </div>
 
-        <div className="col-10">
-          <div className="container text-center mt-3">
+        <div className="col-10 ">
+          <div
+            className=" text-center mt-3"
+            style={{
+              maxHeight: "100vh",
+              overflowY: "auto", // Enable scrolling for the Outlet section
+            }}
+          >
             <Outlet />
           </div>
         </div>
