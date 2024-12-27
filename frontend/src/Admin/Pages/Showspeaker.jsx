@@ -219,10 +219,13 @@ const Showspeaker = () => {
       >
         <div className="modal-dialog">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="editModalLabel">
+            <div className="modal-header justify-content-center">
+              <h4 className="modal-title text-center w-100" id="editModalLabel">
                 Edit Speaker
-              </h5>
+              </h4>
+              <button type="button" className="close">
+                <span>&times;</span>
+              </button>
             </div>
             <div className="modal-body">
               {error && <div className="alert alert-danger">{error}</div>}

@@ -17,6 +17,8 @@ const Addworkshop = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [sessions, setSessions] = useState([]); // New state for holding sessions
+  const [priceError, setPriceError] = useState("");
+  const [attendeesError, setAttendeesError] = useState("");
 
   useEffect(() => {
     const fetchHallsAndSpeakers = async () => {
@@ -65,7 +67,31 @@ const Addworkshop = () => {
       return updatedSessions;
     });
   };
+  const handleNoOfAttendeesChange = (e) => {
+    const value = e.target.value;
+    setNoOfAttendees(value);
 
+    // Validate number of attendees
+    const numValue = parseInt(value, 10);
+    if (numValue < 25 || numValue > 50) {
+      setAttendeesError("Number of attendees must be between 25 and 50.");
+    } else if (numValue < 0) {
+      setAttendeesError("Number of attendees cannot be negative.");
+    } else {
+      setAttendeesError(""); // Clear error if valid
+    }
+  };
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    setPrice(value);
+
+    // Validate price
+    if (value && parseFloat(value) <= 1000) {
+      setPriceError("Price must be greater than 1000.");
+    } else {
+      setPriceError(""); // Clear error if valid
+    }
+  };
   const handleEndDateChange = (e) => {
     const newEndDate = e.target.value;
     setEndDate(newEndDate);
@@ -89,50 +115,54 @@ const Addworkshop = () => {
     }
   };
 
- const handleSessionChange = (index, field, value) => {
-   const updatedSessions = [...sessions];
-   updatedSessions[index][field] = value;
+  const handleSessionChange = (index, field, value) => {
+    const updatedSessions = [...sessions];
+    updatedSessions[index][field] = value;
 
-   // If the start time or end time is changed, recalculate the duration
-   if (field === "start_time" || field === "end_time") {
-     const startTime = updatedSessions[index].start_time;
-     const endTime = updatedSessions[index].end_time;
+    // If the start time or end time is changed, recalculate the duration
+    if (field === "start_time" || field === "end_time") {
+      const startTime = updatedSessions[index].start_time;
+      const endTime = updatedSessions[index].end_time;
 
-     // Check if both start and end times are set
-     if (startTime && endTime) {
-       const start = new Date(`1970-01-01T${startTime}:00`);
-       const end = new Date(`1970-01-01T${endTime}:00`);
+      // Check if both start and end times are set
+      if (startTime && endTime) {
+        const start = new Date(`1970-01-01T${startTime}:00`);
+        const end = new Date(`1970-01-01T${endTime}:00`);
 
-       // Calculate duration in minutes
-       const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
+        // Calculate duration in minutes
+        const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
 
-       if (durationInMinutes > 0) {
-         const hours = Math.floor(durationInMinutes / 60);
-         const minutes = durationInMinutes % 60;
-         updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
-       } else {
-         updatedSessions[index].duration = ""; // Reset if duration is negative
-       }
-     } else {
-       updatedSessions[index].duration = ""; // Reset duration if either time is missing
-     }
-   }
+        if (durationInMinutes > 0) {
+          const hours = Math.floor(durationInMinutes / 60);
+          const minutes = durationInMinutes % 60;
+          updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+        } else {
+          updatedSessions[index].duration = ""; // Reset if duration is negative
+        }
+      } else {
+        updatedSessions[index].duration = ""; // Reset duration if either time is missing
+      }
+    }
 
-   // Automatically set first session's date to startDate
-   if (index === 0 && field === "date") {
-     updatedSessions[index].date = startDate;
-   }
+    // Automatically set first session's date to startDate
+    if (index === 0 && field === "date") {
+      updatedSessions[index].date = startDate;
+    }
 
-   // Automatically set last session's date to endDate
-   if (index === sessions.length - 1 && field === "date") {
-     updatedSessions[index].date = endDate;
-   }
+    // Automatically set last session's date to endDate
+    if (index === sessions.length - 1 && field === "date") {
+      updatedSessions[index].date = endDate;
+    }
 
-   setSessions(updatedSessions);
- };
+    setSessions(updatedSessions);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!price || parseFloat(price) <= 1000) {
+      setError("Price must be greater than 1000.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
     // Validate all fields
     if (
       !title ||
@@ -164,7 +194,19 @@ const Addworkshop = () => {
       setTimeout(() => setError(""), 3000);
       return;
     }
-
+    if (
+      // ... other validations
+      !noOfAttendees ||
+      parseInt(noOfAttendees, 10) < 25 ||
+      parseInt(noOfAttendees, 10) > 50 ||
+      parseInt(noOfAttendees, 10) < 0
+    ) {
+      setError(
+        "Number of attendees must be between 25 and 50 and cannot be negative."
+      );
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -326,8 +368,13 @@ const Addworkshop = () => {
                           id="no_of_attendees"
                           className="form-control text-center form-control-lg"
                           value={noOfAttendees}
-                          onChange={(e) => setNoOfAttendees(e.target.value)}
+                          onChange={handleNoOfAttendeesChange}
                         />
+                        {attendeesError && (
+                          <div className="text-danger mt-2">
+                            {attendeesError}
+                          </div>
+                        )}
                       </div>
                       {/* Price */}
                       <div className="col-md-6 form-outline mb-4">
@@ -339,8 +386,11 @@ const Addworkshop = () => {
                           id="price"
                           className="form-control text-center form-control-lg"
                           value={price}
-                          onChange={(e) => setPrice(e.target.value)}
+                          onChange={handlePriceChange}
                         />
+                        {priceError && (
+                          <div className="text-danger mt-2">{priceError}</div>
+                        )}
                       </div>
                     </div>
                     <div className="row">

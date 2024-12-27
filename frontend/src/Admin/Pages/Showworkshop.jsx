@@ -13,6 +13,8 @@ const Showworkshop = () => {
   const [error, setError] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   const [image, setImage] = useState(null);
+  const [attendeeError, setAttendeeError] = useState("");
+  const [priceError, setPriceError] = useState("");
 
   useEffect(() => {
     // Fetching workshops data from the API using fetch
@@ -173,6 +175,27 @@ const Showworkshop = () => {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    // Check if the input is for the price
+    if (name === "price") {
+      const numValue = parseFloat(value);
+      if (numValue <= 1000) {
+        setPriceError("Price must be greater than 1000.");
+      } else {
+        setPriceError(""); // Clear error if valid
+      }
+    }
+
+    // Check if the input is for the number of attendees
+    if (name === "no_of_attendees") {
+      const numValue = parseInt(value, 10);
+      if (numValue < 25) {
+        setAttendeeError("Minimum number of attendees is 25.");
+      } else if (numValue > 50) {
+        setAttendeeError("Maximum number of attendees is 50.");
+      } else {
+        setAttendeeError(""); // Clear error if within range
+      }
+    }
     setCurrentWorkshop((prev) => ({ ...prev, [name]: value }));
   };
   const calculateDuration = (startTime, endTime) => {
@@ -272,6 +295,9 @@ const Showworkshop = () => {
       setError("Failed to connect to the server. Please try again.");
     }
   };
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <div className="col-10 mx-auto text-center mt-5">
       <h1 className="text-center text-uppercase font-weight-bold mb-3">
@@ -363,13 +389,13 @@ const Showworkshop = () => {
           onClick={handleModalClose}
         >
           <div
-            className="modal-dialog"
+            className="modal-dialog modal-lg"
             role="document"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Workshop</h5>
+              <div className="modal-header justify-content-center">
+                <h4 className="modal-title text-center w-100">Edit Workshop</h4>
                 <button
                   type="button"
                   className="close"
@@ -380,7 +406,7 @@ const Showworkshop = () => {
               </div>
               <div
                 className="modal-body"
-                style={{ maxHeight: "400px", overflowY: "auto" }}
+                style={{ maxHeight: "600px", overflowY: "auto" }}
               >
                 <form onSubmit={handleSubmit}>
                   <div className="row">
@@ -388,7 +414,7 @@ const Showworkshop = () => {
                       <label htmlFor="title">Title</label>
                       <input
                         type="text"
-                        className="form-control"
+                        className="text-center form-control"
                         id="title"
                         name="title"
                         value={currentWorkshop?.title || ""}
@@ -399,12 +425,15 @@ const Showworkshop = () => {
                       <label htmlFor="price">Price</label>
                       <input
                         type="number"
-                        className="form-control"
+                        className="text-center form-control"
                         id="price"
                         name="price"
                         value={currentWorkshop?.price || ""}
                         onChange={handleInputChange}
                       />
+                      {priceError && (
+                        <div className="text-danger">{priceError}</div> // Display error message
+                      )}
                     </div>
                   </div>
                   <div className="row">
@@ -412,9 +441,10 @@ const Showworkshop = () => {
                       <label htmlFor="start_date">Start Date</label>
                       <input
                         type="date"
-                        className="form-control"
+                        className="text-center form-control"
                         id="start_date"
                         name="start_date"
+                        min={today} // Disable past dates
                         value={currentWorkshop?.start_date.split("T")[0] || ""}
                         onChange={handleInputChange}
                       />
@@ -423,9 +453,10 @@ const Showworkshop = () => {
                       <label htmlFor="end_date">End Date</label>
                       <input
                         type="date"
-                        className="form-control"
+                        className="text-center form-control"
                         id="end_date"
                         name="end_date"
+                        min={today} // Disable past dates
                         value={currentWorkshop?.end_date.split("T")[0] || ""}
                         onChange={handleInputChange}
                       />
@@ -456,7 +487,7 @@ const Showworkshop = () => {
                     <div className="col-md-6 form-group">
                       <label htmlFor="hall_id">Hall</label>
                       <select
-                        className="form-control"
+                        className=" text-center form-control"
                         id="hall_id"
                         name="hall_id"
                         value={currentWorkshop?.hall_id?._id || ""}
@@ -473,7 +504,7 @@ const Showworkshop = () => {
                     <div className="col-md-6 form-group">
                       <label htmlFor="speaker_id">Speaker</label>
                       <select
-                        className="form-control"
+                        className="text-center form-control"
                         id="speaker_id"
                         name="speaker_id"
                         value={currentWorkshop?.speaker_id?._id || ""}
@@ -493,18 +524,21 @@ const Showworkshop = () => {
                       <label htmlFor="no_of_attendees">No of Attendees</label>
                       <input
                         type="number"
-                        className="form control"
+                        className="text-center form-control"
                         id="no_of_attendees"
                         name="no_of_attendees"
                         value={currentWorkshop?.no_of_attendees || ""}
                         onChange={handleInputChange}
                       />
+                      {attendeeError && (
+                        <div className="text-danger">{attendeeError}</div> // Display error message
+                      )}
                     </div>
                     <div className="col-md-6 form-group">
                       <label htmlFor="total_sessions">Total Sessions</label>
                       <input
                         type="number"
-                        className="form-control"
+                        className=" text-center form-control"
                         id="total_sessions"
                         name="total_sessions"
                         disabled
@@ -516,7 +550,7 @@ const Showworkshop = () => {
                   <div className="form-group">
                     <label htmlFor="description">Description</label>
                     <textarea
-                      className="form-control"
+                      className=" text-center form-control"
                       id="description"
                       name="description"
                       value={currentWorkshop?.description || ""}
@@ -536,7 +570,7 @@ const Showworkshop = () => {
                             </label>
                             <input
                               type="text"
-                              className="form-control"
+                              className="text-center form-control"
                               id={`sessionTitle_${index}`}
                               value={session.title}
                               onChange={(e) =>
@@ -552,8 +586,9 @@ const Showworkshop = () => {
                             <label htmlFor={`sessionDate_${index}`}>Date</label>
                             <input
                               type="date"
-                              className="form-control"
+                              className="text-center form-control"
                               id={`sessionDate_${index}`}
+                              min={today} // Disable past dates
                               value={session.date.split("T")[0] || ""}
                               onChange={(e) =>
                                 handleSessionChange(
@@ -573,7 +608,7 @@ const Showworkshop = () => {
                             </label>
                             <input
                               type="time"
-                              className="form-control"
+                              className="text-center form-control"
                               id={`sessionStartTime_${index}`}
                               value={session.start_time}
                               onChange={(e) =>
@@ -591,7 +626,7 @@ const Showworkshop = () => {
                             </label>
                             <input
                               type="time"
-                              className="form-control"
+                              className="text-center form-control"
                               id={`sessionEndTime_${index}`}
                               value={session.end_time}
                               onChange={(e) =>
@@ -609,7 +644,7 @@ const Showworkshop = () => {
                             </label>
                             <input
                               type="text"
-                              className="form-control"
+                              className="text-center form-control"
                               id={`sessionDuration_${index}`}
                               value={session.duration}
                               disabled
@@ -622,7 +657,7 @@ const Showworkshop = () => {
                   ))}
                   <div className=" text-center">
                     <button type="submit" className="btn3 ">
-                      Save changes
+                      Update Workshop
                     </button>
                   </div>
                 </form>
@@ -646,8 +681,8 @@ const Showworkshop = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title text-center">
+              <div className="modal-header justify-content-center">
+                <h5 className="modal-title text-center w-100">
                   {currentWorkshop?.title}
                 </h5>
                 <button

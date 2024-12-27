@@ -3289,7 +3289,7 @@ hr {
 }
 .home-blog-area .home-blog-single .blog-img-cap .blog-img .blog-date {
   background: #043544ee;
-  padding: 15px 34px;
+  padding: 14px 15px;
   display: inline-block;
   position: absolute;
   bottom: 0;
@@ -3338,8 +3338,9 @@ hr {
 }
 .home-blog-area .home-blog-single .blog-img-cap .blog-cap {
   background: #fff;
-  padding: 37px 129px 37px 50px;
+  padding: 37px 10px 37px 40px;
   border: 1px solid #f7f7f7;
+  /* text-align: center; */
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .home-blog-area .home-blog-single .blog-img-cap .blog-cap {
@@ -3426,7 +3427,7 @@ hr {
   margin-bottom: 30px;
 }
 .single-blog:hover {
-  box-shadow: 0px 10px 20px 0px rgba(42, 34, 123, 0.1);
+  box-shadow: 0px 10px 20px 0px rgba(53, 131, 196, 0.342);
 }
 .single-blog .thumb {
   overflow: hidden;

@@ -43,7 +43,7 @@ const Faq = () => {
       }}
     >
       <div className="row justify-content-center">
-        <div className="col-lg-5 col-md-8">
+        <div className="col-4 ">
           <div className="section-tittle text-center">
             <h2>FAQ's</h2>
             <p>
@@ -78,7 +78,7 @@ const Faq = () => {
           }}
         />
       </div>
-      <div className="container col-6 mt-2 mb-5">
+      <div className="container col-5 mt-5 mb-5">
         <div
           style={{
             display: "flex",

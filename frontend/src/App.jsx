@@ -31,6 +31,8 @@ import Showseminar from "./Admin/Pages/Showseminar";
 
 
 import EventCalendar from "./Admin/Pages/EventCalendar";
+import Workshop from "./User/Pages/Workshop";
+import Seminar from "./User/Pages/Seminar";
 
 const App = () => {
   return (
@@ -40,13 +42,15 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/speaker" element={<Speaker />} />
-         <Route path="/faq" element={<Faq />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/becomaexhibitor" element={<ExhibitorRegister />} />
         <Route path="/testimonial" element={<Testimonial />} />
+        <Route path="/workshop" element={<Workshop />} />
+        <Route path="/seminar" element={<Seminar />} />
 
         {/* //------Admin */}
         <Route path="/admin" element={<Sidebar />}>

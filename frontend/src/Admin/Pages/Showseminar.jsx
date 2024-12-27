@@ -266,8 +266,11 @@ const Showseminar = () => {
       >
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Edit Seminar</h5>
+            <div className="modal-header  justify-content-center">
+              <h4 className="modal-title text-center w-100">Edit Seminar</h4>
+              <button type="button" className="close">
+                <span>&times;</span>
+              </button>
             </div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>

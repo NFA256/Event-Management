@@ -247,10 +247,13 @@ const ShowEvent = () => {
       >
         <div className="modal-dialog">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="editModalLabel">
+            <div className="modal-header justify-content-center">
+              <h4 className="modal-title text-center w-100" id="editModalLabel">
                 Edit Event
-              </h5>
+              </h4>
+              <button type="button" className="close">
+                <span>&times;</span>
+              </button>
             </div>
             <div className="modal-body">
               {error && <div className="alert alert-danger">{error}</div>}
@@ -313,7 +316,7 @@ const ShowEvent = () => {
                         type="text"
                         id="modal-date"
                         className="form-control form-control-lg"
-                        value={date}
+                        value={date.split("T")[0] || ""} // Ensure the date is in YYYY-MM-DD format
                         onChange={(e) => setDate(e.target.value)}
                       />
                     </div>
@@ -372,8 +375,8 @@ const ShowEvent = () => {
                   )}
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-lg w-100">
-                  {editMode ? "Update" : "Add Event"}
+                <button type="submit" className="btn3 ">
+                  {editMode ? "Update Event" : "Add Event"}
                 </button>
               </form>
             </div>

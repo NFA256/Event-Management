@@ -49,8 +49,12 @@ const Sidebar = () => {
       <style>{scrollbarStyle}</style> {/* Inline CSS for the scrollbar */}
       <div className="row" style={{ minHeight: "100vh", margin: 0 }}>
         <div className="col-2" style={sidebarStyle}>
-          <div className=" section-tittle text-center text-white mb-4">
-            <h2> {role === "exhibitor" ? "Exhibitor" : "Organizer"}</h2>
+          <div className=" text-center text-white mb-4">
+            <h2>
+              <strong>
+                {role === "exhibitor" ? "Exhibitor" : "Organizer"}
+              </strong>
+            </h2>
           </div>
 
           <ul className="nav text-center nav-pills mt-2 flex-column">
