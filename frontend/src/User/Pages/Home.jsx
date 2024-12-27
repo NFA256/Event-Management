@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AboutContent, AboutPricing } from "../Components/About";
 import { ScheduleContent } from "../Components/Schedule";
 import Testimonial from "../Components/Testimonial";
+import Faq from "./Faq";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
@@ -233,10 +234,14 @@ const Home = () => {
           </div>
         </div>
       </section>
+
       <ScheduleContent />
+
       <Testimonial />
+
       <AboutPricing />
       {/* <!--? Brand Area Start--> */}
+
       <section
         className="work-company section-padding30"
         style={{ background: "#218fb1ee" }}
@@ -292,8 +297,10 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* <!-- Brand Area End-->
-      <!--? Blog Area Start --> */}
+
+      <section className="mt-5">
+        <Faq />
+      </section>
       <section className="home-blog-area section-padding30">
         <div className="container">
           {/* <!-- Section Tittle --> */}

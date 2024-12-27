@@ -89,39 +89,47 @@ const Addworkshop = () => {
     }
   };
 
-  const handleSessionChange = (index, field, value) => {
-    const updatedSessions = [...sessions];
-    updatedSessions[index][field] = value;
+ const handleSessionChange = (index, field, value) => {
+   const updatedSessions = [...sessions];
+   updatedSessions[index][field] = value;
 
-    // If the start time or end time is changed, recalculate the duration
-    if (field === "start_time" || field === "end_time") {
-      const startTime = updatedSessions[index].start_time;
-      const endTime = updatedSessions[index].end_time;
+   // If the start time or end time is changed, recalculate the duration
+   if (field === "start_time" || field === "end_time") {
+     const startTime = updatedSessions[index].start_time;
+     const endTime = updatedSessions[index].end_time;
 
-      // Check if both start and end times are set
-      if (startTime && endTime) {
-        // Calculate duration in hours
-        const start = new Date(`1970-01-01T${startTime}:00`);
-        const end = new Date(`1970-01-01T${endTime}:00`);
+     // Check if both start and end times are set
+     if (startTime && endTime) {
+       const start = new Date(`1970-01-01T${startTime}:00`);
+       const end = new Date(`1970-01-01T${endTime}:00`);
 
-        // Duration in hours (rounded to two decimal places)
-        const duration = (end - start) / (1000 * 60 * 60); // Convert milliseconds to hours
-        updatedSessions[index].duration =
-          duration > 0 ? duration.toFixed(2) : ""; // Ensure positive duration
-      }
-    }
-    // Automatically set first session's date to startDate
-    if (index === 0 && field === "date") {
-      updatedSessions[index].date = startDate;
-    }
+       // Calculate duration in minutes
+       const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
 
-    // Automatically set last session's date to endDate
-    if (index === sessions.length - 1 && field === "date") {
-      updatedSessions[index].date = endDate;
-    }
+       if (durationInMinutes > 0) {
+         const hours = Math.floor(durationInMinutes / 60);
+         const minutes = durationInMinutes % 60;
+         updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+       } else {
+         updatedSessions[index].duration = ""; // Reset if duration is negative
+       }
+     } else {
+       updatedSessions[index].duration = ""; // Reset duration if either time is missing
+     }
+   }
 
-    setSessions(updatedSessions);
-  };
+   // Automatically set first session's date to startDate
+   if (index === 0 && field === "date") {
+     updatedSessions[index].date = startDate;
+   }
+
+   // Automatically set last session's date to endDate
+   if (index === sessions.length - 1 && field === "date") {
+     updatedSessions[index].date = endDate;
+   }
+
+   setSessions(updatedSessions);
+ };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -181,8 +189,8 @@ const Addworkshop = () => {
 
         // After workshop creation, create sessions for the same workshop
         const workshopId = workshopData.data._id; // Assuming workshop data contains the _id
-console.log("workshop",workshopData);
-console.log("workshop id",workshopId);
+        console.log("workshop", workshopData);
+        console.log("workshop id", workshopId);
         const sessionPromises = sessions.map(async (session) => {
           console.log("Sending session data:", session); // Add this log to check the data
           const response = await fetch("http://localhost:5000/sessions", {
@@ -244,16 +252,16 @@ console.log("workshop id",workshopId);
   };
 
   return (
-    <section className="vh-100 bg-image">
+    <section className="vh-100 mt-5 mb-5">
       <div className="mask d-flex align-items-center h-100 gradient-custom-3">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 mb-5">
               <div className="card">
                 <div className="card-body p-5">
-                  <h2 className="text-uppercase text-center mb-5">
+                  <h1 className="text-uppercase font-weight-bold text-center mb-5">
                     Add Workshop
-                  </h2>
+                  </h1>
 
                   {/* Error and Success messages */}
                   {error && (
@@ -635,7 +643,7 @@ console.log("workshop id",workshopId);
                               Duration (hrs)
                             </label>
                             <input
-                              type="number"
+                              type="text"
                               id={`sessionDuration_${index}`}
                               className="form-control text-center form-control-lg"
                               value={session.duration}

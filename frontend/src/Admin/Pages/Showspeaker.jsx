@@ -155,13 +155,15 @@ const Showspeaker = () => {
 
   return (
     <div>
-      <div className="container mt-5">
-        <h3 className="text-center">Speakers List</h3>
+      <div className="col-10 mx-auto text-center mt-5">
+        <h1 className="text-center text-uppercase font-weight-bold mb-3">
+          Speakers
+        </h1>
         {error && <div className="alert alert-danger">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
-        <table className="table">
+        <table className="table table-bordered">
           <thead>
-            <tr>
+            <tr className="table-info">
               <th>#</th>
               <th>Name</th>
               <th>Description</th>
@@ -188,13 +190,13 @@ const Showspeaker = () => {
                       className="btn btn-outline-warning btn-md mx-2 "
                       onClick={() => handleEdit(speaker)}
                     >
-                      Edit
+                      <i class="fas fa-pencil-alt"></i>
                     </button>
                     <button
                       className="btn btn-outline-danger btn-md "
                       onClick={() => handleDelete(speaker._id)}
                     >
-                      Delete
+                      <i class="fas fa-trash-alt"></i>
                     </button>
                   </td>
                 </tr>
@@ -221,13 +223,6 @@ const Showspeaker = () => {
               <h5 className="modal-title" id="editModalLabel">
                 Edit Speaker
               </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleHideModal}
-              ></button>
             </div>
             <div className="modal-body">
               {error && <div className="alert alert-danger">{error}</div>}

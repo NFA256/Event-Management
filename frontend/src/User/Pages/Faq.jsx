@@ -1,40 +1,66 @@
 import React, { useState, useEffect } from "react";
 
-const Faq= () => {
+const Faq = () => {
   const [expanded, setExpanded] = useState(null);
   const [search, setSearch] = useState("");
   const [faqs, setFaqs] = useState([]);
 
   useEffect(() => {
-    // Fetch FAQ data from API
     fetch("http://localhost:5000/faq")
-      .then((response) => response.json())
-      .then((data) => {console.log("Fetched FAQ data:", data); setFaqs(data)})
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch FAQs");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Fetched FAQ data:", data);
+        setFaqs(data);
+      })
       .catch((error) => console.error("Error fetching FAQ data:", error));
   }, []);
 
   const toggleFAQ = (id) => {
-    setExpanded(expanded === id ? null : id);
+    setExpanded((prev) => (prev === id ? null : id));
   };
 
-  const filteredFAQs = faqs.filter((faq) =>
+  // Limit the number of FAQs to the last 6 records
+  const lastSixFaqs = faqs.slice(-6);
+
+  const filteredFAQs = lastSixFaqs.filter((faq) =>
     faq.question.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div
+      className="home-blog-area"
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: "20px",
-        fontFamily: "Arial, sans-serif",
-        backgroundColor: "#f9f9f9",
+        padding: "35px 15px",
         minHeight: "100vh",
       }}
     >
-      <h1 style={{ fontSize: "24px", color: "#333" }}>Frequently Asked Questions</h1>
-      <div style={{ margin: "20px 0", width: "100%", maxWidth: "600px" }}>
+      <div className="row justify-content-center">
+        <div className="col-lg-5 col-md-8">
+          <div className="section-tittle text-center">
+            <h2>FAQ's</h2>
+            <p>
+              Frequently Asked Questions play a crucial role in enhancing user
+              experience by providing quick, easily accessible answers to common
+              inquiries.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "600px",
+          marginBottom: "15px",
+        }}
+      >
         <input
           type="text"
           placeholder="Search question here..."
@@ -42,63 +68,70 @@ const Faq= () => {
           onChange={(e) => setSearch(e.target.value)}
           style={{
             width: "100%",
-            padding: "10px",
+            padding: "9px",
             border: "1px solid #ccc",
-            borderRadius: "5px",
+            borderRadius: "6px",
             fontSize: "16px",
+            outline: "none",
+            boxSizing: "border-box",
+            transition: "border 0.3s ease",
           }}
         />
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "20px",
-          width: "100%",
-          maxWidth: "800px",
-        }}
-      >
-        {filteredFAQs.map((faq) => (
-          <div
-            key={faq.id}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "10px",
-              overflow: "hidden",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              transition: "transform 0.3s ease",
-            }}
-          >
+      <div className="container col-6 mt-2 mb-5">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            width: "100%",
+            maxWidth: "800px",
+          }}
+        >
+          {filteredFAQs.map((faq) => (
             <div
-              onClick={() => toggleFAQ(faq.id)}
+              key={faq._id}
               style={{
-                padding: "20px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                background: "#f1f1f1",
-                cursor: "pointer",
-                fontWeight: "bold",
-                borderBottom: "1px solid #ddd",
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                overflow: "hidden",
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "transform 0.3s ease",
               }}
             >
-              <span>{faq.question}</span>
-              <span>{expanded === faq.id ? "-" : "+"}</span>
-            </div>
-            {expanded === faq.id && (
               <div
+                onClick={() => toggleFAQ(faq._id)}
                 style={{
                   padding: "20px",
-                  color: "#555",
-                  backgroundColor: "#f9f9f9",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  background: "#218fb1ee",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  color: "white",
+                  borderBottom: "1px solid #ddd",
+                  transition: "background-color 0.3s ease",
                 }}
               >
-                {faq.answer}
+                <span>{faq.question}</span>
+                <span>{expanded === faq._id ? "-" : "+"}</span>
               </div>
-            )}
-          </div>
-        ))}
+              {expanded === faq._id && (
+                <div
+                  style={{
+                    padding: "20px",
+                    color: "#555",
+                    backgroundColor: "#f9f9f9",
+                  }}
+                >
+                  {faq.answer}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

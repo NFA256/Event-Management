@@ -68,14 +68,16 @@ const Addevent = () => {
   };
 
   return (
-    <section className="vh-100 bg-image">
+    <section className="vh-100 mt-5">
       <div className="mask d-flex align-items-center h-100 gradient-custom-3">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 mb-5">
               <div className="card">
                 <div className="card-body p-5">
-                  <h2 className="text-uppercase text-center mb-5">Add Event</h2>
+                  <h1 className="text-uppercase font-weight-bold text-center mb-5">
+                    Add Event
+                  </h1>
 
                   {/* Error and Success messages */}
                   {error && (

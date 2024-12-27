@@ -169,13 +169,15 @@ const ShowEvent = () => {
 
   return (
     <div>
-      <div className="container mt-5">
-        <h3 className="text-center">Events List</h3>
+      <div className="col-10 mx-auto text-center mt-5">
+        <h1 className="text-center text-uppercase font-weight-bold mb-3">
+          Events{" "}
+        </h1>
         {error && <div className="alert alert-danger">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
-        <table className="table">
+        <table className="table table-bordered">
           <thead>
-            <tr>
+            <tr className="table-info ">
               <th>#</th>
               <th>Title</th>
               <th>Description</th>
@@ -194,7 +196,12 @@ const ShowEvent = () => {
                   <td>{index + 1}</td>
                   <td>{event.title}</td>
                   <td>{event.description}</td>
-                  <td>{new Date(`1970-01-01T${event.time}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                  <td>
+                    {new Date(`1970-01-01T${event.time}Z`).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" }
+                    )}
+                  </td>
                   <td>{new Date(event.date).toLocaleDateString()} </td>
                   <td>{event.no_of_visitors}</td>
                   <td>{event.status}</td>
@@ -210,13 +217,13 @@ const ShowEvent = () => {
                       className="btn btn-outline-warning btn-md mx-2"
                       onClick={() => handleEdit(event)}
                     >
-                      Edit
+                      <i class="fas fa-pencil-alt"></i>
                     </button>
                     <button
                       className="btn btn-outline-danger btn-md mx-2"
                       onClick={() => handleDelete(event._id)}
                     >
-                      Delete
+                      <i class="fas fa-trash-alt"></i>
                     </button>
                   </td>
                 </tr>
@@ -244,13 +251,6 @@ const ShowEvent = () => {
               <h5 className="modal-title" id="editModalLabel">
                 Edit Event
               </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleHideModal}
-              ></button>
             </div>
             <div className="modal-body">
               {error && <div className="alert alert-danger">{error}</div>}
@@ -295,7 +295,7 @@ const ShowEvent = () => {
                         Time
                       </label>
                       <input
-                       type="time"
+                        type="time"
                         id="modal-time"
                         className="form-control form-control-lg"
                         value={time}

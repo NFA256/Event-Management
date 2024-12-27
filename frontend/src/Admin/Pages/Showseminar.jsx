@@ -68,23 +68,23 @@ const Showseminar = () => {
       }
     }, 0);
   };
-const handleHideModal = () => {
-  if (modalRef.current) {
-    // Use the Bootstrap modal instance for proper control
-    const modal = new window.bootstrap.Modal(modalRef.current);
+  const handleHideModal = () => {
+    if (modalRef.current) {
+      // Use the Bootstrap modal instance for proper control
+      const modal = new window.bootstrap.Modal(modalRef.current);
 
-    // Hide the modal and dispose the instance to ensure cleanup
-    modal.hide();
-    modal.dispose();
+      // Hide the modal and dispose the instance to ensure cleanup
+      modal.hide();
+      modal.dispose();
 
-    // Update the React state to close the modal
-    setModalOpen(false);
+      // Update the React state to close the modal
+      setModalOpen(false);
 
-    // Ensure the background is properly restored after modal is closed
-    document.body.classList.remove("modal-open");
-    document.body.style.paddingRight = ""; // Reset any added padding (for scrollbar)
-  }
-};
+      // Ensure the background is properly restored after modal is closed
+      document.body.classList.remove("modal-open");
+      document.body.style.paddingRight = ""; // Reset any added padding (for scrollbar)
+    }
+  };
 
   useEffect(() => {
     return () => {
@@ -165,13 +165,15 @@ const handleHideModal = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Seminar Records</h2>
+    <div className="col-10 mx-auto text-center mt-5">
+      <h1 className="text-center text-uppercase font-weight-bold mb-3">
+        Seminars
+      </h1>
       {error && <div className="alert alert-danger">{error}</div>}
       {!error && seminars.length > 0 ? (
-        <table className="table table-bordered">
+        <table className="table  table-bordered">
           <thead>
-            <tr>
+            <tr className="table-info ">
               <th>#</th>
               <th>Title</th>
               <th>Purpose</th>
@@ -193,8 +195,22 @@ const handleHideModal = () => {
                 <td>{index + 1}</td>
                 <td>{seminar.title}</td>
                 <td>{seminar.purpose}</td>
-                <td>{new Date(`1970-01-01T${seminar.start_time}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} </td>
-                <td>{new Date(`1970-01-01T${seminar.end_time}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                <td>
+                  {new Date(
+                    `1970-01-01T${seminar.start_time}Z`
+                  ).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
+                </td>
+                <td>
+                  {new Date(
+                    `1970-01-01T${seminar.end_time}Z`
+                  ).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </td>
                 <td>{new Date(seminar.date).toLocaleDateString()}</td>
                 <td>{seminar.speaker_id ? seminar.speaker_id.name : "N/A"}</td>
                 <td>{seminar.hall_id ? seminar.hall_id.hall_name : "N/A"}</td>
@@ -221,13 +237,13 @@ const handleHideModal = () => {
                     className="btn btn-outline-warning btn-sm mx-2"
                     onClick={() => handleShowModal(seminar)}
                   >
-                    Edit
+                    <i class="fas fa-pencil-alt"></i>
                   </button>
                   <button
                     className="btn btn-outline-danger btn-sm"
                     onClick={() => handleDeleteSeminar(seminar._id)}
                   >
-                    Delete
+                    <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
               </tr>
@@ -252,13 +268,6 @@ const handleHideModal = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Edit Seminar</h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleHideModal}
-              ></button>
             </div>
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
