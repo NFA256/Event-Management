@@ -235,7 +235,7 @@ const Addworkshop = () => {
     const scheduleData = { 
       start_date:startDate,
       end_date:endDate,
-      reserved_for:"Worskshop",
+      reserved_for:"Workshop",
    };
    const scheduleResponse = await fetch("http://localhost:5000/schedules", {
      method: "POST",

@@ -81,6 +81,7 @@ const updateSchedule = async (req, res) => {
     }
 
     let existingSchedule = await schedules.findOne({
+      _id: { $ne: req.params.id },
       start_date: { $lte: new Date(end_date) },
       end_date: { $gte: new Date(start_date) },
     });
@@ -127,25 +128,7 @@ const deleteSchedule = async (req, res) => {
   }
 };
 
-// Fetch events by schedule ID
-const getEventsBySchedule = async (req, res) => {
-  try {
-    const { schedule_id } = req.params;
 
-    const eventsData = await events.find({ schedule_id });
-    const workshopsData = await workshops.find({ schedule_id });
-    const seminarsData = await seminars.find({ schedule_id });
-
-    return res.status(200).json({
-      events: eventsData,
-      workshops: workshopsData,
-      seminars: seminarsData,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ success: false, message: "Error fetching data" });
-  }
-};
 
 // Export CRUD functions
 module.exports = {
@@ -154,5 +137,4 @@ module.exports = {
   getScheduleById,
   updateSchedule,
   deleteSchedule,
-  getEventsBySchedule,
 };

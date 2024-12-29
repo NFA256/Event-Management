@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import { Modal } from "bootstrap";
 const Showseminar = () => {
   const [seminars, setSeminars] = useState([]);
   const [speakers, setSpeakers] = useState([]);
@@ -63,7 +63,7 @@ const Showseminar = () => {
 
     setTimeout(() => {
       if (modalRef.current) {
-        const modal = new window.bootstrap.Modal(modalRef.current);
+        const modal = new Modal(modalRef.current);
         modal.show();
       }
     }, 0);
@@ -71,7 +71,7 @@ const Showseminar = () => {
   const handleHideModal = () => {
     if (modalRef.current) {
       // Use the Bootstrap modal instance for proper control
-      const modal = new window.bootstrap.Modal(modalRef.current);
+      const modal = Modal.getInstance(modalRef.current);
 
       // Hide the modal and dispose the instance to ensure cleanup
       modal.hide();
@@ -81,8 +81,8 @@ const Showseminar = () => {
       setModalOpen(false);
 
       // Ensure the background is properly restored after modal is closed
-      document.body.classList.remove("modal-open");
-      document.body.style.paddingRight = ""; // Reset any added padding (for scrollbar)
+      // document.body.classList.remove("modal-open");
+      // document.body.style.paddingRight = ""; // Reset any added padding (for scrollbar)
     }
   };
 
@@ -94,9 +94,16 @@ const Showseminar = () => {
       }
     };
   }, []);
-  const handleDeleteSeminar = async (seminarId) => {
+  const handleDeleteSeminar = async (seminarId,schedule_id) => {
+    console.log(schedule_id)
     if (window.confirm("Are you sure you want to delete this seminar?")) {
       try {
+        const deleteSchedule = await fetch(
+          `http://localhost:5000/schedules/${schedule_id}`,
+          {
+            method: "DELETE",
+          }
+        );
         const response = await fetch(
           `http://localhost:5000/seminars/${seminarId}`,
           {
@@ -104,12 +111,13 @@ const Showseminar = () => {
           }
         );
 
-        if (response.ok) {
+        if (response.ok && deleteSchedule.ok) {
           setSuccessMessage("Seminar deleted successfully!");
           fetchSeminars(); // Refresh the list after deletion
         } else {
+          const scheduleresult = await response.json();
           const result = await response.json();
-          setError(result.message || "Failed to delete seminar.");
+          setError(scheduleresult.message || result.message || "Failed to delete seminar.");
         }
       } catch (err) {
         setError("Failed to connect to the server.");
@@ -125,7 +133,31 @@ const Showseminar = () => {
       setError("Title and Purpose are required!");
       return;
     }
+    const scheduleData = {
+      start_date: currentSeminar.date,
+      end_date: currentSeminar.date,
+      reserved_for: "Seminar",
+    };
 
+    const scheduleResponse = await fetch(`http://localhost:5000/schedules/${currentSeminar.schedule_id._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(scheduleData),
+    });
+
+    if (scheduleResponse.status === 400) {
+      const result = await scheduleResponse.json();
+      setError(result.message || "An error occurred while creating the schedule.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    } else if (!scheduleResponse.ok) {
+      const result = await scheduleResponse.json();
+      setError(result.message || "An error occurred while creating the schedule.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    const scheduleResult = await scheduleResponse.json();
     const updatedSeminar = {
       title: currentSeminar.title,
       purpose: currentSeminar.purpose,
@@ -136,6 +168,7 @@ const Showseminar = () => {
       hall_id: currentSeminar.hall_id,
       capacity: currentSeminar.capacity,
       price: currentSeminar.price,
+      scheduleId:scheduleResult.schedule._id,
       image: currentSeminar.image ? currentSeminar.image : null, // Or handle image separately if it's required
     };
 
@@ -241,7 +274,7 @@ const Showseminar = () => {
                   </button>
                   <button
                     className="btn btn-outline-danger btn-sm"
-                    onClick={() => handleDeleteSeminar(seminar._id)}
+                    onClick={() => handleDeleteSeminar(seminar._id,seminar.schedule_id._id)}
                   >
                     <i class="fas fa-trash-alt"></i>
                   </button>
@@ -268,7 +301,7 @@ const Showseminar = () => {
           <div className="modal-content">
             <div className="modal-header  justify-content-center">
               <h4 className="modal-title text-center w-100">Edit Seminar</h4>
-              <button type="button" className="close">
+              <button type="button" className="close"  data-bs-dismiss="modal" aria-label="Close">
                 <span>&times;</span>
               </button>
             </div>

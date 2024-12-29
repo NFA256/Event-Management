@@ -127,9 +127,15 @@ const Showworkshop = () => {
     }
     setModalOpen(true);
   };
-  const handleDelete = async (workshopId) => {
+  const handleDelete = async (workshopId,schedule_id) => {
     if (window.confirm("Are you sure you want to delete this workshop?")) {
       try {
+        const deleteSchedule = await fetch(
+          `http://localhost:5000/schedules/${schedule_id}`,
+          {
+            method: "DELETE",
+          }
+        );
         const response = await fetch(
           `http://localhost:5000/workshops/${workshopId}`,
           {
@@ -137,16 +143,17 @@ const Showworkshop = () => {
           }
         );
 
-        if (response.ok) {
+        if (response.ok  && deleteSchedule.ok) {
           // Update the workshops state to remove the deleted workshop
           setWorkshops((prevWorkshops) =>
             prevWorkshops.filter((workshop) => workshop._id !== workshopId)
           );
         } else {
+          const scheduleresult = await response.json();
           const result = await response.json();
           console.error("Error response:", result);
           setError(
-            result.message || "An error occurred while deleting the workshop."
+            scheduleresult.message || result.message || "An error occurred while deleting the workshop."
           );
         }
       } catch (err) {
@@ -246,7 +253,31 @@ const Showworkshop = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentWorkshop) return;
+    const scheduleData = {
+      start_date: currentWorkshop.start_date,
+      end_date: currentWorkshop.end_date,
+      reserved_for: "Workshop",
+    };
+    const scheduleResponse = await fetch(`http://localhost:5000/schedules/${currentWorkshop.schedule_id._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(scheduleData),
+    });
 
+    if (scheduleResponse.status === 400) {
+      const result = await scheduleResponse.json();
+      setError(result.message || "An error occurred while creating the schedule.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    } else if (!scheduleResponse.ok) {
+      const result = await scheduleResponse.json();
+      setError(result.message || "An error occurred while creating the schedule.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    const scheduleResult = await scheduleResponse.json();
+    const scheduleId = scheduleResult.schedule._id;
     // Prepare the form data
     const formData = new FormData();
     formData.append("title", currentWorkshop.title);
@@ -370,7 +401,7 @@ const Showworkshop = () => {
                 </button>
                 <button
                   className="btn btn-outline-danger btn-md mx-1 mt-2"
-                  onClick={() => handleDelete(workshop._id)}
+                  onClick={() => handleDelete(workshop._id,workshop.schedule_id._id)}
                 >
                   {" "}
                   <i class="fas fa-trash-alt"></i>

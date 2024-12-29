@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import { Modal } from "bootstrap";
 const ShowEvent = () => {
   const [events, setEvents] = useState([]);
   const [title, setTitle] = useState("");
@@ -17,26 +17,26 @@ const ShowEvent = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const modalRef = useRef(null);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/events");
-        if (response.ok) {
-          const data = await response.json();
-          if (Array.isArray(data)) {
-            setEvents(data);
-          } else {
-            console.error("API response is not an array:", data);
-            setEvents([]);
-          }
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/events");
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setEvents(data);
         } else {
-          console.error("Failed to fetch events");
+          console.error("API response is not an array:", data);
+          setEvents([]);
         }
-      } catch (error) {
-        console.error("Error fetching events:", error);
+      } else {
+        console.error("Failed to fetch events");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+  useEffect(() => {
+    
     fetchEvents();
   }, []);
 
@@ -53,23 +53,23 @@ const ShowEvent = () => {
     }
   };
 
-  const handleShowModal = () => {
-    setModalOpen(true);
-    setTimeout(() => {
-      if (modalRef.current) {
-        const modal = new window.bootstrap.Modal(modalRef.current);
-        modal.show();
-      }
-    }, 0);
-  };
-
-  const handleHideModal = () => {
-    setModalOpen(false);
+const handleShowModal = () => {
+  setModalOpen(true);
+  setTimeout(() => {
     if (modalRef.current) {
-      const modal = new window.bootstrap.Modal(modalRef.current);
-      modal.hide();
+      const modalInstance = new Modal(modalRef.current);
+        modalInstance.show(); // Show the modal
     }
-  };
+  }, 0);
+};
+
+const handleHideModal = () => {
+  setModalOpen(false);
+  if (modalRef.current) {
+    const modalInstance = Modal.getInstance(modalRef.current);
+    modalInstance.hide(); // Hide the modal
+  }
+};
 
   const resetForm = () => {
     setTitle("");
@@ -86,13 +86,20 @@ const ShowEvent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    handleHideModal();
 
     if (!title || !description || !time || !date || !no_of_visitors || (!eventImage && !editMode)) {
       setError("All fields are required!");
       setTimeout(() => setError(""), 3000);
       return;
     }
+    const scheduleData = {
+      start_date: date,
+      end_date: date,
+      reserved_for: "Event",
+    };
 
+    
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -104,6 +111,27 @@ const ShowEvent = () => {
 
     try {
       if (editMode) {
+        const scheduleResponse = await fetch(`http://localhost:5000/schedules/${currentEvent.schedule_id._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(scheduleData),
+        });
+    
+        if (scheduleResponse.status === 400) {
+          const result = await scheduleResponse.json();
+          setError(result.message || "An error occurred while creating the schedule.");
+          setTimeout(() => setError(""), 3000);
+          return;
+        } else if (!scheduleResponse.ok) {
+          const result = await scheduleResponse.json();
+          setError(result.message || "An error occurred while creating the schedule.");
+          setTimeout(() => setError(""), 3000);
+          return;
+        }
+    
+        const scheduleResult = await scheduleResponse.json();
+        const scheduleId = scheduleResult.schedule._id;
+        formData.append("schedule_id", scheduleId);
         const url = `http://localhost:5000/events/${currentEvent._id}`;
         const response = await fetch(url, {
           method: "PUT",
@@ -121,6 +149,7 @@ const ShowEvent = () => {
           setTimeout(() => setSuccess(""), 3000);
           resetForm();
           handleHideModal();
+          fetchEvents()
         } else {
           const result = await response.json();
           setError(result.message || "An error occurred.");
@@ -134,13 +163,20 @@ const ShowEvent = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id,schedule_id) => {
+    if (window.confirm("Are you sure you want to delete this workshop?")) {
     try {
+      const deleteSchedule = await fetch(
+        `http://localhost:5000/schedules/${schedule_id}`,
+        {
+          method: "DELETE",
+        }
+      );
       const response = await fetch(`http://localhost:5000/events/${id}`, {
         method: "DELETE",
       });
 
-      if (response.ok) {
+      if (response.ok  && deleteSchedule.ok) {
         setEvents((prevEvents) =>
           prevEvents.filter((event) => event._id !== id)
         );
@@ -151,7 +187,7 @@ const ShowEvent = () => {
       }
     } catch (error) {
       setError("Failed to connect to the server.");
-    }
+    }}
   };
 
   const handleEdit = (event) => {
@@ -221,7 +257,7 @@ const ShowEvent = () => {
                     </button>
                     <button
                       className="btn btn-outline-danger btn-md mx-2"
-                      onClick={() => handleDelete(event._id)}
+                      onClick={() => handleDelete(event._id,event.schedule_id._id)}
                     >
                       <i class="fas fa-trash-alt"></i>
                     </button>
@@ -251,7 +287,7 @@ const ShowEvent = () => {
               <h4 className="modal-title text-center w-100" id="editModalLabel">
                 Edit Event
               </h4>
-              <button type="button" className="close">
+              <button type="button" className="close"  data-bs-dismiss="modal" aria-label="Close">
                 <span>&times;</span>
               </button>
             </div>

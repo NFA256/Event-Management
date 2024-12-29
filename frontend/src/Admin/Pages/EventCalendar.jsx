@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -7,36 +7,109 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 const localizer = momentLocalizer(moment);
 
 const EventCalendar = () => {
-  const [events, setEvents] = useState([
-    {
-      title: "Seminar",
-      start: new Date(2024, 11, 16),
-      end: new Date(2024, 11, 18),
-      allDay: true,
-      category: "Seminar",
-    },
-  ]);
-  useEffect(()=>{
-    const fetchSchedules = async () => {
+  const [events, setEvents] = useState([]);
+  const [seminars, setSeminars] = useState([]);
+  const [workshops, setWorkshops] = useState([]);
+  const [sessions, setSessions] = useState([]);
+
+  // Fetch schedules, seminars, workshops, and sessions
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/schedules");
-        const data = await response.json();
-        console.log(data)
-        const formattedEvents = data.map((schedule) => ({
-          title: schedule.reserved_for,
-          start: new Date(schedule.start_date),
-          end: new Date(schedule.end_date),
-          allDay: true,
-          category: schedule.reserved_for, // assuming 'reserved_for' represents the event type
-        }));
-        setEvents(formattedEvents);
+        const [scheduleResponse, eventResponse, seminarResponse, workshopResponse, sessionResponse] = await Promise.all([
+          fetch("http://localhost:5000/schedules"),
+          fetch("http://localhost:5000/events"),
+          fetch("http://localhost:5000/seminars"),
+          fetch("http://localhost:5000/workshops"),
+          fetch("http://localhost:5000/sessions"),
+        ]);
+
+        const scheduleData = await scheduleResponse.json();
+        const eventData = await eventResponse.json();
+        const seminarData = await seminarResponse.json();
+        const workshopData = await workshopResponse.json();
+        const sessionData = await sessionResponse.json();
+
+        // Map the seminars, workshops, and sessions into an easy-to-access format
+        const eventMap = eventData.reduce((acc, item) => {
+          acc[item.schedule_id._id] = item.title;
+          return acc;
+        }, {});
+
+        const seminarMap = seminarData.reduce((acc, item) => {
+          acc[item.schedule_id._id] = item.title;
+          return acc;
+        }, {});
+
+        const workshopMap = workshopData.reduce((acc, item) => {
+          acc[item.schedule_id._id] = item.title;
+          return acc;
+        }, {});
+
+        // Map the sessions with workshop_id
+        const sessionMap = sessionData.reduce((acc, session) => {
+          console.log(acc)
+          if (!acc[session.workshop_id._id]) {
+            acc[session.workshop_id._id] = [];
+          }
+          acc[session.workshop_id._id].push(session);
+          return acc;
+        }, {});
+
+        // Format events and associate titles
+        const formattedEvents = scheduleData.map((schedule) => {
+          let eventTitle = "Event";
+          if (schedule.reserved_for === "Event") {
+            eventTitle = eventMap[schedule._id] || "Events";
+          } else if (schedule.reserved_for === "Seminar") {
+            eventTitle = seminarMap[schedule._id] || "Seminar";
+          } else if (schedule.reserved_for === "Workshop") {
+            eventTitle = workshopMap[schedule._id] || "Workshop";
+          }
+
+          return {
+            title: eventTitle,
+            start: new Date(schedule.start_date),
+            end: new Date(schedule.end_date),
+            allDay: true,
+            category: schedule.reserved_for,
+            schedule_id: schedule._id,
+          };
+        });
+
+        // Map sessions to events (based on workshops)
+        const sessionEvents = [];
+        workshopData.forEach((workshop) => {
+          if (sessionMap[workshop._id]) {
+            console.log(sessionMap[workshop._id])
+            sessionMap[workshop._id].forEach((session) => {
+              sessionEvents.push({
+                title: `Day ${session.day_no}: ${session.title}`,
+                start: new Date(session.date),
+                end: new Date(session.date),
+                allDay: true,
+                category: "Session",
+                session_id: session._id,
+                color: "blue", // Set the color for sessions
+              });
+            });
+          }
+        });
+
+        // Merge all events
+        setEvents([...formattedEvents, ...sessionEvents]);
+        setSeminars(seminarData);
+        setWorkshops(workshopData);
+        setSessions(sessionData);
+
       } catch (error) {
-        console.error("Error fetching schedules:", error);
+        console.error("Error fetching data:", error);
       }
     };
-  
-    fetchSchedules();
+
+    fetchData();
   }, []);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [eventTitle, setEventTitle] = useState("");
@@ -67,6 +140,7 @@ const EventCalendar = () => {
       setModalOpen(true);
     }
   };
+
   const handleSaveEvent = () => {
     if (isUpdating) {
       setEvents(
@@ -116,16 +190,21 @@ const EventCalendar = () => {
 
   const eventPropGetter = (event) => {
     let backgroundColor;
-    switch (event.category) {
-      case "Seminar":
-        backgroundColor = "red";
-        break;
-      case "Worskshop":
-        backgroundColor = "orange";
-        break;
-      default:
-        backgroundColor = "green";
-    }
+   
+      switch (event.category) {
+        case "Seminar":
+          backgroundColor = "red";
+          break;
+        case "Workshop":
+          backgroundColor = "blue";
+          break;
+        case "Session":
+          backgroundColor = "lightBlue";
+          break;
+        default:
+          backgroundColor = "green";
+      }
+    
     return { style: { backgroundColor, color: "white", borderRadius: "5px" } };
   };
 
@@ -154,7 +233,7 @@ const EventCalendar = () => {
   };
 
   return (
-    <div className="container   mt-5">
+    <div className="container mt-5">
       <div className="section-tittle">
         <h2 className="text-center mb-4"> Event Management Calendar</h2>
       </div>
@@ -224,30 +303,10 @@ const EventCalendar = () => {
                   >
                     <option value="Seminar">Seminar</option>
                     <option value="Workshop">Workshop</option>
+                    <option value="Session">Session</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
-                {isUpdating && (
-                  <div className="mb-3">
-                    <label htmlFor="newEventDate" className="form-label">
-                      Reschedule Date
-                    </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="newEventDate"
-                      value={
-                        newEventDate
-                          ? moment(newEventDate).format("YYYY-MM-DD")
-                          : ""
-                      }
-                      min={moment(today).format("YYYY-MM-DD")}
-                      onChange={(e) =>
-                        setNewEventDate(moment(e.target.value).toDate())
-                      }
-                    />
-                  </div>
-                )}
               </div>
               <div className="modal-footer">
                 <button
