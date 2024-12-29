@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const HeroSection = () => (
   <div className="slider-area2">
@@ -16,7 +16,72 @@ const HeroSection = () => (
   </div>
 );
 
-export const ScheduleContent = () => (
+export const ScheduleContent = () => {
+  const [events, setEvents] = useState([]);
+   const [workshops, setWorkshops] = useState([]);
+   const [seminars, setSeminars] = useState([]);
+    const [error, setError] = useState(null); // Add error state
+  
+    useEffect(() => {
+      const fetchEvents = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/events");
+          if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data)) {
+              setEvents(data);
+            } else {
+              console.error("API response is not an array:", data);
+              setError("Invalid data format received from the server.");
+              setEvents([]);
+            }
+          } else {
+            console.error("Failed to fetch events");
+            setError("Failed to fetch events from the server.");
+          }
+        } catch (error) {
+          console.error("Error fetching events:", error);
+          setError("An error occurred while fetching events.");
+        }
+      };
+      const fetchWorkshops = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/workshops");
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            setWorkshops(data);
+          } else {
+            console.error("Workshops data is not an array:", data);
+          }
+        } catch (error) {
+          console.error("There was an error fetching the workshops:", error);
+          setError(error.message);
+        }
+      };
+      const fetchSeminars = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/seminars");
+          const data = await response.json();
+    
+          if (response.ok) {
+            setSeminars(data);
+          } else {
+            throw new Error(data.message || "Failed to fetch seminars.");
+          }
+        } catch (err) {
+          setError(err.message);
+        }
+      };
+      fetchSeminars()
+      fetchWorkshops()
+      fetchEvents();
+    }, []);
+
+    const lastevents = events.slice(-6);
+    const lastseminars = seminars.slice(-6);
+    const lastworkshops = workshops.slice(-6);
+  return(
+  
   <main>
     {/* <!--? Hero Start --> */}
 
@@ -34,48 +99,34 @@ export const ScheduleContent = () => (
                     className="nav-item nav-link active"
                     id="nav-home-tab"
                     data-toggle="tab"
-                    href="#nav-home"
+                    href="#nav-events"
                     role="tab"
                     aria-controls="nav-home"
                     aria-selected="true"
                   >
-                    Day - 01
+                    Events
                   </a>
                   <a
                     className="nav-item nav-link"
                     id="nav-profile-tab"
                     data-toggle="tab"
-                    href="#nav-profile"
+                    href="#nav-seminar"
                     role="tab"
                     aria-controls="nav-profile"
                     aria-selected="false"
                   >
-                    {" "}
-                    Day - 02
+                   Seminars
                   </a>
                   <a
                     className="nav-item nav-link"
                     id="nav-contact-tab"
                     data-toggle="tab"
-                    href="#nav-contact"
+                    href="#nav-workshop"
                     role="tab"
                     aria-controls="nav-contact"
                     aria-selected="false"
                   >
-                    {" "}
-                    Day - 03{" "}
-                  </a>
-                  <a
-                    className="nav-item nav-link"
-                    id="nav-dinner-tab"
-                    data-toggle="tab"
-                    href="#nav-dinner"
-                    role="tab"
-                    aria-controls="nav-dinner"
-                    aria-selected="false"
-                  >
-                    {" "}
-                    Day - 04{" "}
+                    Workshop
                   </a>
                 </div>
               </nav>
@@ -87,10 +138,10 @@ export const ScheduleContent = () => (
       <div className="container">
         {/* <!-- Nav Card --> */}
         <div className="tab-content" id="nav-tabContent">
-          {/* <!-- card one --> */}
+          {/* <!-- Events --> */}
           <div
             className="tab-pane fade show active"
-            id="nav-home"
+            id="nav-events"
             role="tabpanel"
             aria-labelledby="nav-home-tab"
           >
@@ -99,110 +150,48 @@ export const ScheduleContent = () => (
                 <div className="accordion-wrapper">
                   <div className="accordion" id="accordionExample">
                     {/* <!-- single-one --> */}
-                    <div className="card">
+                    {
+                      lastevents.map((event)=>(
+                        <div className="card">
                       <div className="card-header" id="headingTwo">
                         <h2 className="mb-0">
                           <a
                             href="#"
                             className="btn-link collapsed"
                             data-toggle="collapse"
-                            data-target="#collapseTwo"
+                            data-target={"#collapse"+event._id}
                             aria-expanded="false"
                             aria-controls="collapseTwo"
                           >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Snackes</p>
+                            <span>{event.title}</span>
+                            <p>{new Date(event.date).toLocaleDateString()}</p>
                           </a>
                         </h2>
                       </div>
                       <div
-                        id="collapseTwo"
-                        className="collapse show"
+                        id={"collapse"+event._id}
+                        className="collapse "
                         aria-labelledby="headingTwo"
                         data-parent="#accordionExample"
                       >
                         <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
+                         {event.description}
                         </div>
                       </div>
                     </div>
-                    {/* <!-- single-two --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingOne">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link"
-                            data-toggle="collapse"
-                            data-target="#collapseOne"
-                            aria-expanded="true"
-                            aria-controls="collapseOne"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Opening conference</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseOne"
-                        className="collapse"
-                        aria-labelledby="headingOne"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- single-three --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingThree">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link collapsed"
-                            data-toggle="collapse"
-                            data-target="#collapseThree"
-                            aria-expanded="false"
-                            aria-controls="collapseThree"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Conference ending</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseThree"
-                        className="collapse"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
+                      ))
+                    }
+                    
+                   
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {/* <!-- Card two --> */}
+          {/* <!--Seminar --> */}
           <div
             className="tab-pane fade"
-            id="nav-profile"
+            id="nav-seminar"
             role="tabpanel"
             aria-labelledby="nav-profile-tab"
           >
@@ -211,110 +200,47 @@ export const ScheduleContent = () => (
                 <div className="accordion-wrapper">
                   <div className="accordion" id="accordionExample">
                     {/* <!-- single-one --> */}
-                    <div className="card">
+                    {
+                      lastseminars.map((seminar)=>(
+                        <div className="card">
                       <div className="card-header" id="headingTwo">
                         <h2 className="mb-0">
                           <a
                             href="#"
                             className="btn-link collapsed"
                             data-toggle="collapse"
-                            data-target="#collapseTwo2"
+                            data-target={"#collapse"+seminar._id}
                             aria-expanded="false"
-                            aria-controls="collapseTwo2"
+                            aria-controls="collapseTwo"
                           >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Snackes</p>
+                            <span>{seminar.title}</span>
+                            <p>{new Date(seminar.date).toLocaleDateString()}</p>
                           </a>
                         </h2>
                       </div>
                       <div
-                        id="collapseTwo2"
-                        className="collapse show"
+                        id={"collapse"+seminar._id}
+                        className="collapse "
                         aria-labelledby="headingTwo"
                         data-parent="#accordionExample"
                       >
                         <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
+                         {seminar.purpose}
                         </div>
                       </div>
                     </div>
-                    {/* <!-- single-two --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingOne">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link"
-                            data-toggle="collapse"
-                            data-target="#collapseOne1"
-                            aria-expanded="true"
-                            aria-controls="collapseOne1"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Opening conference</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseOne1"
-                        className="collapse"
-                        aria-labelledby="headingOne"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- single-three --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingThree">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link collapsed"
-                            data-toggle="collapse"
-                            data-target="#collapseThree3"
-                            aria-expanded="false"
-                            aria-controls="collapseThree3"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Conference ending</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseThree3"
-                        className="collapse"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
+                      ))
+                    }
+                   
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {/* <!-- Card three --> */}
+          {/* <!-- Workshop --> */}
           <div
             className="tab-pane fade"
-            id="nav-contact"
+            id="nav-workshop"
             role="tabpanel"
             aria-labelledby="nav-contact-tab"
           >
@@ -323,213 +249,37 @@ export const ScheduleContent = () => (
                 <div className="accordion-wrapper">
                   <div className="accordion" id="accordionExample">
                     {/* <!-- single-one --> */}
-                    <div className="card">
+                    {
+                      lastworkshops.map((workshop)=>(
+                        <div className="card">
                       <div className="card-header" id="headingTwo">
                         <h2 className="mb-0">
                           <a
                             href="#"
                             className="btn-link collapsed"
                             data-toggle="collapse"
-                            data-target="#collapseTwo01"
+                            data-target={"#collapse"+workshop._id}
                             aria-expanded="false"
-                            aria-controls="collapseTwo01"
+                            aria-controls="collapseTwo"
                           >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Snackes</p>
+                            <span>{workshop.title}</span>
+                            <p>{new Date(workshop.start_date).toLocaleDateString()}-{new Date(workshop.end_date).toLocaleDateString()}</p>
                           </a>
                         </h2>
                       </div>
                       <div
-                        id="collapseTwo01"
-                        className="collapse show"
+                        id={"collapse"+workshop._id}
+                        className="collapse "
                         aria-labelledby="headingTwo"
                         data-parent="#accordionExample"
                       >
                         <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
+                         {workshop.description}
                         </div>
                       </div>
                     </div>
-                    {/* <!-- single-two --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingOne">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link"
-                            data-toggle="collapse"
-                            data-target="#collapseOne02"
-                            aria-expanded="true"
-                            aria-controls="collapseOne02"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Opening conference</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseOne02"
-                        className="collapse"
-                        aria-labelledby="headingOne"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- single-three --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingThree">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link collapsed"
-                            data-toggle="collapse"
-                            data-target="#collapseThree03"
-                            aria-expanded="false"
-                            aria-controls="collapseThree03"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Conference ending</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseThree03"
-                        className="collapse"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* <!-- Card Four --> */}
-          <div
-            className="tab-pane fade"
-            id="nav-dinner"
-            role="tabpanel"
-            aria-labelledby="nav-dinner"
-          >
-            <div className="row">
-              <div className="col-lg-11 mx-auto">
-                <div className="accordion-wrapper">
-                  <div className="accordion" id="accordionExample">
-                    {/* <!-- single-one --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingTwo">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link collapsed"
-                            data-toggle="collapse"
-                            data-target="#collapseTwo10"
-                            aria-expanded="false"
-                            aria-controls="collapseTwo10"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Snackes</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseTwo10"
-                        className="collapse show"
-                        aria-labelledby="headingTwo"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- single-two --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingOne">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link"
-                            data-toggle="collapse"
-                            data-target="#collapseOne20"
-                            aria-expanded="true"
-                            aria-controls="collapseOne20"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Opening conference</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseOne20"
-                        className="collapse"
-                        aria-labelledby="headingOne"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- single-three --> */}
-                    <div className="card">
-                      <div className="card-header" id="headingThree">
-                        <h2 className="mb-0">
-                          <a
-                            href="#"
-                            className="btn-link collapsed"
-                            data-toggle="collapse"
-                            data-target="#collapseThree30"
-                            aria-expanded="false"
-                            aria-controls="collapseThree30"
-                          >
-                            <span>8:30 AM - 9:30 AM</span>
-                            <p>Conference ending</p>
-                          </a>
-                        </h2>
-                      </div>
-                      <div
-                        id="collapseThree30"
-                        className="collapse"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordionExample"
-                      >
-                        <div className="card-body">
-                          There arge many variations ohf passages of sorem gpsum
-                          ilable, but the majority have suffered alteration in
-                          some form, by ected humour, or randomised words
-                          whi.rere arge many variations ohf passages of sorem
-                          gpsum ilable.
-                        </div>
-                      </div>
-                    </div>
+                      ))
+                    }
                   </div>
                 </div>
               </div>
@@ -541,7 +291,7 @@ export const ScheduleContent = () => (
     </section>
     {/* <!-- accordion End --> */}
   </main>
-);
+)};
 const Schedule = () => {
   return (
     <>

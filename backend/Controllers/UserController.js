@@ -273,10 +273,11 @@ const deleteUser = async (req, res) => {
 const updateUserRole = async (req, res) => {
   try {
     const { id } = req.params; // Get user ID from the request parameters
-    const { rolename } = req.body; // Get new role from the body
- const role = await roles.findOne({ RoleName: rolename });
+    const { RoleName } = req.body; // Get new role from the body
+ const roleID = await roles.findOne({ RoleName });
+ const role =roleID._id
     // Find and update the user's role
-    const user = await users.findByIdAndUpdate({_id : id}, { role  }, { new: true });
+    const user = await users.findByIdAndUpdate({_id : id}, {role }, { new: true });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });

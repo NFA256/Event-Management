@@ -74,7 +74,7 @@ const Register = () => {
     e.preventDefault();
     // Format CNIC before submission
     // const formattedCnic = formatCnic(Cnic); // Apply the formatting function
-
+let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     // Validate inputs
     if (Name === "" || Name.length < 3) {
       setError("Username is not valid");
@@ -84,8 +84,8 @@ const Register = () => {
       setError("Email is not valid");
       return;
     }
-    if (Password === "" || Password.length < 6) {
-      setError("Password must be strong");
+    if (Password === "" || !passwordreg.test(Password)) {
+      setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character");
       return;
     }
     if (Cpassword !== Password) {

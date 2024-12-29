@@ -134,7 +134,7 @@ const ExhibitorRegister = () => {
       const roleUpdateResponse = await fetch(`http://localhost:5000/userRole/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: exhibitorRole }),
+        body: JSON.stringify({ RoleName: exhibitorRole }),
       });
 
       if (!roleUpdateResponse.ok) {
