@@ -142,18 +142,25 @@ const Showworkshop = () => {
             method: "DELETE",
           }
         );
+        const deleteSessions = await fetch(
+          `http://localhost:5000/sessions-by-workshop-id/${workshopId}`,
+          {
+            method: "DELETE",
+          }
+        );
 
-        if (response.ok  && deleteSchedule.ok) {
+        if (response.ok  && deleteSchedule.ok &&deleteSessions.ok) {
           // Update the workshops state to remove the deleted workshop
           setWorkshops((prevWorkshops) =>
             prevWorkshops.filter((workshop) => workshop._id !== workshopId)
           );
         } else {
-          const scheduleresult = await response.json();
+          const sessionresult = await deleteSchedule.json();
+          const scheduleresult = await deleteSessions.json();
           const result = await response.json();
           console.error("Error response:", result);
           setError(
-            scheduleresult.message || result.message || "An error occurred while deleting the workshop."
+            sessionresult.message || scheduleresult.message || result.message || "An error occurred while deleting the workshop."
           );
         }
       } catch (err) {

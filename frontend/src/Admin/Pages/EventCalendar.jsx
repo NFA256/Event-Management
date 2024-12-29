@@ -48,7 +48,7 @@ const EventCalendar = () => {
 
         // Map the sessions with workshop_id
         const sessionMap = sessionData.reduce((acc, session) => {
-          console.log(acc)
+          console.log(session)
           if (!acc[session.workshop_id._id]) {
             acc[session.workshop_id._id] = [];
           }

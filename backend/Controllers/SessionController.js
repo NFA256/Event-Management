@@ -147,7 +147,24 @@ const deleteSession = async (req, res) => {
     res.status(500).json({ message: "Failed to delete session", error: error.message });
   }
 };
+// Delete a session
+const deleteSessionsByWorkshopID = async (req, res) => {
+  const { workshop_id } = req.params;  // Correctly destructure from req.params
 
+  try {
+    // Delete all sessions associated with the given workshop_id
+    const result = await sessions.deleteMany({ workshop_id });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No sessions found to delete" });
+    }
+
+    res.status(200).json({ message: `${result.deletedCount} session(s) deleted successfully` });
+  } catch (error) {
+    console.error(error); // Log the error
+    res.status(500).json({ message: "Failed to delete sessions", error: error.message });
+  }
+};
 // Export CRUD functions
 module.exports = {
   createSession,
@@ -155,4 +172,5 @@ module.exports = {
   getSessionById,
   updateSession,
   deleteSession,
+  deleteSessionsByWorkshopID,
 };

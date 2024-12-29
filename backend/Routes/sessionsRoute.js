@@ -7,6 +7,7 @@ const {
   getSessionById,
   updateSession,
   deleteSession,
+  deleteSessionsByWorkshopID
 } = require("../Controllers/SessionController");
 
 // Routes for sessions
@@ -18,5 +19,7 @@ router.route("/sessions/:id")
   .get(getSessionById)
   .put(updateSession)
   .delete(deleteSession);
+router.route("/sessions-by-workshop-id/:workshop_id")
+  .delete(deleteSessionsByWorkshopID);
 
 module.exports = router;
