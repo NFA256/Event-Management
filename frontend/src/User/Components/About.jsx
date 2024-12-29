@@ -64,7 +64,7 @@ export const AboutContent = () => (
             Get Your Ticket
           </a>
           <Link to="/becomaexhibitor" className="btn3 ml-3 mt-50">
-            Become a Exhibitor
+            Become An Exhibitor
           </Link>
         </div>
         <div className="col-lg-6 col-md-12">
@@ -84,7 +84,6 @@ export const AboutContent = () => (
 
 export const AboutPricing = () => (
   <>
-  
     <section className="pricing-card-area section-padding2">
       <div className="container">
         {/* <!-- Section Tittle --> */}

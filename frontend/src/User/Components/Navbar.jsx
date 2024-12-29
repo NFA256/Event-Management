@@ -88,6 +88,11 @@ const Navbar = () => {
               Workshop
             </Link>
           </li>
+          <li className="nav-item">
+            <Link to="/event" className="nav-link">
+              Event
+            </Link>
+          </li>
           {/* <li className="nav-item">
             <Link to="/schedule" className="nav-link">
               Schedule

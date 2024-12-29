@@ -194,7 +194,7 @@ const Testimonial = () => {
 
   return (
     <>
-      <section className="slider-area2 text-center">
+      <section className="slider-area3 text-center">
         <br />
         <div className="section-tittle section-tittle2 mb-50">
           <h2>Testimonial.</h2>

@@ -32,6 +32,7 @@ import Showseminar from "./Admin/Pages/Showseminar";
 import EventCalendar from "./Admin/Pages/EventCalendar";
 import Workshop from "./User/Pages/Workshop";
 import Seminar from "./User/Pages/Seminar";
+import Events from "./User/Pages/Events";
 
 const App = () => {
   return (
@@ -50,6 +51,7 @@ const App = () => {
         <Route path="/testimonial" element={<Testimonial />} />
         <Route path="/workshop" element={<Workshop />} />
         <Route path="/seminar" element={<Seminar />} />
+        <Route path="/event" element={<Events />} />
 
         {/* //------Admin */}
         <Route path="/admin" element={<Sidebar />}>

@@ -119,7 +119,12 @@ const Seminar = () => {
                             <strong>Capacity: {seminar.capacity}</strong>
                           </div>
                           <div className="col-6 text-uppercase">
-                            <strong>Price: {seminar.price}/=</strong>
+                            <strong>
+                              Price: 
+                              {seminar.price === "Free"
+                                ? seminar.price
+                                : `${seminar.price}/=`}
+                            </strong>
                           </div>
                         </div>
                         <div className="row mb-3">

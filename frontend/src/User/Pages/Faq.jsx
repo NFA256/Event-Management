@@ -107,7 +107,7 @@ const Faq = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  background: "#218fb1ee",
+                  background: "#043544ee",
                   cursor: "pointer",
                   fontWeight: "bold",
                   color: "white",

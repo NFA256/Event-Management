@@ -197,7 +197,7 @@ const Home = () => {
       {/* <!-- slider Area End--> */}
       <AboutContent />
       {/* ///-------------------- */}
-      <section className="team-area pt-180 pb-100 section-bg bg-info">
+      <section className="team-area slider-area3 pt-180 pb-100 section-bg bg-info">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-9">
@@ -270,8 +270,8 @@ const Home = () => {
       {/* <!--? Brand Area Start--> */}
 
       <section
-        className="work-company section-padding30"
-        style={{ background: "#218fb1ee" }}
+        className="work-company slider-area3 
+ section-padding30"
       >
         <div className="container">
           <div className="row align-items-center">
@@ -288,24 +288,27 @@ const Home = () => {
             <div className="col-lg-7">
               <div className="logo-area">
                 <div className="row">
-                {lastSixcompanies.length > 0 ? (
-              lastSixcompanies.map((company) => (
-                <div key={company._id} className="col-lg-4 col-md-4 col-sm-6">
-                  <div className="single-logo mb-30">
-                    <img
-                      src={company.image || "assets/img/default-avatar.png"}
-                      alt={company.name}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-12">
-                <p>No Companies available.</p>
-              </div>
-            )}
-                  
-                  
+                  {lastSixcompanies.length > 0 ? (
+                    lastSixcompanies.map((company) => (
+                      <div
+                        key={company._id}
+                        className="col-lg-4 col-md-4 col-sm-6"
+                      >
+                        <div className="single-logo mb-30">
+                          <img
+                            src={
+                              company.image || "assets/img/default-avatar.png"
+                            }
+                            alt={company.name}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-12">
+                      <p>No Companies available.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -199,9 +199,14 @@ const ExhibitorRegister = () => {
   }
 
   return (
-    <div className="d-flex mb-5 justify-content-center align-items-center" style={{ minHeight: "75vh" }}>
+    <div
+      className="mt-5 d-flex mb-5 justify-content-center align-items-center"
+      style={{ minHeight: "75vh" }}
+    >
       <div className="container shadow-lg p-5" style={{ maxWidth: "550px" }}>
-        <h2 className="text-center mb-4">Exhibitor Registration</h2>
+        <h2 className="modal-title text-center  mb-4">
+          Exhibitor Registration
+        </h2>
 
         {Error && <div className="alert alert-danger">{Error}</div>}
         {Success && <div className="alert alert-success">{Success}</div>}
@@ -223,7 +228,7 @@ const ExhibitorRegister = () => {
           <FileInput
             label="Company Logo"
             previewImage={formData.previewCompanyImage}
-            onImageChange={(e) => handleImageChange(e, 'CompanyImage')}
+            onImageChange={(e) => handleImageChange(e, "CompanyImage")}
           />
 
           <div className="mb-3">
@@ -253,12 +258,13 @@ const ExhibitorRegister = () => {
           <FileInput
             label="Exhibitor Image"
             previewImage={formData.previewExhibitorImage}
-            onImageChange={(e) => handleImageChange(e, 'ExhibitorImage')}
+            onImageChange={(e) => handleImageChange(e, "ExhibitorImage")}
           />
-
-          <button type="submit" className="btn btn-primary w-100">
-            Register as Exhibitor
-          </button>
+          <div className="text-center">
+            <button type="submit" className="btn3">
+              Register as Exhibitor
+            </button>
+          </div>
         </form>
       </div>
     </div>

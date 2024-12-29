@@ -2165,7 +2165,7 @@ hr {
   padding: 0 !important;
 }
 .slider-height {
-  height: 635px;
+  height: 800px;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .slider-height {
@@ -2207,18 +2207,25 @@ hr {
   }
 }
 .slider-area2 {
-  background-color: #218fb1ee;
-  /* background-image: url(../img/hero/hero2.png); */
+  /* background-color: #218fb1ee; */
+  background-image: url(../img/hero/cover3.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.slider-area3 {
+  /* background-color: #218fb1ee; */
+  background-image: url(../img/hero/cover.jpg);
   background-repeat: no-repeat;
   background-size: cover;
 }
 .slider-area {
   margin-top: -1px;
-  background-color: #218fb1ee;
-  /* background-image: url(../img/hero/h1_hero.png); */
+  /* background-color: #218fb152; */
+  background-image: url(../img/hero/image.png);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
+  opacity: 3px;
 }
 .slider-area .hero__caption {
   overflow: hidden;
@@ -2313,18 +2320,18 @@ hr {
   height: 60px;
   display: inline-block;
   text-align: center;
-  line-height: 60px;
+  line-height: 55px;
   border-radius: 50%;
   position: relative;
   margin-left: 29px;
-  border: 1px solid #043544ee;
+  border: 4px double #218fb1ee;
 }
 .slider-area .hero__caption .slider-btns a.video-btn i {
-  color: #043544ee;
+  color: #218fb1ee;
 }
 .slider-area .hero__caption .slider-btns .video-cap {
   display: inline-block;
-  line-height: 1.5;
+  line-height: 2;
   margin: 0;
   margin-left: 15px;
 }
@@ -2575,7 +2582,7 @@ hr {
   margin-bottom: 45px;
 }
 .pricing-card-area .single-card.active {
-  background: #218fb1ee;
+  background: #043544ee;
   transform: scale(1.2);
 }
 @media only screen and (min-width: 576px) and (max-width: 767px) {
@@ -2640,7 +2647,7 @@ hr {
   transform: scale(1);
   transition: all 0.6s ease-out 0s;
 }
-.work-company .single-logo:hover  img {
+.work-company .single-logo:hover img {
   transform: scale(1.06);
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
@@ -2765,7 +2772,7 @@ hr {
   font-weight: 500;
 }
 .accordion .accordion-wrapper .card-header a span {
-  color: #218fb1ee;
+  color: #043544ee;
   font-size: 16px;
   font-weight: 800;
 }
@@ -2812,7 +2819,7 @@ hr {
   position: absolute;
   height: 15px;
   width: 15px;
-  background: #218fb1ee;
+  background: #043544ee;
   content: "";
   left: 0;
   right: 0;
@@ -2826,7 +2833,7 @@ hr {
 }
 .accordion .nav-tabs .nav-item {
   display: block;
-  color: #218fb1ee;
+  color: #043544ee;
   font-size: 24px;
   font-weight: 700;
 }
@@ -2837,7 +2844,7 @@ hr {
 }
 .accordion .nav-tabs .nav-item.show .nav-link,
 .accordion .nav-tabs .nav-link.active {
-  background: #218fb1ee;
+  background: #043544ee;
   color: #fff;
   -webkit-transition: all 0s ease-out 0s;
   -moz-transition: all 0s ease-out 0s;
@@ -3093,10 +3100,10 @@ hr {
   transition-delay: 0.3s;
 }
 .footer-area {
-  background: #218fb1ee;
+  background: #043544ee;
 }
 .footer-area .footer-social2 a:hover {
-  background: #218fb1ee;
+  background: #043544ee;
   color: #7f7f7f;
   border: 1px solid transparent;
 }
@@ -3179,7 +3186,7 @@ hr {
   border: 0;
   cursor: pointer;
   padding: 13px 22px;
-  background: #043544ee;
+  background: #218fb1ee;
   line-height: 1;
   border-radius: 0 3px 3px 0;
 }
@@ -3187,7 +3194,7 @@ hr {
   color: #218fb1ee;
 }
 .footer-bottom-area {
-  background: #218fb1ee;
+  background: #043544ee;
   border-top: 1px solid #2d3544;
 }
 .footer-bottom-area .footer-border {
@@ -3211,10 +3218,10 @@ hr {
   }
 }
 .footer-bottom-area .footer-copy-right p i {
-  color: #043544ee;
+  color: #4ac3e7ee;
 }
 .footer-bottom-area .footer-copy-right p a {
-  color: #043544ee;
+  color: #4ac3e7ee;
 }
 .footer-bottom-area .footer-copy-right p a:hover {
   color: #fff;
@@ -3298,6 +3305,7 @@ hr {
   -ms-transform: scale 1;
   transform: scale 1;
   transition: all 0.5s ease-out 0s;
+  height: 350px;
 }
 .home-blog-area .home-blog-single .blog-img-cap .blog-img .blog-date {
   background: #043544ee;
@@ -3417,6 +3425,7 @@ hr {
   -webkit-transform: scale(1.1);
   -ms-transform: scale(1.1);
   transform: scale(1.1);
+  height: 350px;
 }
 .latest-blog-area .area-heading {
   margin-bottom: 70px;
