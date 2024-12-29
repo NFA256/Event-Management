@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 
 const Schedule_Schema = mongoose.Schema(
   {
-    date: {
+    start_date: {
+      type: Date,
+      required: [true, "Date is required"],
+    },
+    end_date: {
       type: Date,
       required: [true, "Date is required"],
     },

@@ -3,18 +3,27 @@ const schedules = require("../Models/Schedule"); // Import the Schedule model
 // Create a new schedule
 const createSchedule = async (req, res) => {
   try {
-    const { date, reserved_for } = req.body;
+    const { start_date, end_date, reserved_for } = req.body;
 
     // Validate required fields
-    if (!date || !reserved_for) {
+    if (!start_date || !end_date || !reserved_for) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const newSchedule = new schedules({
-      date,
-      reserved_for,
+    // Check if a schedule already exists for the given date range and reserved_for type
+    let existingSchedule = await schedules.findOne({
+      start_date: { $lte: new Date(end_date) },
+      end_date: { $gte: new Date(start_date) },
     });
 
+    if (existingSchedule) {
+      // Customized error messages based on the conflict
+      const conflictMessage = `The dates are already booked with a ${existingSchedule.reserved_for.toLowerCase()}.`;
+      return res.status(400).json({ message: conflictMessage });
+    }
+
+    // Create the new schedule
+    const newSchedule = new schedules({ start_date, end_date, reserved_for });
     await newSchedule.save();
 
     res.status(201).json({
@@ -62,20 +71,26 @@ const getScheduleById = async (req, res) => {
 // Update a schedule
 const updateSchedule = async (req, res) => {
   try {
-    const { date, reserved_for } = req.body;
+    const { start_date, end_date, reserved_for } = req.body;
 
-    if (!date && !reserved_for) {
+    if (!start_date && !end_date && !reserved_for) {
       return res.status(400).json({ message: "Please provide data to update" });
+    }
+
+    let existingSchedule = await schedules.findOne({
+      start_date: { $lte: new Date(end_date) },
+      end_date: { $gte: new Date(start_date) },
+    });
+
+    if (existingSchedule) {
+      // Customized error messages based on the conflict
+      const conflictMessage = `The dates are already booked with a ${existingSchedule.reserved_for.toLowerCase()}.`;
+      return res.status(400).json({ message: conflictMessage });
     }
 
     const updatedSchedule = await schedules.findByIdAndUpdate(
       req.params.id,
-      {
-        $set: {
-          ...(date && { date }),
-          ...(reserved_for && { reserved_for }),
-        },
-      },
+      { $set: { ...(start_date && { start_date }), ...(end_date && { end_date }), ...(reserved_for && { reserved_for }) } },
       { new: true, runValidators: true }
     );
 

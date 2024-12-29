@@ -82,9 +82,36 @@ const Home = () => {
      };
      fetchSpeakers();
    }, []);
+  //Company work
+   const [companies, setCompanies] = useState([]);
+
+   useEffect(() => {
+    const fetchcompanies = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/company");
+        if (response.ok) {
+          const company = await response.json();
+          console.log(company); // Log the API response to check the structure
+          if (Array.isArray(company)) {
+            setCompanies(company);
+          } else {
+            console.error("API response is not an array:", company);
+            setCompanies([]);
+          }
+        } else {
+          console.error("Failed to fetch company");
+        }
+      } catch (error) {
+        console.error("Error fetching company:", error);
+        setError("Failed to fetch company.");
+      }
+    };
+     fetchcompanies();
+   }, []);
 
    // Get only the last 6 speakers
    const lastSixSpeakers = speakers.slice(-6);
+   const lastSixcompanies = companies.slice(-6);
   return (
     <>
       {/* <!--? slider Area Start--> */}
@@ -191,7 +218,7 @@ const Home = () => {
             {/* Speaker Cards */}
             {lastSixSpeakers.length > 0 ? (
               lastSixSpeakers.map((speaker) => (
-                <div key={speaker._id} className="col-lg-3 col-md-4 col-sm-6">
+                <div key={speaker._id} className="col-lg-2 col-md-4 col-sm-6">
                   <div className="single-team mb-30">
                     <div className="team-img">
                       <img
@@ -261,36 +288,24 @@ const Home = () => {
             <div className="col-lg-7">
               <div className="logo-area">
                 <div className="row">
-                  <div className="col-lg-4 col-md-4 col-sm-6">
-                    <div className="single-logo mb-30">
-                      <img src="assets/img/gallery/cisco_brand.png" alt="" />
-                    </div>
+                {lastSixcompanies.length > 0 ? (
+              lastSixcompanies.map((company) => (
+                <div key={company._id} className="col-lg-4 col-md-4 col-sm-6">
+                  <div className="single-logo mb-30">
+                    <img
+                      src={company.image || "assets/img/default-avatar.png"}
+                      alt={company.name}
+                    />
                   </div>
-                  <div className="col-lg-4 col-md-4 col-sm-6">
-                    <div className="single-logo mb-30">
-                      <img src="assets/img/gallery/cisco_brand2.png" alt="" />
-                    </div>
-                  </div>
-                  <div className="col-lg-4 col-md-4 col-sm-6">
-                    <div className="single-logo mb-30">
-                      <img src="assets/img/gallery/cisco_brand3.png" alt="" />
-                    </div>
-                  </div>
-                  <div className="col-lg-4 col-md-4 col-sm-6">
-                    <div className="single-logo mb-30">
-                      <img src="assets/img/gallery/cisco_brand4.png" alt="" />
-                    </div>
-                  </div>
-                  <div className="col-lg-4 col-md-4 col-sm-6">
-                    <div className="single-logo mb-30">
-                      <img src="assets/img/gallery/cisco_brand5.png" alt="" />
-                    </div>
-                  </div>
-                  <div className="col-lg-4 col-md-4 col-sm-6">
-                    <div className="single-logo mb-30">
-                      <img src="assets/img/gallery/cisco_brand6.png" alt="" />
-                    </div>
-                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-12">
+                <p>No Companies available.</p>
+              </div>
+            )}
+                  
+                  
                 </div>
               </div>
             </div>

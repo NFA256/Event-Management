@@ -46,17 +46,53 @@ const Addseminar = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      // const maxSize = 5 * 1024 * 1024; // 5MB
+      
+      if (!validTypes.includes(file.type)) {
+        setError("Only JPEG, JPG, PNG, images are allowed!");
+        setTimeout(() => setError(""), 3000);
+        return;
+      }
+      
+      // if (file.size > maxSize) {
+      //   setError("Image size must be less than 5MB!");
+      //   setTimeout(() => setError(""), 3000);
+      //   return;
+      // }
+  
       setSeminarData({
         ...seminarData,
         previewImage: URL.createObjectURL(file),
         seminarImage: file,
-      });
+      }); // Store the file object
     }
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
+    if (name === "start_time" || name === "end_time") {
+      // Check if the start time and end time are valid
+      if (name === "end_time") {
+        const start = seminarData.start_time;
+        if (start && value <= start) {
+          setError("End time must be later than start time.");
+          setSeminarData({ ...seminarData, end_time: "" });
+          return;
+        } else {
+          setError("");
+        }
+      }
+      else if (name === "start_time") {
+        const end = seminarData.end_time;
+        if (end && value >= end) {
+          setSeminarData({ ...seminarData, end_time: "" });
+          return;
+        } else {
+          setError("");
+        }
+      }
+    }
     // If the checkbox for is_paid is unchecked, set the price to "Free"
     if (name === "is_paid" && !checked) {
       setSeminarData({
@@ -103,12 +139,41 @@ const Addseminar = () => {
       setIsSubmitting(true);
       setError("");
       setSuccess("");
+      const {date} =seminarData
+      const scheduleData = {
+        start_date: date,
+        end_date: date,
+        reserved_for: "Seminar",
+      };
+
+      const scheduleResponse = await fetch("http://localhost:5000/schedules", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(scheduleData),
+      });
+  
+      if (scheduleResponse.status === 400) {
+        const result = await scheduleResponse.json();
+        setError(result.message || "An error occurred while creating the schedule.");
+        setTimeout(() => setError(""), 3000);
+        setIsSubmitting(false); // Disable loading on error
+        return;
+      } else if (!scheduleResponse.ok) {
+        const result = await scheduleResponse.json();
+        setError(result.message || "An error occurred while creating the schedule.");
+        setTimeout(() => setError(""), 3000);
+        setIsSubmitting(false); // Disable loading on error
+        return;
+      }
+  
+      const scheduleResult = await scheduleResponse.json();
+      const scheduleId = scheduleResult.schedule._id;
 
       const formData = new FormData();
       for (const key in seminarData) {
         formData.append(key, seminarData[key]);
       }
-
+      formData.append("schedule_id", scheduleId);
       const response = await fetch("http://localhost:5000/seminars", {
         method: "POST",
         body: formData,
@@ -137,6 +202,8 @@ const Addseminar = () => {
       setError(err.message || "Error adding seminar.");
     } finally {
       setIsSubmitting(false);
+      setSuccess("");
+
     }
   };
 
@@ -155,6 +222,11 @@ const Addseminar = () => {
                   {error && (
                     <div className="alert alert-danger" role="alert">
                       <p>{error}</p>
+                    </div>
+                  )}
+                  {isSubmitting && (
+                    <div className="alert alert-info" role="alert">
+                      Adding Seminar...
                     </div>
                   )}
                   {success && (
@@ -277,6 +349,8 @@ const Addseminar = () => {
                           className="form-control text-center form-control-lg"
                           value={seminarData.end_time}
                           onChange={handleChange}
+                           min={seminarData.start_time || "00:00"} // Ensure end time is after start time
+    max="23:59"
                         />
                       </div>
                     </div>
@@ -393,7 +467,7 @@ const Addseminar = () => {
 
                     {/* Image upload */}
                     <div className="row mb-3 mt-2">
-                      <div className="col-8">
+                      <div className="col-9">
                         <div className="form-group">
                           <label htmlFor="image">Image</label>
                           <input
@@ -405,27 +479,36 @@ const Addseminar = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-4">
+                      <div className="col-3">
                         {seminarData.previewImage ? (
                           <img
-                            style={{ maxWidth: "120px" }}
+                          style={{
+                            maxWidth: "150px",
+                            maxHeight: "150px",
+                            display: "block",
+                            borderRadius: "8px",
+                          }}
                             alt="Preview"
                             className="img-thumbnail"
                             src={seminarData.previewImage}
                           />
                         ) : (
                           <div
-                            style={{
-                              backgroundColor: "#98939378",
-                              width: "100px",
-                              height: "100px",
-                              color: "grey",
-                              fontSize: "13px",
-                            }}
-                            className="px-3 py-4 text-center"
-                          >
-                            No Image Selected
-                          </div>
+                          style={{
+                            backgroundColor: "#f8f9fa",
+                            border: "1px dashed #ced4da",
+                            borderRadius: "8px",
+                            width: "150px",
+                            height: "150px",
+                            color: "#6c757d",
+                            fontSize: "14px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          No Image Selected
+                        </div>
                         )}
                       </div>
                     </div>
@@ -439,7 +522,7 @@ const Addseminar = () => {
                         className="btn3 "
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? "Submitting..." : "Add Seminar"}
+                        {isSubmitting ? "Adding Seminar..." : "Add Seminar"}
                       </button>
                     </div>
                   </form>

@@ -62,6 +62,11 @@ const Seminar_Schema = mongoose.Schema(
       ref: 'halls', // Assuming you have a 'Hall' model for halls
       required: [true, "Hall ID is required"],
     },
+     schedule_id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'schedules', // Assuming you have a 'schedules' model
+          required: [true, "Schedule ID is required"],
+        },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

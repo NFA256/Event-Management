@@ -43,7 +43,12 @@ const Event_Schema = mongoose.Schema(
     },
     ImageID: { 
       type:String 
-    }
+    },
+    schedule_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'schedules', // Assuming you have a 'schedules' model
+      required: [true, "Schedule ID is required"],
+    },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

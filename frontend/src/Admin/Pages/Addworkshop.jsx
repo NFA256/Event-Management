@@ -16,6 +16,7 @@ const Addworkshop = () => {
   const [speakers, setSpeakers] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false); 
   const [sessions, setSessions] = useState([]); // New state for holding sessions
   const [priceError, setPriceError] = useState("");
   const [attendeesError, setAttendeesError] = useState("");
@@ -110,52 +111,75 @@ const Addworkshop = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      // const maxSize = 5 * 1024 * 1024; // 5MB
+      
+      if (!validTypes.includes(file.type)) {
+        setError("Only JPEG, JPG, PNG, images are allowed!");
+        setTimeout(() => setError(""), 3000);
+        return;
+      }
+      
+      // if (file.size > maxSize) {
+      //   setError("Image size must be less than 5MB!");
+      //   setTimeout(() => setError(""), 3000);
+      //   return;
+      // }
+  
       setPreviewImage(URL.createObjectURL(file));
-      setworkshopImage(file);
+      setworkshopImage(file); // Store the file object
     }
   };
 
   const handleSessionChange = (index, field, value) => {
     const updatedSessions = [...sessions];
     updatedSessions[index][field] = value;
-
+  
     // If the start time or end time is changed, recalculate the duration
     if (field === "start_time" || field === "end_time") {
       const startTime = updatedSessions[index].start_time;
       const endTime = updatedSessions[index].end_time;
-
+  
       // Check if both start and end times are set
       if (startTime && endTime) {
         const start = new Date(`1970-01-01T${startTime}:00`);
         const end = new Date(`1970-01-01T${endTime}:00`);
-
-        // Calculate duration in minutes
-        const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
-
-        if (durationInMinutes > 0) {
-          const hours = Math.floor(durationInMinutes / 60);
-          const minutes = durationInMinutes % 60;
-          updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+  
+        // Ensure the start time is not later than the end time
+        if (start >= end) {
+          // Reset the end time to an empty string if invalid
+          updatedSessions[index].end_time = "";
+          updatedSessions[index].duration = ""; // Reset duration if times are invalid
         } else {
-          updatedSessions[index].duration = ""; // Reset if duration is negative
+          // Calculate duration in minutes
+          const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
+  
+          if (durationInMinutes > 0) {
+            const hours = Math.floor(durationInMinutes / 60);
+            const minutes = durationInMinutes % 60;
+            updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+          } else {
+            updatedSessions[index].duration = ""; // Reset if duration is negative
+          }
         }
       } else {
         updatedSessions[index].duration = ""; // Reset duration if either time is missing
       }
     }
-
+  
     // Automatically set first session's date to startDate
     if (index === 0 && field === "date") {
       updatedSessions[index].date = startDate;
     }
-
+  
     // Automatically set last session's date to endDate
     if (index === sessions.length - 1 && field === "date") {
       updatedSessions[index].date = endDate;
     }
-
+  
     setSessions(updatedSessions);
   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!price || parseFloat(price) <= 1000) {
@@ -207,6 +231,28 @@ const Addworkshop = () => {
       setTimeout(() => setError(""), 3000);
       return;
     }
+    setLoading(true);
+    const scheduleData = { 
+      start_date:startDate,
+      end_date:endDate,
+      reserved_for:"Worskshop",
+   };
+   const scheduleResponse = await fetch("http://localhost:5000/schedules", {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify(scheduleData),
+   });
+    if (!scheduleResponse.ok) {
+     const result = await scheduleResponse.json();
+     setError(result.message || "An error occurred while creating the schedule.");
+     setTimeout(() => setError(""), 3000);
+     setLoading(false); // Disable loading on error
+     return;
+   }
+
+   const scheduleResult = await scheduleResponse.json();
+   const scheduleId = scheduleResult.schedule._id;
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -218,7 +264,7 @@ const Addworkshop = () => {
     formData.append("no_of_attendees", noOfAttendees);
     formData.append("price", price);
     formData.append("speaker_id", speakerId);
-
+    formData.append("schedule_id", scheduleId);
     try {
       // Send POST request to create the workshop
       const workshopResponse = await fetch("http://localhost:5000/workshops", {
@@ -258,8 +304,10 @@ const Addworkshop = () => {
         const sessionResults = await Promise.all(sessionPromises);
         if (sessionResults.every((res) => res === true)) {
           console.log("All sessions added successfully!");
+          
         } else {
           console.error("Error adding some sessions.");
+          setLoading(false); 
         }
 
         // Wait for all session creation requests to complete
@@ -284,13 +332,18 @@ const Addworkshop = () => {
         setTimeout(() => setSuccess(""), 3000);
       } else {
         const result = await workshopResponse.json();
+        setLoading(false); // Disable loading on error
         setError(
           result.message || "An error occurred while adding the workshop."
         );
       }
     } catch (err) {
+      setLoading(false); // Disable loading on error
       setError("Failed to connect to the server. Please try again.");
+    } finally {
+      setLoading(false); // Set loading to false after operation completes
     }
+    
   };
 
   return (
@@ -309,6 +362,11 @@ const Addworkshop = () => {
                   {error && (
                     <div className="alert alert-danger" role="alert">
                       {error}
+                    </div>
+                  )}
+                   {loading && (
+                    <div className="alert alert-info" role="alert">
+                      Adding Workshop...
                     </div>
                   )}
                   {success && (
@@ -333,27 +391,38 @@ const Addworkshop = () => {
                         />
                       </div>
                       <div className="col-md-6 form-outline mb-4">
-                        <label className="form-label" htmlFor="total_sessions">
-                          Total Sessions
-                        </label>
-                        <input
-                          type="number"
-                          id="total_sessions"
-                          className="form-control text-center form-control-lg"
-                          value={totalSessions}
-                          onChange={(e) => {
-                            const value = parseInt(e.target.value, 10);
-                            if (value >= 1 && value <= 6) {
-                              setTotalSessions(value);
-                            } else {
-                              // Optionally, you can set an error message
-                              setError(
-                                "Total sessions must be between 1 and 6."
-                              );
-                            }
-                          }}
-                        />
-                      </div>
+  <label className="form-label" htmlFor="total_sessions">
+    Total Sessions
+  </label>
+  <input
+    type="number"
+    id="total_sessions"
+    className="form-control text-center form-control-lg"
+    value={totalSessions}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      // Handle backspace and empty value
+      if (value === "") {
+        setTotalSessions(value);  // Allow clearing the value
+        setError(""); // Clear error when input is empty
+        return;
+      }
+
+      const parsedValue = parseInt(value, 10);
+
+      // Check if the value is a valid number and in the allowed range
+      if (parsedValue >= 1 && parsedValue <= 6) {
+        setTotalSessions(parsedValue); // Update the state with valid value
+        setError(""); // Clear error if the value is valid
+      } else {
+        setError("Total sessions must be between 1 and 6.");
+        setTimeout(() => setError(""), 3000);
+      }
+    }}
+  />
+  {error && <div className="text-danger mt-2">{error}</div>}
+</div>
                     </div>
 
                     {/* Other workshop details */}
@@ -487,14 +556,13 @@ const Addworkshop = () => {
                           />
                         </div>
                       </div>
-                      <div className="mt-3">
+                      <div className="col-3">
                         {previewImage ? (
                           <img
                             style={{
-                              maxWidth: "100%",
+                              maxWidth: "150px",
                               maxHeight: "150px",
                               display: "block",
-                              marginTop: "10px",
                               borderRadius: "8px",
                             }}
                             alt="Preview"
@@ -509,7 +577,6 @@ const Addworkshop = () => {
                               borderRadius: "8px",
                               width: "150px",
                               height: "150px",
-                              marginTop: "10px",
                               color: "#6c757d",
                               fontSize: "14px",
                               display: "flex",
@@ -682,6 +749,8 @@ const Addworkshop = () => {
                                   e.target.value
                                 )
                               }
+                               min={session.start_time || "00:00"} // Ensure end time is after start time
+    max="23:59"
                             />
                           </div>
 
@@ -705,9 +774,13 @@ const Addworkshop = () => {
                       </>
                     ))}
 
-                    <div className="form-outline text-center mb-4">
-                      <button type="submit" className="btn3">
-                        Submit
+<div className="form-outline text-center mb-4">
+                      <button
+                        type="submit"
+                        className="btn3"
+                        disabled={loading} // Disable the button while loading
+                      >
+                        {loading ? "Adding..." : "Submit"} {/* Change button text */}
                       </button>
                     </div>
                   </form>

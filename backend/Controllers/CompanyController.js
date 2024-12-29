@@ -39,10 +39,8 @@ const getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.find();
 
-    res.status(200).json({
-      success: true,
-      data: companies,
-    });
+    res.status(200).json( companies
+    );
   } catch (error) {
     res.status(500).json({
       success: false,

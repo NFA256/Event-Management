@@ -11,6 +11,7 @@ const Addevent = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);  // New state for loading
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +22,41 @@ const Addevent = () => {
       setTimeout(() => setError(""), 3000);
       return;
     }
+    if (!noOfVisitors || isNaN(noOfVisitors) || noOfVisitors <= 0) {
+      setError("Number of visitors must be a positive number!");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+    setLoading(true); // Set loading state to true when the form is being submitted
 
+    const scheduleData = {
+      start_date: date,
+      end_date: date,
+      reserved_for: "Event",
+    };
+
+    const scheduleResponse = await fetch("http://localhost:5000/schedules", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(scheduleData),
+    });
+
+    if (scheduleResponse.status === 400) {
+      const result = await scheduleResponse.json();
+      setError(result.message || "An error occurred while creating the schedule.");
+      setTimeout(() => setError(""), 3000);
+      setLoading(false); // Disable loading on error
+      return;
+    } else if (!scheduleResponse.ok) {
+      const result = await scheduleResponse.json();
+      setError(result.message || "An error occurred while creating the schedule.");
+      setTimeout(() => setError(""), 3000);
+      setLoading(false); // Disable loading on error
+      return;
+    }
+
+    const scheduleResult = await scheduleResponse.json();
+    const scheduleId = scheduleResult.schedule._id;
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -30,6 +65,7 @@ const Addevent = () => {
     formData.append("no_of_visitors", noOfVisitors);
     formData.append("status", status);
     formData.append("eventImage", eventImage);
+    formData.append("schedule_id", scheduleId);
 
     try {
       const response = await fetch("http://localhost:5000/events", {
@@ -56,12 +92,29 @@ const Addevent = () => {
       }
     } catch (err) {
       setError("Failed to connect to the server. Please try again.");
+    } finally {
+      setLoading(false); // Set loading to false after operation completes
     }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      // const maxSize = 5 * 1024 * 1024; // 5MB
+      
+      if (!validTypes.includes(file.type)) {
+        setError("Only JPEG, JPG, PNG, images are allowed!");
+        setTimeout(() => setError(""), 3000);
+        return;
+      }
+      
+      // if (file.size > maxSize) {
+      //   setError("Image size must be less than 5MB!");
+      //   setTimeout(() => setError(""), 3000);
+      //   return;
+      // }
+  
       setPreviewImage(URL.createObjectURL(file)); // Display image preview
       setEventImage(file); // Store the file object
     }
@@ -83,6 +136,11 @@ const Addevent = () => {
                   {error && (
                     <div className="alert alert-danger" role="alert">
                       {error}
+                    </div>
+                  )}
+                  {loading && (
+                    <div className="alert alert-info" role="alert">
+                      Adding Event...
                     </div>
                   )}
                   {success && (
@@ -171,13 +229,17 @@ const Addevent = () => {
                         <label className="form-label" htmlFor="status">
                           Status
                         </label>
-                        <input
-                          type="text"
+                        <select
                           id="status"
                           className="form-control text-center form-control-lg"
                           value={status}
                           onChange={(e) => setStatus(e.target.value)}
-                        />
+                        >
+                          <option value="">Select Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Completed">Completed</option>
+                          <option value="Upcoming">Upcoming</option>
+                        </select>
                       </div>
                     </div>
 
@@ -196,14 +258,13 @@ const Addevent = () => {
                           />
                         </div>
                       </div>
-                      <div className="mt-3">
+                      <div className="col-3 ">
                         {previewImage ? (
                           <img
                             style={{
-                              maxWidth: "100%",
+                              maxWidth: "150px",
                               maxHeight: "150px",
                               display: "block",
-                              marginTop: "10px",
                               borderRadius: "8px",
                             }}
                             alt="Preview"
@@ -218,7 +279,6 @@ const Addevent = () => {
                               borderRadius: "8px",
                               width: "150px",
                               height: "150px",
-                              marginTop: "10px",
                               color: "#6c757d",
                               fontSize: "14px",
                               display: "flex",
@@ -233,8 +293,12 @@ const Addevent = () => {
                     </div>
 
                     <div className="form-outline text-center mb-4">
-                      <button type="submit" className="btn3">
-                        Submit
+                      <button
+                        type="submit"
+                        className="btn3"
+                        disabled={loading} // Disable the button while loading
+                      >
+                        {loading ? "Adding..." : "Submit"} {/* Change button text */}
                       </button>
                     </div>
                   </form>

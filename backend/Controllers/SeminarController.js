@@ -4,11 +4,16 @@ const { ImageDelete } = require("../Middlewares/ImageUploading"); // Image middl
 // Create a new seminar
 const createSeminar = async (req, res) => {
   try {
-    const { date, title, purpose, start_time, end_time, capacity, price, is_paid, speaker_id, hall_id } = req.body;
+    const { date, title, purpose, start_time, end_time, capacity, price, is_paid, speaker_id, hall_id, schedule_id } = req.body;
     const seminarImage = req.file; // Getting the uploaded image
 
     if (!seminarImage) {
       return res.status(400).json({ message: "Seminar image is required" });
+    }
+
+    // Check if all required fields are provided
+    if (!schedule_id) {
+      return res.status(400).json({ message: "Schedule ID is required" });
     }
 
     // Create a new seminar document
@@ -23,6 +28,7 @@ const createSeminar = async (req, res) => {
       is_paid,
       speaker_id,
       hall_id,
+      schedule_id, // Save schedule_id
       image: seminarImage.path, // Save the image path
       ImageID: seminarImage.filename, // Save the image filename for future deletion
     });
@@ -41,7 +47,7 @@ const createSeminar = async (req, res) => {
 // Get all seminars
 const getAllSeminars = async (req, res) => {
   try {
-    const getSeminars = await seminars.find().populate('speaker_id').populate('hall_id');
+    const getSeminars = await seminars.find().populate('speaker_id').populate('hall_id').populate('schedule_id');
     res.status(200).json(getSeminars);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch seminars", error: error.message });
@@ -51,7 +57,7 @@ const getAllSeminars = async (req, res) => {
 // Get a single seminar by ID
 const getSeminarById = async (req, res) => {
   try {
-    const getSeminar = await seminars.findById(req.params.id).populate('speaker_id').populate('hall_id');
+    const getSeminar = await seminars.findById(req.params.id).populate('speaker_id').populate('hall_id').populate('schedule_id');
     if (!getSeminar) {
       return res.status(404).json({ message: "Seminar not found" });
     }
@@ -64,13 +70,13 @@ const getSeminarById = async (req, res) => {
 // Update a seminar by ID
 const updateSeminar = async (req, res) => {
   try {
-    const { date, title, purpose, start_time, end_time, capacity, price, is_paid, speaker_id, hall_id, oldImage, Imagefilename } = req.body;
+    const { date, title, purpose, start_time, end_time, capacity, price, is_paid, speaker_id, hall_id, schedule_id, oldImage, Imagefilename } = req.body;
     const seminarImage = req.file; // Check if a new image is uploaded
     let seminarImagePath = oldImage;
     let fileID = Imagefilename;
 
     // Ensure at least one field is provided for update
-    if (!date && !title && !purpose && !start_time && !end_time && !capacity && !speaker_id && !hall_id) {
+    if (!date && !title && !purpose && !start_time && !end_time && !capacity && !speaker_id && !hall_id && !schedule_id) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -111,6 +117,7 @@ const updateSeminar = async (req, res) => {
           ...(is_paid && { is_paid }),
           ...(speaker_id && { speaker_id }),
           ...(hall_id && { hall_id }),
+          ...(schedule_id && { schedule_id }), // Update schedule_id if provided
           ...(seminarImagePath && { image: seminarImagePath }),
           ...(fileID && { ImageID: fileID }),
         },

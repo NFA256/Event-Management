@@ -4,19 +4,19 @@ const { ImageDelete } = require("../Middlewares/ImageUploading");
 // Create a new event
 const createEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors, status } = req.body;
+    const { title, description, time, date, no_of_visitors, status, schedule_id } = req.body;
     const eventImage = req.file;
 
     // Check if event image is provided
-    // if (!eventImage) {
-    //   return res.status(400).json({ message: "Event image is required" });
-    // }
+    if (!eventImage) {
+      return res.status(400).json({ message: "Event image is required" });
+    }
 
     const Event_Image = eventImage.path;
     const fileID = eventImage.filename;
 
     // Check if all required fields are provided
-    if (!title || !description || !time || !date || !no_of_visitors || !status) {
+    if (!title || !description || !time || !date || !no_of_visitors || !status || !schedule_id) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -29,6 +29,7 @@ const createEvent = async (req, res) => {
       image: Event_Image,
       ImageID: fileID,
       status,
+      schedule_id, // Add schedule_id to the event
     });
 
     await newEvent.save();
@@ -70,7 +71,7 @@ const getEventById = async (req, res) => {
 // Update an event
 const updateEvent = async (req, res) => {
   try {
-    const { title, description, time, date, no_of_visitors, oldImage, Imagefilename, status } = req.body;
+    const { title, description, time, date, no_of_visitors, oldImage, Imagefilename, status, schedule_id } = req.body;
     const eventImage = req.file;
     let Event_Image;
     let fileID;
@@ -102,7 +103,7 @@ const updateEvent = async (req, res) => {
     }
 
     // Ensure at least one field is provided for update
-    if (!title && !description && !time && !date && !no_of_visitors && !status && !eventImage) {
+    if (!title && !description && !time && !date && !no_of_visitors && !status && !schedule_id && !eventImage) {
       return res.status(400).json({ message: "Please provide data to update" });
     }
 
@@ -119,6 +120,7 @@ const updateEvent = async (req, res) => {
           ...(Event_Image && { image: Event_Image }),
           ...(fileID && { ImageID: fileID }),
           ...(status && { status }),
+          ...(schedule_id && { schedule_id }), // Include schedule_id in update
         },
       },
       { new: true, runValidators: true }
