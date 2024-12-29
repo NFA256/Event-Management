@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const navigate = useNavigate();
 
-  const [GetRoles, setGetRoles] = useState([]);
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
   const [Cnic, setCnic] = useState("");

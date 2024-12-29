@@ -1,4 +1,5 @@
 const users = require("../Models/Users");
+const  roles  = require("../Models/Roles");
 const bcrypt = require("bcrypt");
 
 // Method -------  GET
@@ -261,6 +262,26 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+
+
+const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params; // Get user ID from the request parameters
+    const { rolename } = req.body; // Get new role from the body
+ const role = await roles.findOne({ RoleName: rolename });
+    // Find and update the user's role
+    const user = await users.findByIdAndUpdate({_id : id}, { role  }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'User role updated', data: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Error updating user role', error: error.message });
+  }
+};
 // const OTPs = {}; // Store OTPs temporarily for simplicity
 
 // Forgot Password
@@ -303,4 +324,5 @@ module.exports = {
   getUserByEmail,
   updateUser,
   deleteUser,
+  updateUserRole,
 };

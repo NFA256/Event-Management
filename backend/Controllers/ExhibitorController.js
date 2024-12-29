@@ -17,7 +17,7 @@ const createExhibitor = async (req, res) => {
     const ImageID = exhibitorImage.filename;
 
     // Validate required fields
-    if (!company_id || !contact || !user_id || !event_id ||!booth_id) {
+    if (!company_id || !contact || !user_id ) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
