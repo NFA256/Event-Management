@@ -1,4 +1,4 @@
-const exhibitor = require("../Models/Exhibitor");
+const Exhibitor = require("../Models/Exhibitor");
 const { ImageDelete } = require("../Middlewares/ImageUploading");
 
 // Method -------  POST
@@ -6,7 +6,7 @@ const { ImageDelete } = require("../Middlewares/ImageUploading");
 // Description --  CREATE EXHIBITOR FUNCTION
 const createExhibitor = async (req, res) => {
   try {
-    const { company_id, contact, rating, user_id, event_id,booth_id } = req.body;
+    const { company_id, contact, rating, user_id, event_id, booth_id } = req.body;
     const exhibitorImage = req.file;
 
     // Check if image is uploaded
@@ -17,12 +17,18 @@ const createExhibitor = async (req, res) => {
     const ImageID = exhibitorImage.filename;
 
     // Validate required fields
-    if (!company_id || !contact || !user_id ) {
+    if (!company_id || !contact || !user_id) {
       return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
+    // Check if the user already has an exhibitor
+    const existingExhibitor = await Exhibitor.findOne({ user_id });
+    if (existingExhibitor) {
+      return res.status(400).json({ success: false, message: "User already has an exhibitor." });
+    }
+
     // Create new exhibitor
-    const newExhibitor = new exhibitor({
+    const newExhibitor = new Exhibitor({
       company_id,
       image,
       ImageID,
@@ -46,11 +52,10 @@ const createExhibitor = async (req, res) => {
 // Description --  GET ALL EXHIBITORS FUNCTION
 const getAllExhibitors = async (req, res) => {
   try {
-    const exhibitors = await exhibitor.find()
+    const exhibitors = await Exhibitor.find()
       .populate("user_id", "name email") // Populate user details
       .populate("event_id", "title date") // Populate event details
-      .populate("booth_id", "name"); // Populate event details
-      
+      .populate("booth_id", "name"); // Populate booth details
 
     return res.status(200).json({ success: true, data: exhibitors });
   } catch (error) {
@@ -66,7 +71,7 @@ const getExhibitorById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const exhibitorData = await exhibitor.findById(id)
+    const exhibitorData = await Exhibitor.findById(id)
       .populate("user_id", "name email")
       .populate("event_id", "title date")
       .populate("booth_id", "name");
@@ -88,12 +93,12 @@ const getExhibitorById = async (req, res) => {
 const updateExhibitor = async (req, res) => {
   try {
     const { id } = req.params;
-    const { company_id, contact, rating, user_id, event_id, oldImage, Imagefilename,booth_id } = req.body;
+    const { company_id, contact, rating, user_id, event_id, oldImage, Imagefilename, booth_id } = req.body;
     const exhibitorImage = req.file;
 
     let image;
     let ImageID;
-    const exhibitorToUpdate = await exhibitor.findById(id);
+    const exhibitorToUpdate = await Exhibitor.findById(id);
 
     if (exhibitorImage) {
       image = exhibitorImage.path;
@@ -113,7 +118,7 @@ const updateExhibitor = async (req, res) => {
       ImageID = Imagefilename;
     }
 
-    const updatedExhibitor = await exhibitor.findByIdAndUpdate(
+    const updatedExhibitor = await Exhibitor.findByIdAndUpdate(
       id,
       {
         $set: {
@@ -148,7 +153,7 @@ const deleteExhibitor = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedExhibitor = await exhibitor.findById(req.params.id);
+    const deletedExhibitor = await Exhibitor.findById(req.params.id);
     if (!deletedExhibitor) {
       return res.status(404).json({ success: false, message: "Exhibitor not found" });
     }
@@ -161,7 +166,7 @@ const deleteExhibitor = async (req, res) => {
         return res.status(500).json({ message: "Failed to delete old image", error: error.message });
       }
     }
-    await exhibitor.findByIdAndDelete(id);
+    await Exhibitor.findByIdAndDelete(id);
     return res.status(200).json({ success: true, message: "Exhibitor deleted successfully" });
   } catch (error) {
     console.error(error);

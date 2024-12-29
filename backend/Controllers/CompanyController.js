@@ -1,11 +1,17 @@
 const Company = require("../Models/Company"); // Adjust the path as necessary
-const {  ImageDelete } = require("../Middlewares/ImageUploading"); // Assuming your image middleware is shared
+const { ImageDelete } = require("../Middlewares/ImageUploading"); // Assuming your image middleware is shared
 
 // Create a new company
 const createCompany = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, user_id } = req.body; // Get user_id from the body
     const companyImage = req.file; // Getting the uploaded image
+
+    // Check if the user already has a company
+    const existingCompany = await Company.findOne({ user_id });
+    if (existingCompany) {
+      return res.status(400).json({ message: "User already has a company" });
+    }
 
     if (!companyImage) {
       return res.status(400).json({ message: "Company image is required" });
@@ -14,8 +20,9 @@ const createCompany = async (req, res) => {
     const newCompany = new Company({
       title,
       image: companyImage.path, // Store the image path
-      ImageID : companyImage.filename, // store the image id
+      ImageID: companyImage.filename, // store the image id
       description,
+      user_id, // Ensure user_id is assigned
     });
 
     const savedCompany = await newCompany.save();
@@ -39,8 +46,7 @@ const getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.find();
 
-    res.status(200).json( companies
-    );
+    res.status(200).json(companies);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -104,7 +110,7 @@ const updateCompany = async (req, res) => {
         try {
           // Use ImageDelete middleware to remove the old image from Cloudinary
           req.body.OLDimageID = companyToUpdate.ImageID;  // Pass the ImageID to the next middleware
-          await ImageDelete(req, res, () => {}); 
+          await ImageDelete(req, res, () => {});
         } catch (error) {
           console.error("Error deleting old image:", error.message);
           return res.status(500).json({ message: "Failed to delete old image", error: error.message });

@@ -149,6 +149,7 @@ const ExhibitorRegister = () => {
 
       // Send data to the Company API to create a company
       const companyFormData = new FormData();
+      companyFormData.append('user_id', userId);;
       companyFormData.append('title', CompanyTitle);
       companyFormData.append('description', CompanyDescription);
       companyFormData.append('companyImage', CompanyImage);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -16,7 +16,27 @@ const EventCalendar = () => {
       category: "Seminar",
     },
   ]);
-
+  useEffect(()=>{
+    const fetchSchedules = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/schedules");
+        const data = await response.json();
+        console.log(data)
+        const formattedEvents = data.map((schedule) => ({
+          title: schedule.reserved_for,
+          start: new Date(schedule.start_date),
+          end: new Date(schedule.end_date),
+          allDay: true,
+          category: schedule.reserved_for, // assuming 'reserved_for' represents the event type
+        }));
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      }
+    };
+  
+    fetchSchedules();
+  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [eventTitle, setEventTitle] = useState("");
@@ -31,7 +51,7 @@ const EventCalendar = () => {
     const existingEvent = events.find((event) =>
       moment(event.start).isSame(start, "day")
     );
-
+  
     if (existingEvent) {
       setSelectedDate(start);
       setNewEventDate(start);
@@ -47,7 +67,6 @@ const EventCalendar = () => {
       setModalOpen(true);
     }
   };
-
   const handleSaveEvent = () => {
     if (isUpdating) {
       setEvents(
@@ -101,7 +120,7 @@ const EventCalendar = () => {
       case "Seminar":
         backgroundColor = "red";
         break;
-      case "Workshop":
+      case "Worskshop":
         backgroundColor = "orange";
         break;
       default:

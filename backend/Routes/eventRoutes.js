@@ -9,6 +9,7 @@ const {
   getEventById,
   updateEvent,
   deleteEvent,
+  getEventByScheduleId
 } = require("../Controllers/EventController");
 
 // Define routes for Events
@@ -23,5 +24,7 @@ router.route("/events/:id")
   .get(getEventById)
   .put(upload2.single('eventImage'),updateEvent)
   .delete(deleteEvent);
+router.route("/events/:scheduleId")
+  .get(getEventByScheduleId)
 
 module.exports = router;

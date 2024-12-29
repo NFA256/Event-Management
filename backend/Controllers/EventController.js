@@ -67,6 +67,16 @@ const getEventById = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch event", error: error.message });
   }
 };
+// Get a single event by ID
+const getEventByScheduleId = async (req, res) => {
+  try {
+    const events = await events.find({ schedule_id: req.params.scheduleId });
+    res.status(200).json(events);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching events", error: error.message });
+  }
+};
 
 // Update an event
 const updateEvent = async (req, res) => {
@@ -175,4 +185,5 @@ module.exports = {
   getEventById,
   updateEvent,
   deleteEvent,
+  getEventByScheduleId
 };

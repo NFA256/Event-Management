@@ -8,6 +8,7 @@ const {
   getScheduleById,
   updateSchedule,
   deleteSchedule,
+  getEventsBySchedule,
 } = require("../Controllers/ScheduleController");
 
 // Define routes for Schedules
@@ -21,5 +22,8 @@ router
   .get(getScheduleById) // Get a specific schedule by ID
   .put(updateSchedule) // Update a schedule
   .delete(deleteSchedule); // Delete a schedule
+router
+  .route("/get-events-by-schedule/:id")
+  .get(getEventsBySchedule) // Get a specific schedule by ID
 
 module.exports = router;

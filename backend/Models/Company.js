@@ -19,6 +19,11 @@ const Company_Schema = mongoose.Schema(
       required: [true, "Description is required"],
       trim: true,
     },
+      user_id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "users", // Reference to the user collection
+          required: [true, "User ID is required"],
+        },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt
 );

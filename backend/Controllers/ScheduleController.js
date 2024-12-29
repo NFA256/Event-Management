@@ -1,5 +1,8 @@
 const schedules = require("../Models/Schedule"); // Import the Schedule model
-
+// Backend (API controller to fetch events, workshops, and seminars by schedule ID)
+const events = require("../Models/Event");
+const workshops = require("../Models/Workshop");
+const seminars = require("../Models/Seminar");
 // Create a new schedule
 const createSchedule = async (req, res) => {
   try {
@@ -124,6 +127,26 @@ const deleteSchedule = async (req, res) => {
   }
 };
 
+// Fetch events by schedule ID
+const getEventsBySchedule = async (req, res) => {
+  try {
+    const { schedule_id } = req.params;
+
+    const eventsData = await events.find({ schedule_id });
+    const workshopsData = await workshops.find({ schedule_id });
+    const seminarsData = await seminars.find({ schedule_id });
+
+    return res.status(200).json({
+      events: eventsData,
+      workshops: workshopsData,
+      seminars: seminarsData,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Error fetching data" });
+  }
+};
+
 // Export CRUD functions
 module.exports = {
   createSchedule,
@@ -131,4 +154,5 @@ module.exports = {
   getScheduleById,
   updateSchedule,
   deleteSchedule,
+  getEventsBySchedule,
 };
