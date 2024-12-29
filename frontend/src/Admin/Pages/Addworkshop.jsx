@@ -17,6 +17,8 @@ const Addworkshop = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [sessions, setSessions] = useState([]); // New state for holding sessions
+  const [priceError, setPriceError] = useState("");
+  const [attendeesError, setAttendeesError] = useState("");
 
   useEffect(() => {
     const fetchHallsAndSpeakers = async () => {
@@ -65,7 +67,31 @@ const Addworkshop = () => {
       return updatedSessions;
     });
   };
+  const handleNoOfAttendeesChange = (e) => {
+    const value = e.target.value;
+    setNoOfAttendees(value);
 
+    // Validate number of attendees
+    const numValue = parseInt(value, 10);
+    if (numValue < 25 || numValue > 50) {
+      setAttendeesError("Number of attendees must be between 25 and 50.");
+    } else if (numValue < 0) {
+      setAttendeesError("Number of attendees cannot be negative.");
+    } else {
+      setAttendeesError(""); // Clear error if valid
+    }
+  };
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    setPrice(value);
+
+    // Validate price
+    if (value && parseFloat(value) <= 1000) {
+      setPriceError("Price must be greater than 1000.");
+    } else {
+      setPriceError(""); // Clear error if valid
+    }
+  };
   const handleEndDateChange = (e) => {
     const newEndDate = e.target.value;
     setEndDate(newEndDate);
@@ -100,16 +126,24 @@ const Addworkshop = () => {
 
       // Check if both start and end times are set
       if (startTime && endTime) {
-        // Calculate duration in hours
         const start = new Date(`1970-01-01T${startTime}:00`);
         const end = new Date(`1970-01-01T${endTime}:00`);
 
-        // Duration in hours (rounded to two decimal places)
-        const duration = (end - start) / (1000 * 60 * 60); // Convert milliseconds to hours
-        updatedSessions[index].duration =
-          duration > 0 ? duration.toFixed(2) : ""; // Ensure positive duration
+        // Calculate duration in minutes
+        const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
+
+        if (durationInMinutes > 0) {
+          const hours = Math.floor(durationInMinutes / 60);
+          const minutes = durationInMinutes % 60;
+          updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+        } else {
+          updatedSessions[index].duration = ""; // Reset if duration is negative
+        }
+      } else {
+        updatedSessions[index].duration = ""; // Reset duration if either time is missing
       }
     }
+
     // Automatically set first session's date to startDate
     if (index === 0 && field === "date") {
       updatedSessions[index].date = startDate;
@@ -124,7 +158,11 @@ const Addworkshop = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!price || parseFloat(price) <= 1000) {
+      setError("Price must be greater than 1000.");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
     // Validate all fields
     if (
       !title ||
@@ -156,7 +194,19 @@ const Addworkshop = () => {
       setTimeout(() => setError(""), 3000);
       return;
     }
-
+    if (
+      // ... other validations
+      !noOfAttendees ||
+      parseInt(noOfAttendees, 10) < 25 ||
+      parseInt(noOfAttendees, 10) > 50 ||
+      parseInt(noOfAttendees, 10) < 0
+    ) {
+      setError(
+        "Number of attendees must be between 25 and 50 and cannot be negative."
+      );
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
@@ -181,8 +231,8 @@ const Addworkshop = () => {
 
         // After workshop creation, create sessions for the same workshop
         const workshopId = workshopData.data._id; // Assuming workshop data contains the _id
-console.log("workshop",workshopData);
-console.log("workshop id",workshopId);
+        console.log("workshop", workshopData);
+        console.log("workshop id", workshopId);
         const sessionPromises = sessions.map(async (session) => {
           console.log("Sending session data:", session); // Add this log to check the data
           const response = await fetch("http://localhost:5000/sessions", {
@@ -244,16 +294,16 @@ console.log("workshop id",workshopId);
   };
 
   return (
-    <section className="vh-100 bg-image">
+    <section className="vh-100 mt-5 mb-5">
       <div className="mask d-flex align-items-center h-100 gradient-custom-3">
         <div className="container h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-12 col-md-9 mb-5">
               <div className="card">
                 <div className="card-body p-5">
-                  <h2 className="text-uppercase text-center mb-5">
+                  <h1 className="text-uppercase font-weight-bold text-center mb-5">
                     Add Workshop
-                  </h2>
+                  </h1>
 
                   {/* Error and Success messages */}
                   {error && (
@@ -318,8 +368,13 @@ console.log("workshop id",workshopId);
                           id="no_of_attendees"
                           className="form-control text-center form-control-lg"
                           value={noOfAttendees}
-                          onChange={(e) => setNoOfAttendees(e.target.value)}
+                          onChange={handleNoOfAttendeesChange}
                         />
+                        {attendeesError && (
+                          <div className="text-danger mt-2">
+                            {attendeesError}
+                          </div>
+                        )}
                       </div>
                       {/* Price */}
                       <div className="col-md-6 form-outline mb-4">
@@ -331,8 +386,11 @@ console.log("workshop id",workshopId);
                           id="price"
                           className="form-control text-center form-control-lg"
                           value={price}
-                          onChange={(e) => setPrice(e.target.value)}
+                          onChange={handlePriceChange}
                         />
+                        {priceError && (
+                          <div className="text-danger mt-2">{priceError}</div>
+                        )}
                       </div>
                     </div>
                     <div className="row">
@@ -635,7 +693,7 @@ console.log("workshop id",workshopId);
                               Duration (hrs)
                             </label>
                             <input
-                              type="number"
+                              type="text"
                               id={`sessionDuration_${index}`}
                               className="form-control text-center form-control-lg"
                               value={session.duration}

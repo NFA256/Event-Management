@@ -8,9 +8,9 @@ const createEvent = async (req, res) => {
     const eventImage = req.file;
 
     // Check if event image is provided
-    if (!eventImage) {
-      return res.status(400).json({ message: "Event image is required" });
-    }
+    // if (!eventImage) {
+    //   return res.status(400).json({ message: "Event image is required" });
+    // }
 
     const Event_Image = eventImage.path;
     const fileID = eventImage.filename;
