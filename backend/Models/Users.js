@@ -42,14 +42,19 @@ const User_Schema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "roles", // Reference to the roles collection
       required: [true, "Role is required"],
-      default: async function () {
-        const role = await mongoose.model("roles").findOne({ RoleName: "attende" });
-        return role ? role._id : null;
-      },
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
+
+// Pre-save middleware to set the default role if not provided
+User_Schema.pre("save", async function (next) {
+  if (!this.role) {
+    const role = await mongoose.model("roles").findOne({ RoleName: "attendee" });
+    this.role = role ? role._id : null;
+  }
+  next(); // Call the next middleware or save the user
+});
 
 // Create the User model
 const users = mongoose.model("users", User_Schema);

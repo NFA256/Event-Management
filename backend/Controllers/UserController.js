@@ -6,6 +6,11 @@ const bcrypt = require("bcrypt");
 // API   --------  http://localhost:5000/users
 // Description --  CREATE USERS FUNCTION
 const createUser = async (req, res) => {
+  const role = await roles.findOne({ RoleName: "attendee" });
+  if (!role) {
+    console.error("Role not found!");
+    return;
+  }
   try {
     const { name, email, cnic, password } = req.body;
 
@@ -61,6 +66,7 @@ const createUser = async (req, res) => {
       email,
       cnic,
       password: hashedPassword,
+      role: role._id,
     });
 
     const savedUser = await newUser.save();
