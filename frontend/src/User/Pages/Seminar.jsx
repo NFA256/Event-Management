@@ -14,7 +14,7 @@ const Seminar = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setUserId(user.id); // Assuming user ID is stored as 'id'
+      setUserId(user.userId); // Assuming user ID is stored as 'id'
     }
   }, []);
 

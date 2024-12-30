@@ -16,7 +16,7 @@ const Events = () => {
  useEffect(() => {
    const storedUser = JSON.parse(localStorage.getItem("user"));
    if (storedUser) {
-     setUserName(storedUser.name);
+     setUserName(storedUser.fname);
      setIsLoggedIn(true);
      setUserRole(storedUser.role || "guest");
 

@@ -111,7 +111,7 @@ const getUserById = async (req, res) => {
 
     const foundUser = await users
       .findById(id)
-      .populate("roles", "RoleName Status");
+      .populate("role", "RoleName Status");
     if (!foundUser) {
       return res
         .status(404)
@@ -232,7 +232,7 @@ const updateUser = async (req, res) => {
       .findByIdAndUpdate(id, updates, {
         new: true,
       })
-      .populate("roles", "RoleName Status");
+      .populate("role", "RoleName Status");
 
     return res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {

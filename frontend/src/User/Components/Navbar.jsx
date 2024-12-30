@@ -11,7 +11,7 @@ const Navbar = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setIsLoggedIn(true);
-      setRole(user.role?.RoleName || "guest"); // Default to "guest" if role is undefined
+      setRole(user.role || "guest"); // Default to "guest" if role is undefined
     } else {
       setRole("guest");
     }

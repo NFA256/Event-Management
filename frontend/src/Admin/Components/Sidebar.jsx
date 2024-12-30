@@ -6,8 +6,8 @@ const Sidebar = () => {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser?.role?.RoleName) {
-      setRole(storedUser.role.RoleName);
+    if (storedUser.role) {
+      setRole(storedUser.role);
     }
   }, []);
 

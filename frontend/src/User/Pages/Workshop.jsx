@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const Workshop = () => {
+    const [userId, setUserId] = useState("");
   const [workshops, setWorkshops] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [error, setError] = useState("");
@@ -10,6 +11,11 @@ const Workshop = () => {
   const [currentWorkshop, setCurrentWorkshop] = useState(null); // State for current workshop
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserId(user.userId); // Assuming user ID is stored as 'id'
+    }
     const fetchWorkshops = async () => {
       try {
         const response = await fetch("http://localhost:5000/workshops");
@@ -111,11 +117,17 @@ const Workshop = () => {
   };
 
   const handleBookWorkshop = async () => {
+    const ticketData = {
+      workshop_id: currentWorkshop._id,
+      user_id: userId,
+      total_price:
+      currentWorkshop.price === "Free" ? "0" : currentWorkshop.price,
+    };
     try {
       const response = await fetch("http://localhost:5000/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workshopId: currentWorkshop._id }),
+        body: JSON.stringify(ticketData),
       });
       if (response.ok) {
         alert("Booking successful!");

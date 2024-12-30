@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 
 const Profile = () => {
   const [user, setUser] = useState({
-    name: "",
+    fname: "",
     email: "",
     cnic: "",
     password: "",
-    role: {},
+    role: "",
     phone: "",
-    mobile: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -30,7 +29,7 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(`http://localhost:5000/users/USER_ID`, {
+    const response = await fetch(`http://localhost:5000/users/${user.userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +82,7 @@ const Profile = () => {
                       style={{ width: "100px" }}
                     />
                     <h3 className="text-capitalize">
-                      {user.role.RoleName || "No Role"}
+                      {user.role || "No Role"}
                     </h3>
                   </div>
                   <div className="col-md-8">
@@ -93,7 +92,7 @@ const Profile = () => {
                       <div className="row pt-1 text-center">
                         <div className="col-4 mb-3">
                           <h6>Name</h6>
-                          <p>{user.name}</p>
+                          <p>{user.fname}</p>
                         </div>
                         <div className="col-8 mb-3">
                           <h6>Email</h6>
@@ -103,12 +102,12 @@ const Profile = () => {
 
                       <div className="row pt-1 text-center">
                         <div className="col-4 mb-3">
-                          <h6>Status</h6>
-                          <p>{user.role.Status || "Unknown"}</p>
+                          <h6>Role</h6>
+                          <p>{user.role || "Unknown"}</p>
                         </div>
                         <div className="col-8 mb-3">
                           <h6>Cnic</h6>
-                          <p>{user.cnic}</p>
+                          <p>{user.NICno}</p>
                         </div>
                       </div>
 
@@ -150,7 +149,7 @@ const Profile = () => {
                     <input
                       type="text"
                       name="name"
-                      value={user.name}
+                      value={user.fname}
                       onChange={handleChange}
                       className="form-control"
                       required
@@ -172,7 +171,7 @@ const Profile = () => {
                     <input
                       type="text"
                       name="cnic"
-                      value={user.cnic}
+                      value={user.NICno}
                       onChange={handleChange}
                       className="form-control"
                       required

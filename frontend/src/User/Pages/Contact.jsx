@@ -14,7 +14,7 @@ const Contact = () => {
     // Local storage se user ka data fetch karna
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
-      setUserName(storedUser.name); // Local storage ka name field
+      setUserName(storedUser.fname); // Local storage ka name field
       setUserEmail(storedUser.email); // Local storage ka email field
       setIsLoggedIn(true); // User logged in hai
     }
@@ -26,7 +26,7 @@ const Contact = () => {
     if (userName && userEmail && subject && message) {
       try {
         const storedUser = JSON.parse(localStorage.getItem("user"));
-        const userId = storedUser ? storedUser._id : null; // Get userId if logged in
+        const userId = storedUser ? storedUser.userId : null; // Get userId if logged in
 
         // Sending the contact data to the backend
         const response = await fetch(contactApiUrl, {

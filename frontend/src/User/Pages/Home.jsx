@@ -6,21 +6,68 @@ import Faq from "./Faq";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
-
+  const [schedule, setschedule] = useState([]);
+  const [latestScheduleDate, setLatestScheduleDate] = useState(null); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Local storage se user ka data fetch karna
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
-      setUserName(storedUser.name); // Local storage ka name field
+      setUserName(storedUser.fname); // Local storage ka name field
       setIsLoggedIn(true); // User logged in hai
     }
+
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/schedules");
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Fetched schedule data:", data);  // Log fetched data
+    
+          setschedule(data);
+    
+          // Filter out past events and sort by start_date
+          const upcomingSchedules = data.filter(event => new Date(event.start_date) > new Date());
+          
+          // Sort the upcoming events by start_date
+          const sortedUpcomingSchedules = upcomingSchedules.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+    
+          // Get the latest upcoming event
+          const latestUpcoming = sortedUpcomingSchedules[0];
+    
+          if (latestUpcoming) {
+            console.log("Latest schedule date:", latestUpcoming.reserved_for);  // Log the latest schedule date
+            setLatestScheduleDate(latestUpcoming.start_date);  // Set the latest schedule date
+            // console.log(latestScheduleDate)
+          } else {
+            console.log("No upcoming schedules found.");
+            setLatestScheduleDate(null);  // Set to null if no upcoming events
+          }
+        } else {
+          console.error("Failed to fetch events");
+          setError("Failed to fetch events from the server.");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError("An error occurred while fetching events.");
+      }
+    };
+    
+    
+    fetchEvents();
   }, []);
 
   //--timer
   const calculateTimeLeft = () => {
-    const eventDate = new Date("2024-12-31T00:00:00"); // Set your target date here
+    if (!latestScheduleDate) return {};
+    console.log("latest"+latestScheduleDate)
+    const eventDate = new Date(latestScheduleDate);
+    if (isNaN(eventDate)) {
+      console.error("Invalid date:", latestScheduleDate);
+      return {}; // Return an empty object if the date is invalid
+    }
+    // const eventDate = new Date("2024-12-31T00:00:00"); // Set your target date here
     const now = new Date();
     const difference = eventDate - now;
 
