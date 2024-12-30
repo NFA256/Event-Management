@@ -65,7 +65,14 @@ const Login = () => {
           setError("");
 
           // User's data is saved to localStorage
-          localStorage.setItem("user", JSON.stringify(user));
+
+          // If the user is an exhibitor, save all relevant data to localStorage
+          if (user.role === "exhibitor") {
+            localStorage.setItem("exhibitorDetails", JSON.stringify(user)); // Save exhibitor data
+          } else {
+            localStorage.setItem("user", JSON.stringify(user)); // Save regular user data
+          }
+          // Navigate to Dashboard or Home Page
 
           // Navigate to Dashboard or Home Page
           navigate("/");

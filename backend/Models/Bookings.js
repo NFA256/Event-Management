@@ -2,29 +2,23 @@ const mongoose = require("mongoose");
 
 const BookingSchema = new mongoose.Schema(
   {
-    user_id: {
+    exhibitor_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users", // Reference to the users collection
+      ref: "exhibitors",
       required: true,
     },
-    workshop_id: {
+    event_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "workshops", // Reference to the workshops collection
-      required: false, // Optional if booking is not for a workshop
+      ref: "events",
+      required: true,
     },
-    seminar_id: {
+    booth_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "seminars", // Reference to the seminars collection
-      required: false, // Optional if booking is not for a seminar
+      ref: "booths",
+      required: true,
     },
-    date: {
-      type: Date,
-      required: true, // Booking date
-    },
-    total_cost: {
-      type: Number,
-      required: true, // Total cost for the booking
-    },
+    date: { type: Date, required: true },
+    total_cost: { type: Number, required: true, min: 1 }, // Validate positive cost
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );

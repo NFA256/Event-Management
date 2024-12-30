@@ -62,6 +62,8 @@ const Sidebar = () => {
               ? [
                   { path: "exhibitor-dashboard", label: "Dashboard" },
                   { path: "manage-exhibits", label: "Manage Exhibits" },
+                  { path: "addevent", label: "Add Event" },
+                  { path: "showevent", label: "Show Event" },
                 ]
               : [
                   { path: "calendar", label: "Event Schedule" },
@@ -104,7 +106,7 @@ const Sidebar = () => {
             className=" text-center mt-3"
             style={{
               maxHeight: "100vh",
-              // overflowY: "auto", // Enable scrolling for the Outlet section
+              overflowY: "auto", // Enable scrolling for the Outlet section
             }}
           >
             <Outlet />

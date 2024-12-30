@@ -37,12 +37,6 @@ const faqRoutes = require("./Routes/faqRoutes");
 const scheduleRoutes = require("./Routes/scheduleRoutes");
 const BookingRoutes = require("./Routes/bookingRoutes");
 
-
-
-
-
-
-
 //--- CONTROLLER IMPORT-----------//
 
 // Use routes
@@ -66,10 +60,7 @@ app.use("/", informationRoutes); // For info-related routes
 app.use("/", faqRoutes); // For faq-related routes
 app.use("/", scheduleRoutes); // For schedule-related routes
 app.use("/", boothRoutes); // For BooK-related routes
-
-
-
-
+app.use("/", BookingRoutes); // For BooK-related routes
 
 //--------server listen
 
