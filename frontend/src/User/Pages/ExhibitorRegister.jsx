@@ -68,9 +68,13 @@ const ExhibitorRegister = () => {
   // Check if the user is logged in when the component mounts
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user._id) {
+    if (user && user.userId && user.role === 'attendee') {
       setIsLoggedIn(true);
-    } else {
+    }
+    else if(user && user.userId && user.role === 'exhibitor'){
+alert("You are already register as an exhibitor")
+    } 
+    else {
       navigate('/login');  // Redirect to login page if not logged in
     }
   }, [navigate]);
@@ -98,37 +102,37 @@ const ExhibitorRegister = () => {
 
   // Validate ExhibitorContact to ensure it's 11 digits long
   const validateContact = (contact) => {
-    const regex = /^\d{11}$/;  // Regex to check exactly 11 digits
+    const regex = /^\d{10}$/;  // Regex to check exactly 11 digits
     return regex.test(contact);
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const { CompanyTitle, CompanyDescription, ExhibitorContact, CompanyImage, ExhibitorImage } = formData;
-
+  
     // Validate the inputs
     if (!CompanyTitle || !CompanyDescription || !ExhibitorContact || !CompanyImage || !ExhibitorImage) {
       setError('All fields are required!');
       return;
     }
-
+  
     if (!validateContact(ExhibitorContact)) {
       setError('Contact number must be exactly 11 digits!');
       return;
     }
-
+  
     const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user ? user._id : null;
-
+    const userId = user ? user.userId : null;
+  
     if (!userId) {
       setError('User not logged in!');
       return;
     }
-
+  
     const exhibitorRole = 'exhibitor'; // The role ID for exhibitor
-
+  
     try {
       // Update User Role to 'Exhibitor'
       const roleUpdateResponse = await fetch(`http://localhost:5000/userRole/${userId}`, {
@@ -136,56 +140,62 @@ const ExhibitorRegister = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ RoleName: exhibitorRole }),
       });
-
+  
       if (!roleUpdateResponse.ok) {
         const errorData = await roleUpdateResponse.json();
         setError(errorData.message || 'Failed to update user role');
         return;
       }
-
+  
       // Update localStorage role
       const updatedUser = { ...user, role: exhibitorRole };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-
+  
       // Send data to the Company API to create a company
       const companyFormData = new FormData();
-      companyFormData.append('user_id', userId);;
+      companyFormData.append('user_id', userId);
       companyFormData.append('title', CompanyTitle);
       companyFormData.append('description', CompanyDescription);
       companyFormData.append('companyImage', CompanyImage);
-
+  
       const companyResponse = await fetch("http://localhost:5000/company", {
         method: "POST",
         body: companyFormData,
       });
-
+  
       if (!companyResponse.ok) {
         const errorData = await companyResponse.json();
         setError(errorData.message || 'Failed to create company');
         return;
       }
-
+  
       const companyData = await companyResponse.json();
       const companyId = companyData.data._id;  // Assuming the response contains the company ID
-
+  
       // Send data to the Exhibitor API
       const exhibitorFormData = new FormData();
       exhibitorFormData.append('company_id', companyId);  // Use the company ID from the previous response
-      exhibitorFormData.append('user_id', userId);  // Use the company ID from the previous response
+      exhibitorFormData.append('user_id', userId);  // Use the user ID from the previous response
       exhibitorFormData.append('contact', ExhibitorContact);
       exhibitorFormData.append('exhibitorImage', ExhibitorImage);
-
+  
       const exhibitorResponse = await fetch("http://localhost:5000/exhibitors", {
         method: "POST",
         body: exhibitorFormData,
       });
-
+  
       if (!exhibitorResponse.ok) {
         const errorData = await exhibitorResponse.json();
         setError(errorData.message || 'Failed to create exhibitor');
         return;
       }
-
+  
+      const exhibitorData = await exhibitorResponse.json();
+      const exhibitorId = exhibitorData.data._id;  // Get the exhibitor ID from the response
+  
+      // Save exhibitorId along with user details in localStorage
+      const updatedUserWithExhibitorId = { ...updatedUser, exhibitorId };
+      localStorage.setItem('user', JSON.stringify(updatedUserWithExhibitorId));
+  
       setSuccess('Exhibitor registered successfully!');
       setTimeout(() => navigate("/"), 1000);
     } catch (error) {
@@ -193,7 +203,6 @@ const ExhibitorRegister = () => {
       setError('An error occurred while registering exhibitor.');
     }
   };
-
   if (!isLoggedIn) {
     return null; // If user is not logged in, do not render the form.
   }
@@ -242,12 +251,13 @@ const ExhibitorRegister = () => {
             />
           </div>
 
-          <div className="mb-3">
+          <div className=" input-group  mb-3">
+          <span class="input-group-text" id="inputGroupPrepend">+92</span>
             <input
-              type="text"
+             type="tel" maxLength='10'
               className="form-control"
               name="ExhibitorContact"
-              placeholder="Exhibitor Contact Information"
+              placeholder="Exhibitor Contact"
               value={formData.ExhibitorContact}
               onChange={handleInputChange}
               required

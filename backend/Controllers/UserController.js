@@ -1,5 +1,6 @@
 const users = require("../Models/Users");
 const  roles  = require("../Models/Roles");
+const  exhibitors  = require("../Models/Exhibitor");
 const bcrypt = require("bcrypt");
 
 // Method -------  GET
@@ -289,6 +290,67 @@ const updateUserRole = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error updating user role', error: error.message });
   }
 };
+
+// Method -------  GET
+// API   --------  http://localhost:5000/users/:id
+// Description --  GET USER BY ID FUNCTION
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body; // Use req.body for POST requests.
+
+    // Find the user based on email and password, and populate the role field.
+    const foundUser = await users
+      .findOne({ email })
+      .populate("role", "RoleName Status"); // Populate the role details from the role collection
+
+    if (!foundUser) {
+      return res.status(404).json({ success: false, message: "Invalid Email or password" });
+    }
+
+    // Compare the password using bcrypt
+    const match = await bcrypt.compare(password, foundUser.password);
+
+    if (!match) {
+      return res.status(404).json({ success: false, message: "Invalid Email or password" });
+    }
+
+    // Clone the foundUser to a plain object to add new fields
+    const userResponse = foundUser.toObject();
+
+    // Check if the role is 'exhibitor'
+    if (userResponse.role.RoleName === "exhibitor") {
+      // Fetch exhibitor details if the user is an exhibitor
+      const exhibitorDetails = await exhibitors.findOne({ user_id: userResponse._id });
+
+      if (!exhibitorDetails) {
+        return res.status(404).json({ success: false, message: "Exhibitor details not found" });
+      }
+
+      // Log the exhibitorDetails for verification
+      console.log("exhibitorDetails", exhibitorDetails);
+
+      // Attach the exhibitorId and exhibitorDetails to the response object
+      userResponse.exhibitorId = exhibitorDetails._id; // or any other exhibitor details you want to send
+      userResponse.exhibitorDetails = exhibitorDetails;
+    }
+
+    // Log the final userResponse for verification
+    // console.log("userResponse", userResponse);
+
+    // Return the user data along with exhibitor details (if applicable)
+    return res.status(200).json({
+      success: true,
+      data: userResponse, // Send the modified user object
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error fetching user", error: error.message });
+  }
+};
+
+
+
+
+
 // const OTPs = {}; // Store OTPs temporarily for simplicity
 
 // Forgot Password
@@ -332,4 +394,5 @@ module.exports = {
   updateUser,
   deleteUser,
   updateUserRole,
+  login
 };

@@ -12,7 +12,7 @@ const createBooking = async (req, res) => {
       });
     }
 
-    const newBooking = new Booking({
+    const newBooking = new bookings({
       exhibitor_id,
       event_id,
       booth_id,

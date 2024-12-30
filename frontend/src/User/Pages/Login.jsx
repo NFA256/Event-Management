@@ -35,59 +35,72 @@ const Login = () => {
     }
   };
 
-  // Handle Login Submit
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (Email && Password) {
       try {
         // API Call
-        const response = await fetch("http://localhost:5000/users", {
-          method: "GET",
+        const response = await fetch("http://localhost:5000/user-login", {
+          method: "POST", // Changed to POST
           headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: Email, password: Password }), // Send email and password
         });
-
-        // Log response for debugging
-        const users = await response.json();
-        console.log("Users:", users); // This logs the entire response object
-
-        // Ensure that we're working with the array inside 'data'
-        const user = users.data.find((user) => user.email === Email);
-        console.log("User found:", user); // Log found user
-
-        if (user) {
-          const match = await bcrypt.compare(Password, user.password);
-          if (!match) {
-            setError("Invalid Email or password");
-            return;
-          }
-          setSuccess("Login Successful");
-          setError("");
-
-          // User's data is saved to localStorage
-
-          // If the user is an exhibitor, save all relevant data to localStorage
-          if (user.role === "exhibitor") {
-            localStorage.setItem("exhibitorDetails", JSON.stringify(user)); // Save exhibitor data
+  
+        const result = await response.json();
+  
+        if (response.status === 200) {
+          const user = result.data;
+  
+          // Store user info in localStorage
+          if (user.role.RoleName === "admin") {
+            localStorage.setItem("admin", JSON.stringify({
+              isLogin: true,
+              role: user.role.RoleName,
+              userId: user._id,
+              fname: user.name,
+              email: user.email,
+              NICno: user.cnic
+            }));
+          } else if (user.role.RoleName === "exhibitor") {
+            localStorage.setItem("user", JSON.stringify({
+              isLogin: true,
+              role: user.role.RoleName,
+              userId: user._id,
+              fname: user.name,
+              email: user.email,
+              NICno: user.cnic,
+              exhibitorId: user.exhibitorId
+            }));
           } else {
-            localStorage.setItem("user", JSON.stringify(user)); // Save regular user data
+            localStorage.setItem("user", JSON.stringify({
+              isLogin: true,
+              role: user.role.RoleName,
+              userId: user._id,
+              fname: user.name,
+              email: user.email,
+              NICno: user.cnic
+            }));
           }
-          // Navigate to Dashboard or Home Page
-
-          // Navigate to Dashboard or Home Page
-          navigate("/");
-        } else {
-          setError("Invalid Email or password");
-          setSuccess("");
+  
+          alert("Login successful!");
+          setTimeout(() => {
+            navigate('/');
+          }, 200);
+        } else if (response.status === 404) {
+          setError(result.message); // Display the error message from the backend
         }
       } catch (error) {
-        console.error("Login Error:", error);
-        setError("An error occurred. Please try again.");
+        console.error('An error occurred:', error);
+        setError("An error occurred while processing your request."); // Handle network or unexpected errors
       }
     } else {
       setError("Please enter Email and password");
     }
   };
+  
+
 
   // Handle Forgot Password Submit
   const handleForgotPasswordSubmit = async (e) => {

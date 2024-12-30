@@ -18,10 +18,10 @@ const Events = () => {
    if (storedUser) {
      setUserName(storedUser.name);
      setIsLoggedIn(true);
-     setUserRole(storedUser.role?.RoleName || "guest");
+     setUserRole(storedUser.role || "guest");
 
      // If the role is "exhibitor", set the exhibitorId based on the user
-     if (storedUser.role?.RoleName === "exhibitor") {
+     if (storedUser.role === "exhibitor") {
        // Check if exhibitorId is directly available in localStorage
        if (storedUser.exhibitorId) {
          setExhibitorId(storedUser.exhibitorId); // Use stored exhibitorId
@@ -125,7 +125,7 @@ const Events = () => {
     const total_cost = 100; // Example value; replace with a proper calculation
 
     try {
-      const response = await fetch("http://localhost:5000/api/bookings", {
+      const response = await fetch("http://localhost:5000/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

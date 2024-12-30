@@ -9,7 +9,8 @@ const {
   getUserByEmail,
   updateUser,
   deleteUser,
-  updateUserRole
+  updateUserRole,
+  login,
 } = require("../Controllers/UserController");
 
 // Define routes for Users
@@ -25,5 +26,6 @@ router.route("/userRole/:id")
 .put(updateUserRole);
   
   router.route("/users/email/:email").get(getUserByEmail);
+  router.route("/user-login").post(login);
 
 module.exports = router;
