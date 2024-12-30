@@ -3,7 +3,7 @@ const Ticket = require("../Models/Ticket"); // Adjust the path as necessary
 // Create a new ticket
 const createTicket = async (req, res) => {
   try {
-    const { seminar_id,workshop_id, user_id, total_price } = req.body;
+    const { seminar_id, workshop_id, user_id, total_price } = req.body;
 
     // Create a new ticket instance
     const ticket = new Ticket({
@@ -33,7 +33,9 @@ const createTicket = async (req, res) => {
 // Get all tickets
 const getAllTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find().populate("seminar_id workshop_id user_id");
+    const tickets = await Ticket.find().populate(
+      "seminar_id workshop_id user_id"
+    );
 
     res.status(200).json({
       success: true,
@@ -52,7 +54,9 @@ const getAllTickets = async (req, res) => {
 const getTicketById = async (req, res) => {
   try {
     const { id } = req.params;
-    const ticket = await Ticket.findById(id).populate("seminar_id  workshop_id user_id");
+    const ticket = await Ticket.findById(id).populate(
+      "seminar_id  workshop_id user_id"
+    );
 
     if (!ticket) {
       return res.status(404).json({

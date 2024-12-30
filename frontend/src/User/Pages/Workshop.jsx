@@ -8,7 +8,7 @@ const Workshop = () => {
   const [currentSessions, setCurrentSessions] = useState([]); // New state for current sessions
   const [sessionsModalOpen, setSessionsModalOpen] = useState(false); // State for modal
   const [currentWorkshop, setCurrentWorkshop] = useState(null); // State for current workshop
-
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
@@ -86,6 +86,15 @@ const Workshop = () => {
     setCurrentSessions([]);
     setCurrentWorkshop(null); // Clear the current workshop
   };
+  const handleBookingModalOpen = (workshop) => {
+    setCurrentWorkshop(workshop);
+    setIsBookingModalOpen(true);
+  };
+
+  const handleBookingModalClose = () => {
+    setIsBookingModalOpen(false);
+    setCurrentWorkshop(null);
+  };
   const calculateDuration = (startTime, endTime) => {
     const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${endTime}:00`);
@@ -101,6 +110,23 @@ const Workshop = () => {
     return `${hours}h ${minutes}m`; // Return duration in hours and minutes
   };
 
+  const handleBookWorkshop = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workshopId: currentWorkshop._id }),
+      });
+      if (response.ok) {
+        alert("Booking successful!");
+      } else {
+        alert("Failed to book the workshop.");
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+    }
+    handleBookingModalClose();
+  };
   return (
     <>
       <div className="slider-area2">
@@ -196,10 +222,20 @@ const Workshop = () => {
                           >
                             View Sessions
                           </button>
-                          <button type="submit" className="btn3 mx-2 mt-2">
-                            {" "}
-                            Book
-                          </button>
+
+                          {timeLeft.isPast ? (
+                            <p className="text-danger">
+                              This workshop has already started or passed.
+                            </p>
+                          ) : (
+                            <button
+                              className="btn3 mt-2"
+                              type="submit"
+                              onClick={() => handleBookingModalOpen(workshop)}
+                            >
+                              Book
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -283,6 +319,105 @@ const Workshop = () => {
             )}
           </div>
         </div>
+
+        {isBookingModalOpen && (
+          <div
+            className="modal fade show"
+            style={{ display: "block" }}
+            tabIndex="-1"
+            role="dialog"
+            onClick={handleBookingModalClose}
+          >
+            <div
+              className="modal-dialog modal-dialog-centered"
+              role="document"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title text-center w-100">
+                    Title : {currentWorkshop?.title}
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    onClick={handleBookingModalClose}
+                  >
+                    <span>&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <p className="text-center">
+                    Are you sure you want to book the workshop?{" "}
+                  </p>
+                </div>
+                <div className="row">
+                  <div className="col-5 mx-auto text-capitalize">
+                    <p>
+                      <strong>Hall:</strong>{" "}
+                      {currentWorkshop.hall_id
+                        ? currentWorkshop.hall_id.hall_name
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="col-5 mx-auto">
+                    <p>
+                      <strong>Speaker:</strong>{" "}
+                      {currentWorkshop.speaker_id
+                        ? currentWorkshop.speaker_id.name
+                        : "N/A"}{" "}
+                      <br />
+                    </p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-5 mx-auto">
+                    <p>
+                      <strong>Start Date:</strong>{" "}
+                      {new Date(
+                        currentWorkshop.start_date
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="col-5 mx-auto">
+                    <p>
+                      <strong>End Date:</strong>{" "}
+                      {new Date(currentWorkshop.end_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-5 mx-auto">
+                    <p>
+                      <strong>Price:</strong>{" "}
+                      {currentWorkshop === "Free"
+                        ? currentWorkshop.price
+                        : `${currentWorkshop.price}/=`}
+                    </p>
+                  </div>
+                  <div className="col-5 mx-auto">
+                    <p>
+                      {" "}
+                      <strong>Total Sessions: </strong>
+                      {currentWorkshop?.sessions.length}
+                    </p>
+                  </div>
+                </div>
+                <div className="modal-footer justify-content-center">
+                  <button
+                    className="btn btn-secondary btn-lg"
+                    onClick={handleBookingModalClose}
+                  >
+                    Cancel
+                  </button>
+                  <button className="btn3" onClick={handleBookWorkshop}>
+                    Confirm Booking
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </>
   );
