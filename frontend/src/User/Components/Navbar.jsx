@@ -34,6 +34,26 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="nav-item">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/seminar" className="nav-link">
+              Seminar
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/workshop" className="nav-link">
+              Workshop
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/event" className="nav-link">
+              Event
+            </Link>
+          </li>
+          <li className="nav-item">
             <Link to="/profile" className="nav-link">
               Profile
             </Link>
@@ -119,6 +139,17 @@ const Navbar = () => {
               Contact
             </Link>
           </li>
+          {
+            isLoggedIn != false
+            ?
+            (<li className="nav-item">
+            <Link to="/profile" className="nav-link">
+              Profile
+            </Link>
+          </li>)
+            :null
+          }
+          
         </>
       );
     }

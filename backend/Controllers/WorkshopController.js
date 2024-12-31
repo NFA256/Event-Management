@@ -59,7 +59,7 @@ const createWorkshop = async (req, res) => {
 // Get all workshops
 const getAllWorkshops = async (req, res) => {
   try {
-    const getWorkshops = await workshops.find().populate("hall_id speaker_id schedule_id"); // Populate schedule_id as well
+    const getWorkshops = await workshops.find().populate("hall_id speaker_id schedule_id").sort({ start_date: 1 }); // Populate schedule_id as well
     res.status(200).json(getWorkshops.length ? getWorkshops : { message: "No workshops found" });
   } catch (error) {
     console.error(error);

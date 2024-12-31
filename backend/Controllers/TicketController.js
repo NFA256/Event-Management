@@ -77,6 +77,36 @@ const getTicketById = async (req, res) => {
     });
   }
 };
+// Get a single ticket by ID
+const getTicketByuserId = async (req, res) => {
+  try {
+    const { user_id } = req.query;  // Extract user_id from query parameters
+    if (!user_id) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+    const ticket = await Ticket.find({user_id}).populate(
+      "seminar_id  workshop_id user_id"
+    );
+
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: ticket,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch ticket",
+      error: error.message,
+    });
+  }
+};
 
 // Update a ticket by ID
 const updateTicket = async (req, res) => {
@@ -141,6 +171,7 @@ module.exports = {
   createTicket,
   getAllTickets,
   getTicketById,
+  getTicketByuserId,
   updateTicket,
   deleteTicket,
 };

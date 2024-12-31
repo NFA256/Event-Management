@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   createSchedule,
   getAllSchedules,
+  getlatestSchedule,
   getScheduleById,
   updateSchedule,
   deleteSchedule,
@@ -21,6 +22,8 @@ router
   .get(getScheduleById) // Get a specific schedule by ID
   .put(updateSchedule) // Update a schedule
   .delete(deleteSchedule); // Delete a schedule
-
+ router
+ .route("/latestSchedule")
+ .get(getlatestSchedule)
 
 module.exports = router;

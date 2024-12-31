@@ -15,6 +15,7 @@ const Workshop = () => {
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false); // New state for ticket modal
   const [userName, setUserName] = useState(""); // New state for user's name
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState("");
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -22,6 +23,7 @@ const Workshop = () => {
       setUserId(user.userId);
       setUserName(user.fname); // Local storage ka name field
       fetchUserTickets(user.userId);
+      setUserRole(user.role || "guest");
       setIsLoggedIn(true); // User logged in hai
     } else {
       setError("User not found.");
@@ -63,7 +65,7 @@ const Workshop = () => {
   const fetchUserTickets = async (userId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/tickets?user_id=${userId}`
+        `http://localhost:5000/ticket-user-id?user_id=${userId}`
       );
       const data = await response.json();
       if (Array.isArray(data.data)) {
@@ -323,15 +325,17 @@ const Workshop = () => {
                                 View Ticket
                               </button>
                             </>
-                          ) : (
+                          ) :
+                          (userRole !== "admin" ) && (
                             <button
-                              className="btn3 mt-2 mx-2"
+                              className="btn3 mx-2"
                               type="submit"
                               onClick={() => handleBookingModalOpen(workshop)}
                             >
                               Book
                             </button>
-                          )}
+                          )
+                          }
                         </div>
                       </div>
                     </div>

@@ -46,7 +46,7 @@ const createEvent = async (req, res) => {
 // Get all events
 const getAllEvents = async (req, res) => {
   try {
-    const getevents = await events.find().populate("schedule_id");
+    const getevents = await events.find().populate("schedule_id").sort({ date: -1 }) ;
     res.status(200).json(getevents.length ? getevents : { message: "No events found" });
   } catch (error) {
     console.error(error);

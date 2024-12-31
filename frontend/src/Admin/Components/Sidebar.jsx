@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet , useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [role, setRole] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser.role) {
+    if (storedUser && storedUser.role) {
       setRole(storedUser.role);
+      setIsLoggedIn(true);
+
+    }
+    else {
+      navigate('/login');  // Redirect to login page if not logged in
     }
   }, []);
 
@@ -60,8 +67,6 @@ const Sidebar = () => {
           <ul className="nav text-center nav-pills mt-2 flex-column">
             {(role === "exhibitor"
               ? [
-                  { path: "exhibitor-dashboard", label: "Dashboard" },
-                  { path: "manage-exhibits", label: "Manage Exhibits" },
                   // { path: "addevent", label: "Add Event" },
                   { path: "showevent", label: "Show Event" },
                   { path: "book", label: "Book" },

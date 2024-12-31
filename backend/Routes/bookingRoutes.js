@@ -4,6 +4,7 @@ const {
   createBooking,
   getAllBookings,
   getBookingById,
+  getBookingByexhibitorId,
   updateBooking,
   deleteBooking,
   approveBooking, // Import approveBooking method
@@ -18,6 +19,9 @@ router.get("/bookings", getAllBookings);
 
 // Get a single booking by ID
 router.get("/bookings/:id", getBookingById);
+
+// Get a single booking by user ID
+router.get("/bookings-exhibitor-id", getBookingByexhibitorId);
 
 // Update a booking by ID
 router.put("/bookings/:id", updateBooking);

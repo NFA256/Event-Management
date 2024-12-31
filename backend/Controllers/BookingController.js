@@ -79,6 +79,32 @@ const getBookingById = async (req, res) => {
     });
   }
 };
+// Get booking by ID
+const getBookingByexhibitorId = async (req, res) => {
+  try {
+    const { exhibitor_id } = req.query;  // Extract user_id from query parameters
+    if (!exhibitor_id) {
+      return res.status(400).json({ message: "exhibitor ID is required." });
+    }
+    const booking = await bookings
+      .find({exhibitor_id})
+      .populate("exhibitor_id")
+      .populate("event_id", "title date")
+      .populate("booth_id", "name");
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
+    return res.status(200).json({ success: true, data: booking });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching booking",
+      error: error.message,
+    });
+  }
+};
 
 // Update booking by ID
 const updateBooking = async (req, res) => {
@@ -192,6 +218,7 @@ module.exports = {
   createBooking,
   getAllBookings,
   getBookingById,
+  getBookingByexhibitorId,
   updateBooking,
   deleteBooking,
   approveBooking,
