@@ -34,6 +34,7 @@ import Workshop from "./User/Pages/Workshop";
 import Seminar from "./User/Pages/Seminar";
 import Events from "./User/Pages/Events";
 import Profile from "./User/Pages/Profile";
+import Book from "./Admin/Pages/Book";
 
 const App = () => {
   return (
@@ -71,6 +72,7 @@ const App = () => {
           <Route path="showevent" element={<Showevent />} />
           <Route path="addseminar" element={<Addseminar />} />
           <Route path="showseminar" element={<Showseminar />} />
+          <Route path="book" element={<Book />} />
 
           <Route path="calendar" element={<EventCalendar />} />
         </Route>

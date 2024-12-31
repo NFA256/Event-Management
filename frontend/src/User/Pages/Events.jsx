@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -13,30 +14,28 @@ const Events = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [exhibitorId, setExhibitorId] = useState("");
- useEffect(() => {
-   const storedUser = JSON.parse(localStorage.getItem("user"));
-   if (storedUser) {
-     setUserName(storedUser.fname);
-     setIsLoggedIn(true);
-     setUserRole(storedUser.role || "guest");
+  const [boothbook, setboothbook] = useState([]); // State for exhibitor booking
 
-     // If the role is "exhibitor", set the exhibitorId based on the user
-     if (storedUser.role === "exhibitor") {
-       // Check if exhibitorId is directly available in localStorage
-       if (storedUser.exhibitorId) {
-         setExhibitorId(storedUser.exhibitorId); // Use stored exhibitorId
-       } else {
-         // Alternatively, fetch exhibitorId from API based on other data (e.g., company_id)
-         setError("Exhibitor ID is missing.");
-       }
-     }
-   }
- }, []);
-// This runs only once on component mount
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUserName(storedUser.fname);
+      setIsLoggedIn(true);
+      setUserRole(storedUser.role || "guest");
+
+      if (storedUser.role === "exhibitor") {
+        if (storedUser.exhibitorId) {
+          setExhibitorId(storedUser.exhibitorId);
+        } else {
+          setError("Exhibitor ID is missing.");
+        }
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      setError(""); // Clear any previous errors
+      setError("");
       try {
         const response = await fetch("http://localhost:5000/events");
         if (response.ok) {
@@ -51,7 +50,7 @@ const Events = () => {
     };
 
     const getBoothData = async () => {
-      setError(""); // Clear any previous errors
+      setError("");
       try {
         const response = await fetch("http://localhost:5000/booths");
         if (response.ok) {
@@ -65,29 +64,98 @@ const Events = () => {
       }
     };
 
-   
-  const getExhibitorData = async () => {
-    setError(""); // Clear previous errors
-    try {
-      const response = await fetch(
-        `http://localhost:5000/exhibitors/${exhibitorId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setExhibitor(data); // Store exhibitor data
-        console.log("Fetched Exhibitor Data:", data); // Debugging log for fetched data
-      } else {
-        setError("Failed to fetch exhibitor data.");
+    const getExhibitorData = async () => {
+      setError("");
+      try {
+        const response = await fetch(
+          `http://localhost:5000/exhibitors/${exhibitorId}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setExhibitor(data);
+          console.log("Fetched Exhibitor Data:", data);
+        } else {
+          setError("Failed to fetch exhibitor data.");
+        }
+      } catch (error) {
+        setError("Error fetching exhibitor data.");
       }
-    } catch (error) {
-      setError("Error fetching exhibitor data.");
-    }
-  };
+    };
 
     fetchEvents();
     getBoothData();
-    getExhibitorData(); // Fetch exhibitor data when exhibitorId is set
+    if (exhibitorId) {
+      getExhibitorData();
+      fetchexhibitorbook(exhibitorId); // Fetch booking data when exhibitorId changes
+    }
   }, [exhibitorId]); // Rerun effect if exhibitorId changes
+
+  const fetchexhibitorbook = async (exhibitorId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/bookings?exhibitor_id=${exhibitorId}`
+      );
+      const data = await response.json();
+      console.log("Booking data :", data);
+      if (Array.isArray(data.data)) {
+        setboothbook(data.data);
+      } else {
+        setError("Failed to fetch booking data.");
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  const isexhibenrolled = (eventId) => {
+    return boothbook.some(
+      (booking) => booking.event_id._id === eventId // Check if the event ID matches
+    );
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (isexhibenrolled(selectedEventId)) {
+      setError(
+        "You are already enrolled in this event for the selected booth."
+      );
+      return;
+    }
+    if (!selectedBooth) {
+      setError("Please select a booth before confirming your booking.");
+      return;
+    }
+    const date = new Date();
+    const total_cost = 100; // Example value; replace with a proper calculation
+
+    try {
+      const response = await fetch("http://localhost:5000/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          exhibitor_id: exhibitorId,
+          event_id: selectedEventId,
+          booth_id: selectedBooth,
+          date,
+          total_cost,
+          status: "pending", // Set the status to "pending"
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setboothbook((prevBooks) => [...prevBooks, data.booking]);
+        setSuccess("Booking successful!");
+        console.log("Booking successful:", data);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      setError(`Error during booking: ${error.message}`);
+      console.error("Error during booking:", error.message);
+    }
+  };
 
   const calculateTimeLeft = (eventDate) => {
     const currentDate = new Date(); // Today's date
@@ -110,45 +178,6 @@ const Events = () => {
       // Event date has passed
       const daysAgo = Math.ceil(-difference / (1000 * 60 * 60 * 24)); // Milliseconds to days
       return { days: daysAgo, isPast: true, isToday: false };
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-
-    if (!selectedBooth) {
-      setError("Please select a booth before confirming your booking.");
-      return; // Stop the form submission if no booth is selected
-    }
-
-    const date = new Date(); // Current date as booking date
-    const total_cost = 100; // Example value; replace with a proper calculation
-
-    try {
-      const response = await fetch("http://localhost:5000/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          exhibitor_id: exhibitorId,
-          event_id: selectedEventId,
-          booth_id: selectedBooth,
-          date,
-          total_cost,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json(); // Parse JSON
-      setSuccess("Booking successful!");
-      console.log("Booking successful:", data);
-    } catch (error) {
-      setError(`Error during booking: ${error.message}`);
-      console.error("Error during booking:", error.message);
     }
   };
 
@@ -175,7 +204,6 @@ const Events = () => {
             <div className="mb-4">
               <h4>Welcome, {Exhibitor.name || userName}</h4>
               <p>Exhibitor ID: {exhibitorId}</p>
-              {/* Add any additional exhibitor details */}
             </div>
           )}
           <div className="row">
@@ -203,28 +231,37 @@ const Events = () => {
                       </div>
                       <div className="blog-cap">
                         <p>| {event.status} </p>
-                        <p>| {event.time}</p>
+                        {/* <p>| {event.time}</p> */}
                         <h2 className="text-center mb-4 text-uppercase">
                           {event.title}
                         </h2>
                         <div className="text-center">
                           <strong>{event.description}</strong>
                         </div>
-                        <div className="text-center mt-5">
+                        <div className="text-center mt-3">
                           {isLoggedIn && userRole === "exhibitor" ? (
-                            <button
-                              className="btn btn-primary"
-                              onClick={() => {
-                                setSelectedEventId(event._id); // Set the selected event ID
-                                setShowModal(true);
-                              }}
-                            >
-                              Book a Booth
-                            </button>
+                            isexhibenrolled(event._id) ? (
+                              <p className="text-success">Already Enrolled</p>
+                            ) : (
+                              <button
+                                className="btn3"
+                                onClick={() => {
+                                  setSelectedEventId(event._id);
+                                  setShowModal(true);
+                                }}
+                              >
+                                Book a Booth
+                              </button>
+                            )
                           ) : (
-                            <p className="text-danger">
-                              You must be an exhibitor to book a booth.
-                            </p>
+                            <>
+                              <p className="text-danger">
+                                You must be an exhibitor to book a booth.
+                              </p>
+                              <Link to="/becomaexhibitor" className="btn3 ">
+                                Become An Exhibitor
+                              </Link>
+                            </>
                           )}
                         </div>
                       </div>
@@ -236,7 +273,6 @@ const Events = () => {
           </div>
         </div>
       </section>
-      {/* Modal for Booking a Booth */}
       {showModal && (
         <div
           className="modal show"
@@ -267,7 +303,6 @@ const Events = () => {
                     <p>{success}</p>
                   </div>
                 )}
-
                 <form
                   className="form-contact contact_form"
                   id="contactForm"
@@ -290,9 +325,11 @@ const Events = () => {
                       ))}
                     </select>
                   </div>
-                  <button type="submit" className="btn btn-primary">
-                    Confirm Booking
-                  </button>
+                  <div className="text-center">
+                    <button type="submit" className="btn3 text-center">
+                      Confirm Booking
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>

@@ -29,18 +29,13 @@ const Navbar = () => {
       return (
         <>
           <li className="nav-item">
-            <Link to="/profile" className="nav-link">
+            <Link to="/admin/calendar" className="nav-link">
               Dashboard
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/manage-users" className="nav-link">
-              Manage Users
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/reports" className="nav-link">
-              Reports
+            <Link to="/profile" className="nav-link">
+              Profile
             </Link>
           </li>
         </>
@@ -54,18 +49,34 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="nav-item">
+            <Link to="/seminar" className="nav-link">
+              Seminar
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/workshop" className="nav-link">
+              Workshop
+            </Link>
+          </li>
+          <li className="nav-item">
             <Link to="/event" className="nav-link">
               Event
             </Link>
           </li>
-          <li className="nav-item">
-            <Link to="/profile" className="nav-link">
-              Dashboard
-            </Link>
-          </li>
+
           <li className="nav-item">
             <Link to="/schedule" className="nav-link">
               Schedule
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/contact" className="nav-link">
+              Contact
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/admin/book" className="nav-link">
+              Dashboard
             </Link>
           </li>
         </>
@@ -98,11 +109,11 @@ const Navbar = () => {
               Event
             </Link>
           </li>
-          {/* <li className="nav-item">
+          <li className="nav-item">
             <Link to="/schedule" className="nav-link">
               Schedule
             </Link>
-          </li> */}
+          </li>
           <li className="nav-item">
             <Link to="/contact" className="nav-link">
               Contact

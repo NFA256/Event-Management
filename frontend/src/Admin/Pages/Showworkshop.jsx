@@ -127,7 +127,7 @@ const Showworkshop = () => {
     }
     setModalOpen(true);
   };
-  const handleDelete = async (workshopId,schedule_id) => {
+  const handleDelete = async (workshopId, schedule_id) => {
     if (window.confirm("Are you sure you want to delete this workshop?")) {
       try {
         const deleteSchedule = await fetch(
@@ -149,7 +149,7 @@ const Showworkshop = () => {
           }
         );
 
-        if (response.ok  && deleteSchedule.ok &&deleteSessions.ok) {
+        if (response.ok && deleteSchedule.ok && deleteSessions.ok) {
           // Update the workshops state to remove the deleted workshop
           setWorkshops((prevWorkshops) =>
             prevWorkshops.filter((workshop) => workshop._id !== workshopId)
@@ -160,7 +160,10 @@ const Showworkshop = () => {
           const result = await response.json();
           console.error("Error response:", result);
           setError(
-            sessionresult.message || scheduleresult.message || result.message || "An error occurred while deleting the workshop."
+            sessionresult.message ||
+              scheduleresult.message ||
+              result.message ||
+              "An error occurred while deleting the workshop."
           );
         }
       } catch (err) {
@@ -265,20 +268,27 @@ const Showworkshop = () => {
       end_date: currentWorkshop.end_date,
       reserved_for: "Workshop",
     };
-    const scheduleResponse = await fetch(`http://localhost:5000/schedules/${currentWorkshop.schedule_id._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(scheduleData),
-    });
+    const scheduleResponse = await fetch(
+      `http://localhost:5000/schedules/${currentWorkshop.schedule_id._id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(scheduleData),
+      }
+    );
 
     if (scheduleResponse.status === 400) {
       const result = await scheduleResponse.json();
-      setError(result.message || "An error occurred while creating the schedule.");
+      setError(
+        result.message || "An error occurred while creating the schedule."
+      );
       setTimeout(() => setError(""), 3000);
       return;
     } else if (!scheduleResponse.ok) {
       const result = await scheduleResponse.json();
-      setError(result.message || "An error occurred while creating the schedule.");
+      setError(
+        result.message || "An error occurred while creating the schedule."
+      );
       setTimeout(() => setError(""), 3000);
       return;
     }
@@ -337,7 +347,7 @@ const Showworkshop = () => {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <div className="col-10 mx-auto text-center mt-5">
+    <div className="col-10 mx-auto text-center mt-5 mb-5">
       <h1 className="text-center text-uppercase font-weight-bold mb-3">
         Workshops And Sessions
       </h1>
@@ -387,11 +397,15 @@ const Showworkshop = () => {
                 />
               </td>
               <td className="text-center p-4">
-                {getHallName(workshop.hall_id._id)}
+                {workshop.hall_id
+                  ? getHallName(workshop.hall_id._id)
+                  : "Unknown Hall"}
               </td>
               <td className="text-center p-4">{workshop.no_of_attendees}</td>
               <td className="text-center p-4">
-                {getSpeakerName(workshop.speaker_id._id)}
+                {workshop.speaker_id
+                  ? getSpeakerName(workshop.speaker_id._id)
+                  : "Unknown Speaker"}
               </td>
               <td className="text-center ">
                 <button
@@ -408,7 +422,9 @@ const Showworkshop = () => {
                 </button>
                 <button
                   className="btn btn-outline-danger btn-md mx-1 mt-2"
-                  onClick={() => handleDelete(workshop._id,workshop.schedule_id._id)}
+                  onClick={() =>
+                    handleDelete(workshop._id, workshop.schedule_id._id)
+                  }
                 >
                   {" "}
                   <i class="fas fa-trash-alt"></i>

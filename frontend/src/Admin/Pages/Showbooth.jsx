@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import Book from "../Pages/Book";
 
 const Showbooth = () => {
   const [booths, setBooths] = useState([]);
-  const [floors, setFloors] = useState([]); // To store floor data with total booths
+  const [floors, setFloors] = useState([]);
   const [error, setError] = useState("");
+  const [showBooking, setShowBooking] = useState(false); // New state to control display
 
   // Fetch booth and floor data from API
   useEffect(() => {
@@ -32,27 +34,14 @@ const Showbooth = () => {
     };
 
     fetchBooths();
-  }, []);
+  }, []); // Re-fetch booths on initial render or whenever needed.
 
-  const handleReserveBooth = (boothId, floorId) => {
-    // Find the booth and update the status to reserved
-    const updatedBooths = booths.map((booth) => {
-      if (booth._id === boothId) {
-        return { ...booth, reserved_bool: true }; // Update the reserved status
-      }
-      return booth;
-    });
-
-    // Find the floor and decrement the total_booths available
-    const updatedFloors = floors.map((floor) => {
-      if (floor._id === floorId && floor.total_booths > 0) {
-        return { ...floor, total_booths: floor.total_booths - 1 };
-      }
-      return floor;
-    });
-
-    setBooths(updatedBooths);
-    setFloors(updatedFloors);
+  const refreshBooths = async () => {
+    const boothResponse = await fetch("http://localhost:5000/booths");
+    if (boothResponse.ok) {
+      const boothData = await boothResponse.json();
+      setBooths(boothData);
+    }
   };
 
   return (
@@ -60,43 +49,44 @@ const Showbooth = () => {
       <h1 className="text-center text-uppercase font-weight-bold mb-3">
         Booths
       </h1>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {!error && booths.length > 0 ? (
-        <table className="table table-bordered">
-          <thead>
-            <tr className="table-info ">
-              <th>#</th>
-              <th>Booth Name</th>
-              <th>Floor Name</th>
-              <th>Reserved Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {booths.map((booth, index) => (
-              <tr key={booth._id}>
-                <td>{index + 1}</td>
-                <td>{booth.name}</td>
-                <td>{booth.floor_id?.floor_name || "N/A"}</td>
-                <td>{booth.reserved_bool ? "Reserved" : "Available"}</td>
-                <td>
-                  {!booth.reserved_bool && (
-                    <button
-                      className="btn btn-primary"
-                      onClick={() =>
-                        handleReserveBooth(booth._id, booth.floor_id._id)
+
+      {/* Show Booking Table (conditional render) */}
+      {showBooking ? (
+        <Book refreshBooths={refreshBooths} />
+      ) : (
+        <>
+          {error && <div className="alert alert-danger">{error}</div>}
+          {!error && booths.length > 0 ? (
+            <table className="table table-bordered">
+              <thead>
+                <tr className="table-info ">
+                  <th>#</th>
+                  <th>Booth Name</th>
+                  <th>Floor Name</th>
+                  <th>Reserved Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {booths.map((booth, index) => (
+                  <tr key={booth._id}>
+                    <td>{index + 1}</td>
+                    <td>{booth.name}</td>
+                    <td>{booth.floor_id?.floor_name || "N/A"}</td>
+                    <td
+                      className={
+                        booth.reserved_bool ? "text-danger" : "text-success"
                       }
                     >
-                      Reserve
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        !error && <p>No booths to display.</p>
+                      {booth.reserved_bool ? "Reserved" : "Available"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            !error && <p>No booths to display.</p>
+          )}
+        </>
       )}
     </div>
   );

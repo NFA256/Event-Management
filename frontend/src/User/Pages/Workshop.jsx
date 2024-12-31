@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 
 const Workshop = () => {
-    const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState("");
   const [workshops, setWorkshops] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [error, setError] = useState("");
@@ -10,11 +11,20 @@ const Workshop = () => {
   const [sessionsModalOpen, setSessionsModalOpen] = useState(false); // State for modal
   const [currentWorkshop, setCurrentWorkshop] = useState(null); // State for current workshop
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [userTickets, setUserTickets] = useState([]); // State for user tickets
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false); // New state for ticket modal
+  const [userName, setUserName] = useState(""); // New state for user's name
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setUserId(user.userId); // Assuming user ID is stored as 'id'
+      setUserId(user.userId);
+      setUserName(user.fname); // Local storage ka name field
+      fetchUserTickets(user.userId);
+      setIsLoggedIn(true); // User logged in hai
+    } else {
+      setError("User not found.");
     }
     const fetchWorkshops = async () => {
       try {
@@ -50,6 +60,47 @@ const Workshop = () => {
     fetchSessions();
   }, []);
 
+  const fetchUserTickets = async (userId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/tickets?user_id=${userId}`
+      );
+      const data = await response.json();
+      if (Array.isArray(data.data)) {
+        setUserTickets(data.data);
+      } else {
+        setError("Tickets data is not an array.");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleViewTicket = (workshop) => {
+    setCurrentWorkshop(workshop); // Set the current workshop for the ticket modal
+    setIsTicketModalOpen(true); // Open the ticket modal
+  };
+
+  const handleTicketModalClose = () => {
+    setIsTicketModalOpen(false); // Close the ticket modal
+    setCurrentWorkshop(null); // Clear the current workshop data
+  };
+
+  const isUserEnrolled = (workshopId) => {
+    return userTickets.some(
+      (ticket) => ticket.workshop_id && ticket.workshop_id._id === workshopId
+    );
+  };
+
+  const handleBookTicket = (workshopId) => {
+    if (isUserEnrolled(workshopId)) {
+      setError("You are already enrolled for this seminar!");
+      return;
+    }
+
+    // Logic to book ticket (e.g., POST request to the server)
+    console.log("Booking ticket for seminar:", workshopId);
+  };
   useEffect(() => {
     const combined = workshops.map((workshop) => {
       if (!workshop) return { ...workshop, sessions: [] };
@@ -93,13 +144,19 @@ const Workshop = () => {
     setCurrentWorkshop(null); // Clear the current workshop
   };
   const handleBookingModalOpen = (workshop) => {
+     if (!isLoggedIn) {
+       // Redirect to login page if user is not logged in
+       window.location.href = "/login"; // Change this to your actual login route
+       return;
+     }
     setCurrentWorkshop(workshop);
     setIsBookingModalOpen(true);
   };
 
   const handleBookingModalClose = () => {
-    setIsBookingModalOpen(false);
-    setCurrentWorkshop(null);
+   
+    setCurrentWorkshop(false);
+    setIsBookingModalOpen(true);
   };
   const calculateDuration = (startTime, endTime) => {
     const start = new Date(`1970-01-01T${startTime}:00`);
@@ -117,11 +174,19 @@ const Workshop = () => {
   };
 
   const handleBookWorkshop = async () => {
+    if (!currentWorkshop) return;
+
+    // Check if the user has already booked this seminar
+    if (isUserEnrolled(currentWorkshop._id)) {
+      setError("You have already booked this seminar.");
+      return;
+    }
+
     const ticketData = {
       workshop_id: currentWorkshop._id,
       user_id: userId,
       total_price:
-      currentWorkshop.price === "Free" ? "0" : currentWorkshop.price,
+        currentWorkshop.price === "Free" ? "0" : currentWorkshop.price,
     };
     try {
       const response = await fetch("http://localhost:5000/tickets", {
@@ -130,9 +195,16 @@ const Workshop = () => {
         body: JSON.stringify(ticketData),
       });
       if (response.ok) {
-        alert("Booking successful!");
+        const result = await response.json();
+        console.log("Ticket booked successfully:", result);
+        // Optionally, you can show a success message or update the UI
+        // Update tickets locally after booking
+        console.log("Ticket booked successfully:", result);
+        // Update tickets locally after booking
+        setUserTickets((prevTickets) => [...prevTickets, ticketData]); // Add the new ticket to the state
+        setError("Booking successful!");
       } else {
-        alert("Failed to book the workshop.");
+        setError("Failed to book the workshop.");
       }
     } catch (error) {
       console.error("Booking error:", error);
@@ -157,7 +229,7 @@ const Workshop = () => {
       <br />
       <section className="home-blog-area mt-5 mb-5">
         <div className="container col-10  mt-5">
-          {error && <p className="text-danger">Error: {error}</p>}
+          {/* {error && <p className="text-danger">Error: {error}</p>} */}
           <div className="row">
             {combinedData.map((workshop) => {
               const timeLeft = calculateTimeLeft(workshop.start_date);
@@ -239,9 +311,21 @@ const Workshop = () => {
                             <p className="text-danger">
                               This workshop has already started or passed.
                             </p>
+                          ) : isUserEnrolled(workshop._id) ? (
+                            <>
+                              <p className="text-success mt-3">
+                                Already Enrolled
+                              </p>
+                              <button
+                                className="btn3"
+                                onClick={() => handleViewTicket(workshop)} // Open ticket modal
+                              >
+                                View Ticket
+                              </button>
+                            </>
                           ) : (
                             <button
-                              className="btn3 mt-2"
+                              className="btn3 mt-2 mx-2"
                               type="submit"
                               onClick={() => handleBookingModalOpen(workshop)}
                             >
@@ -426,6 +510,140 @@ const Workshop = () => {
                     Confirm Booking
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {isTicketModalOpen && (
+          <div
+            className="modal fade show"
+            style={{ display: "block" }}
+            tabIndex="-1"
+            role="dialog"
+            onClick={handleTicketModalClose}
+          >
+            <div
+              className="modal-dialog "
+              role="document"
+              // onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-content">
+                <div className=" justify-content-center"></div>
+                <div
+                  className="modal-body"
+                  style={{ maxHeight: "650px", overflowY: "auto" }}
+                >
+                  <div class="">
+                    <div class="ticket border rounded shadow-sm mx-auto">
+                      <div class="ticket__header bg-light p-4">
+                        <div class="ticket__co text-center text-muted">
+                          <span class="ticket__co-name fs-1 fw-semibold">
+                            Event Sphere Management System
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="ticket__body p-4">
+                        <p class="ticket__route fs-3 fw-light text-center text-capitalize">
+                          Workshop Title :{" "}
+                          {currentWorkshop?.title || "Workshop Title"}
+                        </p>
+                        <p class="ticket__route fs-3 fw-light  text-capitalize">
+                          Name: {userName || "N/A"} {/* Display user's name */}
+                        </p>
+                        <div class="ticket__timing d-flex justify-content-between mx-3 border-top border-bottom py-3 text-center">
+                          <p class="mb-0 pe-3 border-end">
+                            <span class="ticket__small-label text-muted text-capitalize">
+                              Speaker :{" "}
+                            </span>
+                            <br />
+                            <span class="ticket__detail">
+                              {" "}
+                              {currentWorkshop.speaker_id
+                                ? currentWorkshop.speaker_id.name
+                                : "N/A"}{" "}
+                            </span>
+                          </p>
+                          <p class="mb-0 pe-3 border-end">
+                            <span class="ticket__small-label text-muted">
+                              Total Sessions
+                            </span>
+                            <br />
+
+                            <span class="ticket__detail">
+                              {currentWorkshop?.sessions.length}
+                            </span>
+                          </p>
+                          <p class="mb-0 pe-3 border-end">
+                            <span class="ticket__small-label text-muted  ">
+                              Hall :
+                            </span>
+                            <br />
+                            <span class="ticket__detail text-capitalize">
+                              {currentWorkshop.hall_id
+                                ? currentWorkshop.hall_id.hall_name
+                                : "N/A"}
+                            </span>
+                          </p>
+                        </div>
+
+                        <div class="ticket__timing d-flex justify-content-between  mx-3 border-bottom py-3 text-center">
+                          <p class="mb-0 pe-3 border-end">
+                            <span class="ticket__small-label text-muted">
+                              Start Date :
+                            </span>
+                            <br />
+                            <span class="ticket__detail">
+                              {" "}
+                              {new Date(
+                                currentWorkshop.start_date
+                              ).toLocaleDateString()}
+                            </span>
+                          </p>
+                          <p class="mb-0 pe-3 border-end">
+                            <span class="ticket__small-label text-muted">
+                              End Date :
+                            </span>
+                            <br />
+                            <span class="ticket__detail">
+                              {" "}
+                              {new Date(
+                                currentWorkshop.end_date
+                              ).toLocaleDateString()}
+                            </span>
+                          </p>
+
+                          <p class="mb-0">
+                            <span class="ticket__small-label text-muted">
+                              Total Price
+                            </span>
+                            <br />
+
+                            <span class="ticket__detail">
+                              {currentWorkshop?.price}/=
+                            </span>
+                          </p>
+                        </div>
+
+                        <p class="ticket__fine-print mt-3 text-muted text-center">
+                          This ticket cannot be transfered
+                        </p>
+
+                        <img
+                          class="ticket__barcode  col-11"
+                          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/515428/barcode.png"
+                          alt="Fake barcode"
+                        />
+                        <p className="ticket__route fs-3 fw-light text-muted text-center mt-1 text-capitalize">
+                          Ticket ID: {currentWorkshop._id || "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit " className="btn3">
+                  Download
+                </button>
               </div>
             </div>
           </div>

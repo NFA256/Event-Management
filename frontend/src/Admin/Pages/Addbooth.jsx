@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const AddBooth = () => {
   const [GetFloor, setFloor] = useState([]);
   const [floor_id, setFloorId] = useState("");
-  const [reserved_bool, setReservedBool] = useState(false);
+  // const [reserved_bool, setReservedBool] = useState(false);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [Error, setError] = useState("");
@@ -39,14 +39,14 @@ const AddBooth = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ floor_id, reserved_bool, name }),
+        body: JSON.stringify({ floor_id, name }),
       });
       const data = await response.json();
       if (response.ok) {
         setSuccess("Booth created successfully!");
         setMessage("");
         setFloorId("");
-        setReservedBool(false);
+        // setReservedBool(false);
         setName("");
       } else {
         setError(data.message || "Failed to create booth.");
@@ -64,9 +64,9 @@ const AddBooth = () => {
             <div className="col-12 col-md-9 col-lg-7 col-xl-6">
               <div className="card">
                 <div className="card-body p-5">
-                    <h1 className="text-uppercase font-weight-bold text-center mb-5">
-                      Add New Booth
-                    </h1>
+                  <h1 className="text-uppercase font-weight-bold text-center mb-5">
+                    Add New Booth
+                  </h1>
                   {/* Error message */}
                   {Error && (
                     <div className="alert alert-danger" role="alert">
@@ -116,17 +116,6 @@ const AddBooth = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
-                      />
-                    </div>
-
-                    {/* Reserved checkbox */}
-                    <div className="form-group">
-                      <label>Reserved</label>
-                      <input
-                        type="checkbox"
-                        className="form-contro text-centerl"
-                        checked={reserved_bool}
-                        onChange={(e) => setReservedBool(e.target.checked)}
                       />
                     </div>
 

@@ -28,51 +28,32 @@ export const AboutContent = () => (
               <h2>The Biggest Digital Conference.</h2>
             </div>
             <p>
-              There are many variations of passages of lorem ipsum available,
-              but the majority have suffered alteration in some form.
+              Event Sphere Management specializes in organizing and managing
+              dynamic expo events that bring industries, businesses, and
+              communities together under one roof. With years of experience in
+              creating successful expos, we focus on providing a platform where
+              exhibitors and attendees can connect and exchange ideas in a
+              seamless and professional environment.
             </p>
             <p>
-              There are many variations of passages of lorem ipsum available,
-              but the majority have suffered alteration in some form.
+              <strong>Our Mission</strong> To empower businesses and industries
+              by creating a collaborative environment where innovation thrives,
+              opportunities are unlocked, and lasting impressions are made.
             </p>
           </div>
-          <div className="row">
-            <div className="col-lg-6 col-md-6 col-sm-6 col-xs-10">
-              <div className="single-caption mb-20">
-                <div className="caption-icon">
-                  <span className="flaticon-communications-1"></span>
-                </div>
-                <div className="caption">
-                  <h5>Where</h5>
-                  <p>New York, United States</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6 col-md-6 col-sm-6 col-xs-10">
-              <div className="single-caption mb-20">
-                <div className="caption-icon">
-                  <span className="flaticon-education"></span>
-                </div>
-                <div className="caption">
-                  <h5>When</h5>
-                  <p>Jan. 21. 2021</p>
-                </div>
-              </div>
-            </div>
+
+          <div className="text-center ">
+            <Link to="/becomaexhibitor" className="btn3  ">
+              Become An Exhibitor
+            </Link>
           </div>
-          <a href="#" className="btn3 mt-50">
-            Get Your Ticket
-          </a>
-          <Link to="/becomaexhibitor" className="btn3 ml-3 mt-50">
-            Become An Exhibitor
-          </Link>
         </div>
         <div className="col-lg-6 col-md-12">
-          <div className="about-img">
+          <div className="about-img ">
             <div className="about-font-img d-none d-lg-block">
               <img src="assets/img/gallery/about2.png" alt="" />
             </div>
-            <div className="about-back-img">
+            <div className="about-back-img ">
               <img src="assets/img/gallery/about1.png" alt="" />
             </div>
           </div>
@@ -90,7 +71,7 @@ export const AboutPricing = () => (
         <div className="row justify-content-center">
           <div className="col-lg-5 col-md-8">
             <div className="section-tittle text-center mb-100">
-              <h2>Program Pricing</h2>
+              <h2>Our Services</h2>
               <p>
                 There arge many variations ohf passages of sorem gp ilable, but
                 the majority have ssorem gp iluffe.
@@ -102,57 +83,55 @@ export const AboutPricing = () => (
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
             <div className="single-card text-center mb-30">
               <div className="card-top">
-                <span>Day - 1</span>
-                <h4>$ 05.00</h4>
+                <h4>Seminars</h4>
               </div>
               <div className="card-bottom">
                 <ul>
-                  <li>Increase traffic 50%</li>
-                  <li>E-mail support</li>
-                  <li>10 Free Optimization</li>
-                  <li>24/7 support</li>
+                  <li>nspirational Speakers</li>
+                  <li>Diverse Topics</li>
+                  <li>Customized Content</li>
+                  <li>Audience Interaction</li>
                 </ul>
-                <a href="services.html" className="black-btn">
-                  View Spackert
-                </a>
+                <Link to="/seminar" className="btn3  ">
+                 Book now
+                </Link>
               </div>
             </div>
           </div>
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
             <div className="single-card active text-center mb-30">
               <div className="card-top">
-                <span>Day - 1,2,3</span>
-                <h4>$ 08.00</h4>
+                <h4>Workshops</h4>
               </div>
               <div className="card-bottom">
                 <ul>
-                  <li>Increase traffic 50%</li>
-                  <li>E-mail support</li>
-                  <li>10 Free Optimization</li>
+                  <li>Expert-Led Sessions</li>
+                  <li>Hands-On Learning</li>
+                  <li>Customized Content</li>
+                  <li>Small Group Settings</li>
                   <li>24/7 support</li>
                 </ul>
-                <a href="services.html" className="black-btn">
-                  View Spackert
-                </a>
+                <Link to="/workshop" className="btn3  ">
+                  Book Now
+                </Link>
               </div>
             </div>
           </div>
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
             <div className="single-card text-center mb-30">
               <div className="card-top">
-                <span>Day - 1,2</span>
-                <h4>$ 06.00</h4>
+                <h4>Event Management</h4>
               </div>
               <div className="card-bottom">
                 <ul>
-                  <li>Increase traffic 50%</li>
-                  <li>E-mail support</li>
-                  <li>10 Free Optimization</li>
-                  <li>24/7 support</li>
+                  <li>End-to-End Planning </li>
+                  <li>Custom Themes</li>
+                  <li>Technology Integration </li>
+                  <li>Sustainability Focus</li>
                 </ul>
-                <a href="services.html" className="black-btn">
-                  View Spackert
-                </a>
+                <Link to="/event" className="btn3  ">
+                 Book Now
+                </Link>
               </div>
             </div>
           </div>

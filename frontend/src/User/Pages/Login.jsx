@@ -84,7 +84,7 @@ const Login = () => {
             }));
           }
   
-          alert("Login successful!");
+          setSuccess("Login successful!");
           setTimeout(() => {
             navigate('/');
           }, 200);

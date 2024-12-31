@@ -6,6 +6,8 @@ const {
   getBookingById,
   updateBooking,
   deleteBooking,
+  approveBooking, // Import approveBooking method
+  rejectBooking, // Import rejectBooking method
 } = require("../Controllers/BookingController");
 
 // Create a new booking
@@ -22,5 +24,11 @@ router.put("/bookings/:id", updateBooking);
 
 // Delete a booking by ID
 router.delete("/bookings/:id", deleteBooking);
+
+// Approve a booking
+router.patch("/bookings/:id/approve", approveBooking);
+
+// Reject a booking
+router.patch("/bookings/:id/reject", rejectBooking);
 
 module.exports = router;

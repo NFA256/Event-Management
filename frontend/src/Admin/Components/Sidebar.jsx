@@ -62,8 +62,9 @@ const Sidebar = () => {
               ? [
                   { path: "exhibitor-dashboard", label: "Dashboard" },
                   { path: "manage-exhibits", label: "Manage Exhibits" },
-                  { path: "addevent", label: "Add Event" },
+                  // { path: "addevent", label: "Add Event" },
                   { path: "showevent", label: "Show Event" },
+                  { path: "book", label: "Book" },
                 ]
               : [
                   { path: "calendar", label: "Event Schedule" },
@@ -81,6 +82,7 @@ const Sidebar = () => {
                   { path: "showevent", label: "Show Event" },
                   { path: "addseminar", label: "Add Seminar" },
                   { path: "showseminar", label: "Show Seminar" },
+                  { path: "book", label: "Book" },
                 ]
             ).map(({ path, label }) => (
               <li key={path} className="nav-item fs-4 fw-medium">

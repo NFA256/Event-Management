@@ -7,7 +7,7 @@ import Faq from "./Faq";
 const Home = () => {
   const [userName, setUserName] = useState("");
   const [schedule, setschedule] = useState([]);
-  const [latestScheduleDate, setLatestScheduleDate] = useState(null); 
+  const [latestScheduleDate, setLatestScheduleDate] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -23,26 +23,30 @@ const Home = () => {
         const response = await fetch("http://localhost:5000/schedules");
         if (response.ok) {
           const data = await response.json();
-          console.log("Fetched schedule data:", data);  // Log fetched data
-    
+          console.log("Fetched schedule data:", data); // Log fetched data
+
           setschedule(data);
-    
+
           // Filter out past events and sort by start_date
-          const upcomingSchedules = data.filter(event => new Date(event.start_date) > new Date());
-          
+          const upcomingSchedules = data.filter(
+            (event) => new Date(event.start_date) > new Date()
+          );
+
           // Sort the upcoming events by start_date
-          const sortedUpcomingSchedules = upcomingSchedules.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
-    
+          const sortedUpcomingSchedules = upcomingSchedules.sort(
+            (a, b) => new Date(a.start_date) - new Date(b.start_date)
+          );
+
           // Get the latest upcoming event
           const latestUpcoming = sortedUpcomingSchedules[0];
-    
+
           if (latestUpcoming) {
-            console.log("Latest schedule date:", latestUpcoming.reserved_for);  // Log the latest schedule date
-            setLatestScheduleDate(latestUpcoming.start_date);  // Set the latest schedule date
+            console.log("Latest schedule date:", latestUpcoming.reserved_for); // Log the latest schedule date
+            setLatestScheduleDate(latestUpcoming.start_date); // Set the latest schedule date
             // console.log(latestScheduleDate)
           } else {
             console.log("No upcoming schedules found.");
-            setLatestScheduleDate(null);  // Set to null if no upcoming events
+            setLatestScheduleDate(null); // Set to null if no upcoming events
           }
         } else {
           console.error("Failed to fetch events");
@@ -53,15 +57,14 @@ const Home = () => {
         setError("An error occurred while fetching events.");
       }
     };
-    
-    
+
     fetchEvents();
   }, []);
 
   //--timer
   const calculateTimeLeft = () => {
     if (!latestScheduleDate) return {};
-    console.log("latest"+latestScheduleDate)
+    console.log("latest" + latestScheduleDate);
     const eventDate = new Date(latestScheduleDate);
     if (isNaN(eventDate)) {
       console.error("Invalid date:", latestScheduleDate);
@@ -104,35 +107,35 @@ const Home = () => {
   }, []);
 
   //speaker work
-   const [speakers, setSpeakers] = useState([]);
-   const [error, setError] = useState("");
+  const [speakers, setSpeakers] = useState([]);
+  const [error, setError] = useState("");
 
-   useEffect(() => {
-     const fetchSpeakers = async () => {
-       try {
-         const response = await fetch("http://localhost:5000/speakers");
-         if (response.ok) {
-           const data = await response.json();
-           if (Array.isArray(data)) {
-             setSpeakers(data);
-           } else {
-             console.error("API response is not an array:", data);
-             setSpeakers([]);
-           }
-         } else {
-           console.error("Failed to fetch speakers");
-         }
-       } catch (error) {
-         console.error("Error fetching speakers:", error);
-         setError("Failed to fetch speakers.");
-       }
-     };
-     fetchSpeakers();
-   }, []);
+  useEffect(() => {
+    const fetchSpeakers = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/speakers");
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            setSpeakers(data);
+          } else {
+            console.error("API response is not an array:", data);
+            setSpeakers([]);
+          }
+        } else {
+          console.error("Failed to fetch speakers");
+        }
+      } catch (error) {
+        console.error("Error fetching speakers:", error);
+        setError("Failed to fetch speakers.");
+      }
+    };
+    fetchSpeakers();
+  }, []);
   //Company work
-   const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState([]);
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchcompanies = async () => {
       try {
         const response = await fetch("http://localhost:5000/company");
@@ -153,12 +156,12 @@ const Home = () => {
         setError("Failed to fetch company.");
       }
     };
-     fetchcompanies();
-   }, []);
+    fetchcompanies();
+  }, []);
 
-   // Get only the last 6 speakers
-   const lastSixSpeakers = speakers.slice(-6);
-   const lastSixcompanies = companies.slice(-6);
+  // Get only the last 6 speakers
+  const lastSixSpeakers = speakers.slice(-6);
+  const lastSixcompanies = companies.slice(-6);
   return (
     <>
       {/* <!--? slider Area Start--> */}
@@ -366,75 +369,7 @@ const Home = () => {
       <section className="mt-5">
         <Faq />
       </section>
-      <section className="home-blog-area section-padding30">
-        <div className="container">
-          {/* <!-- Section Tittle --> */}
-          <div className="row justify-content-center">
-            <div className="col-lg-5 col-md-8">
-              <div className="section-tittle text-center mb-50">
-                <h2>News From Blog</h2>
-                <p>
-                  There arge many variations ohf passages of sorem gp ilable,
-                  but the majority have ssorem gp iluffe.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xl-6 col-lg-6 col-md-6">
-              <div className="home-blog-single mb-30">
-                <div className="blog-img-cap">
-                  <div className="blog-img">
-                    <img src="assets/img/gallery/home-blog1.png" alt="" />
-                    {/* <!-- Blog date --> */}
-                    <div className="blog-date text-center">
-                      <span>24</span>
-                      <p>Now</p>
-                    </div>
-                  </div>
-                  <div className="blog-cap">
-                    <p>| Physics</p>
-                    <h3>
-                      <a href="blog_details.html">
-                        Footprints in Time is perfect House in Kurashiki
-                      </a>
-                    </h3>
-                    <a href="blog_details.html" className="more-btn">
-                      Read more »
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-xl-6 col-lg-6 col-md-6">
-              <div className="home-blog-single mb-30">
-                <div className="blog-img-cap">
-                  <div className="blog-img">
-                    <img src="assets/img/gallery/home-blog2.png" alt="" />
-                    {/* <!-- Blog date --> */}
-                    <div className="blog-date text-center">
-                      <span>24</span>
-                      <p>Now</p>
-                    </div>
-                  </div>
-                  <div className="blog-cap">
-                    <p>| Physics</p>
-                    <h3>
-                      <a href="blog_details.html">
-                        Footprints in Time is perfect House in Kurashiki
-                      </a>
-                    </h3>
-                    <a href="blog_details.html" className="more-btn">
-                      Read more »
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* <!-- Blog Area End --> */}
+     
     </>
   );
 };

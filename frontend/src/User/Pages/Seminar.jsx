@@ -3,9 +3,14 @@ import React, { useState, useEffect } from "react";
 const Seminar = () => {
   const [seminars, setSeminars] = useState([]);
   const [error, setError] = useState("");
+  const [userTickets, setUserTickets] = useState([]); // State for user tickets
   const [selectedSeminar, setSelectedSeminar] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false); // New state for ticket modal
+  const [userName, setUserName] = useState(""); // New state for user's name
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState("");
 
   // Fetch seminars on load
   useEffect(() => {
@@ -15,6 +20,14 @@ const Seminar = () => {
     if (storedUser) {
       const user = JSON.parse(storedUser);
       setUserId(user.userId); // Assuming user ID is stored as 'id'
+      setUserName(user.fname); // Local storage ka name field
+      setUserId(user.userId); // Assuming user ID is stored as 'userId'
+      setIsLoggedIn(true); // User logged in hai
+      fetchUserTickets(user.userId); // Fetch tickets for this user
+      console.log(user.userId);
+      console.log(user.fname);
+    } else {
+      setError("User not found.");
     }
   }, []);
 
@@ -31,6 +44,49 @@ const Seminar = () => {
     } catch (err) {
       setError(err.message);
     }
+  };
+  const fetchUserTickets = async (userId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/tickets?user_id=${userId}`
+      );
+      const data = await response.json();
+
+      console.log("Tickets data:", data);
+
+      if (Array.isArray(data.data)) {
+        setUserTickets(data.data); // Assuming 'data' contains the ticket array
+      } else {
+        setError("Tickets data is not an array.");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  const handleViewTicket = (seminar) => {
+    setSelectedSeminar(seminar); // Use selected seminar for the ticket modal
+    setIsTicketModalOpen(true); // Open the ticket modal
+  };
+
+  const handleTicketModalClose = () => {
+    setIsTicketModalOpen(false); // Close the ticket modal
+    setSelectedSeminar(null); // Clear the selected seminar
+  };
+
+  const isUserEnrolled = (seminarId) => {
+    return userTickets.some(
+      (ticket) => ticket.seminar_id && ticket.seminar_id._id === seminarId
+    );
+  };
+
+  const handleBookTicket = (seminarId) => {
+    if (isUserEnrolled(seminarId)) {
+      setError("You are already enrolled for this seminar!");
+      return;
+    }
+
+    // Logic to book ticket (e.g., POST request to the server)
+    console.log("Booking ticket for seminar:", seminarId);
   };
 
   const calculateTimeLeft = (seminarDate, startTime) => {
@@ -63,6 +119,11 @@ const Seminar = () => {
   };
 
   const handleBookClick = (seminar) => {
+    if (!isLoggedIn) {
+      // Redirect to login page if user is not logged in
+      window.location.href = "/login"; // Change this to your actual login route
+      return;
+    }
     setSelectedSeminar(seminar);
     setIsModalOpen(true);
   };
@@ -73,6 +134,12 @@ const Seminar = () => {
   };
   const handleConfirmBooking = async () => {
     if (!selectedSeminar) return;
+
+    // Check if the user has already booked this seminar
+    if (isUserEnrolled(selectedSeminar._id)) {
+      setError("You have already booked this seminar.");
+      return;
+    }
 
     const ticketData = {
       seminar_id: selectedSeminar._id,
@@ -94,6 +161,11 @@ const Seminar = () => {
         const result = await response.json();
         console.log("Ticket booked successfully:", result);
         // Optionally, you can show a success message or update the UI
+        // Update tickets locally after booking
+        console.log("Ticket booked successfully:", result);
+        // Update tickets locally after booking
+        setUserTickets((prevTickets) => [...prevTickets, ticketData]); // Add the new ticket to the state
+        setError("Seminar booked successfully!");
       } else {
         const errorData = await response.json();
         console.error("Failed to book ticket:", errorData.message);
@@ -123,7 +195,7 @@ const Seminar = () => {
       <br />
       <section className="home-blog-area mt-5 mb-5">
         <div className="container col-10 mt-5">
-          {error && <p className="text-danger">Error: {error}</p>}
+          {/* {error && <p className="text-danger">Error: {error}</p>} */}
           <div className="row">
             {seminars.map((seminar) => {
               const timeLeft = calculateTimeLeft(
@@ -211,14 +283,26 @@ const Seminar = () => {
                             <p className="text-danger">
                               This seminar has already started or passed.
                             </p>
+                          ) : isUserEnrolled(seminar._id) ? (
+                            <>
+                              <p className="text-success">Already Enrolled</p>
+                              <button
+                                className="btn3"
+                                onClick={() => handleViewTicket(seminar)} // Open ticket modal
+                              >
+                                View Ticket
+                              </button>
+                            </>
                           ) : (
-                            <button
-                              className="btn3"
-                              type="submit"
-                              onClick={() => handleBookClick(seminar)}
-                            >
-                              Book
-                            </button>
+                            userRole !== "admin" && ( // Condition to hide Book button for admins
+                              <button
+                                className="btn3"
+                                type="submit"
+                                onClick={() => handleBookClick(seminar)}
+                              >
+                                Book
+                              </button>
+                            )
                           )}
                         </div>
                       </div>
@@ -332,62 +416,114 @@ const Seminar = () => {
           </div>
         </div>
       )}
+      {isTicketModalOpen && selectedSeminar && (
+        <div
+          className="modal fade show"
+          style={{ display: "block" }}
+          tabIndex="-1"
+          role="dialog"
+          onClick={handleTicketModalClose}
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-body">
+                <div className="ticket border rounded shadow-sm mx-auto">
+                  <div className="ticket__header bg-light p-4">
+                    <div className="ticket__co text-center text-muted">
+                      <span className="ticket__co-name fs-1 fw-semibold">
+                        Event Sphere Management System
+                      </span>
+                    </div>
+                  </div>
+                  <div className="ticket__body p-4">
+                    <p className="ticket__route fs-3 fw-light text-center text-capitalize">
+                      Seminar Title: {selectedSeminar.title || "N/A"}
+                    </p>
+                    <p className="ticket__route fs-3 fw-light text-capitalize">
+                      Name: {userName || "N/A"}
+                    </p>
 
-      <div class="container col-lg-4 col-md-5 col-sm-6 text-center py-4">
-        <div class="ticket border rounded shadow-sm mx-auto">
-          <div class="ticket__header bg-light p-4">
-            <div class="ticket__co position-relative d-inline-block text-start text-muted">
-              <span class="ticket__co-name fs-1 fw-semibold">
-                Variable Tides
-              </span>
-              <span class="ticket__co-subname fw-bold text-muted">
-                Boating Adventures
-              </span>
+                    <div className="ticket__timing d-flex justify-content-between mx-3 border-top border-bottom py-3 text-center">
+                      <p className="mb-0 pe-3 border-end">
+                        <span className="ticket__small-label text-muted">
+                          Speaker:
+                        </span>
+                        <br />
+                        <span className="ticket__detail">
+                          {selectedSeminar.speaker_id?.name || "N/A"}
+                        </span>
+                      </p>
+                      <p className="mb-0 pe-3 border-end">
+                        <span className="ticket__small-label text-muted">
+                          Hall:
+                        </span>
+                        <br />
+                        <span className="ticket__detail text-capitalize">
+                          {selectedSeminar.hall_id?.hall_name || "N/A"}
+                        </span>
+                      </p>
+                      <p className="mb-0">
+                        <span className="ticket__small-label text-muted">
+                          Price:
+                        </span>
+                        <br />
+                        <span className="ticket__detail">
+                          {selectedSeminar.price === "Free"
+                            ? "Free"
+                            : `${selectedSeminar.price}/=`}
+                        </span>
+                      </p>
+                      <p className="mb-0 pe-3 border-end">
+                        <span className="ticket__small-label text-muted">
+                          Start Time:
+                        </span>
+                        <br />
+                        <span className="ticket__detail">
+                          {new Date(
+                            `1970-01-01T${selectedSeminar.start_time}Z`
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </p>
+                      <p className="mb-0 pe-3 border-end">
+                        <span className="ticket__small-label text-muted">
+                          End Time:
+                        </span>
+                        <br />
+                        <span className="ticket__detail text-capitalize">
+                          {new Date(
+                            `1970-01-01T${selectedSeminar.end_time}Z`
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </p>
+                    </div>
+
+                    <p className="ticket__fine-print mt-3 text-muted text-center">
+                      This ticket cannot be transferred.
+                    </p>
+                    <img
+                      className="ticket__barcode col-11"
+                      src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/515428/barcode.png"
+                      alt="Fake barcode"
+                    />
+                    <p className="ticket__route fs-3 fw-light text-muted text-center mt-1 text-capitalize">
+                      Ticket ID: {selectedSeminar._id || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <button type="submit " className="btn3">
+                Download
+              </button>
             </div>
-          </div>
-
-          <div class="ticket__body p-4">
-            <p class="ticket__route fs-3 fw-light">Winter Wonderland</p>
-            <p class="ticket__description mt-2 text-muted">
-              A four-hour tour of the Strait of Garamond
-            </p>
-
-            <div class="ticket__timing d-flex justify-content-between mt-4 border-top border-bottom py-3 text-center">
-              <p class="mb-0 pe-3 border-end">
-                <span class="ticket__small-label text-muted">Date :</span>
-                <br />
-                <span class="ticket__detail">Feb 27</span>
-              </p>
-              <p class="mb-0 pe-3 border-end">
-                <span class="ticket__small-label text-muted">Launch</span>
-                <br />
-
-                <span class="ticket__detail">10:30 am</span>
-              </p>
-              <p class="mb-0">
-                <span class="ticket__small-label text-muted">Boarding</span>
-                <br />
-
-                <span class="ticket__detail">10:00 am</span>
-              </p>
-            </div>
-
-            <p class="ticket__fine-print mt-3 text-muted">
-              This ticket cannot be transferred to another voyage
-            </p>
-
-            <p class="ticket__admit mt-4 fs-1 fw-bold text-secondary">
-              Admit one adult
-            </p>
-
-            <img
-              class="ticket__barcode  col-11"
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/515428/barcode.png"
-              alt="Fake barcode"
-            />
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

@@ -19,7 +19,13 @@ const BookingSchema = new mongoose.Schema(
     },
     date: { type: Date, required: true },
     total_cost: { type: Number, required: true, min: 1 }, // Validate positive cost
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"], // Only allow these values
+      default: "pending", // Default status for new bookings
+    },// Status of the booking
   },
+
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
 

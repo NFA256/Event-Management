@@ -122,7 +122,71 @@ const deleteBooking = async (req, res) => {
       error: error.message,
     });
   }
+
 };
+// Approve booking
+const approveBooking = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const updatedBooking = await bookings.findByIdAndUpdate(
+      bookingId,
+      { status: "approved" },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking approved successfully",
+      data: updatedBooking,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error approving booking",
+      error: error.message,
+    });
+  }
+};
+
+// Reject booking
+const rejectBooking = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+
+    const updatedBooking = await bookings.findByIdAndUpdate(
+      bookingId,
+      { status: "rejected" },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking rejected successfully",
+      data: updatedBooking,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error rejecting booking",
+      error: error.message,
+    });
+  }
+};
+
+
 
 module.exports = {
   createBooking,
@@ -130,4 +194,6 @@ module.exports = {
   getBookingById,
   updateBooking,
   deleteBooking,
+  approveBooking,
+  rejectBooking,
 };
