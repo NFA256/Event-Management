@@ -47,7 +47,7 @@ const createSeminar = async (req, res) => {
 // Get all seminars
 const getAllSeminars = async (req, res) => {
   try {
-    const getSeminars = await seminars.find().populate("hall_id speaker_id schedule_id");
+    const getSeminars = await seminars.find().populate("hall_id speaker_id schedule_id").sort({ start_date: 1 });
     res.status(200).json(getSeminars);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch seminars", error: error.message });

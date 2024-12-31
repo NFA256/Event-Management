@@ -20,6 +20,7 @@ const Book = (refreshBooths) => {
         const response = await fetch("http://localhost:5000/bookings");
         if (response.ok) {
           const data = await response.json();
+          console.log(data.data)
           setBookings(data.data); // Assuming the data is in data.data
         } else {
           setError("Failed to fetch booking data.");
@@ -129,7 +130,8 @@ const Book = (refreshBooths) => {
               <td>{index + 1}</td>
               <td>{booking._id}</td>
               <td>{booking.exhibitor_id._id}</td>
-              <td>{booking.event_id.title}</td>
+              <td>{booking.event_id
+               ||  "N/A"}</td>
               <td>{booking.booth_id.name}</td>
               <td>{new Date(booking.date).toLocaleDateString()}</td>
               <td>

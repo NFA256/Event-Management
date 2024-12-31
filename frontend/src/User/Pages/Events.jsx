@@ -86,17 +86,19 @@ const Events = () => {
     getBoothData();
     if (exhibitorId) {
       getExhibitorData();
-      fetchexhibitorbook(exhibitorId); // Fetch booking data when exhibitorId changes
+      fetchexhibitorbook(exhibitorId);
+      console.log("boothbook"+boothbook)
+      // Fetch booking data when exhibitorId changes
     }
   }, [exhibitorId]); // Rerun effect if exhibitorId changes
 
   const fetchexhibitorbook = async (exhibitorId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/bookings?exhibitor_id=${exhibitorId}`
+        `http://localhost:5000/bookings-exhibitor-id?exhibitor_id=${exhibitorId}`
       );
       const data = await response.json();
-      console.log("Booking data :", data);
+      console.log("Booking data :", data.data);
       if (Array.isArray(data.data)) {
         setboothbook(data.data);
       } else {
@@ -109,7 +111,7 @@ const Events = () => {
 
   const isexhibenrolled = (eventId) => {
     return boothbook.some(
-      (booking) => booking.event_id._id === eventId // Check if the event ID matches
+      (booking) => booking.event_id === eventId // Check if the event ID matches
     );
   };
 

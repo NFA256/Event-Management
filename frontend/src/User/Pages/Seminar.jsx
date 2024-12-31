@@ -48,7 +48,7 @@ const Seminar = () => {
   const fetchUserTickets = async (userId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/tickets?user_id=${userId}`
+        `http://localhost:5000/ticket-user-id?user_id=${userId}`
       );
       const data = await response.json();
 
@@ -294,7 +294,7 @@ const Seminar = () => {
                               </button>
                             </>
                           ) : (
-                            userRole !== "admin" && ( // Condition to hide Book button for admins
+                            userRole === "attendee" && ( // Condition to hide Book button for admins
                               <button
                                 className="btn3"
                                 type="submit"

@@ -63,7 +63,7 @@ const Workshop = () => {
   const fetchUserTickets = async (userId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/tickets?user_id=${userId}`
+        `http://localhost:5000/ticket-user-id?user_id=${userId}`
       );
       const data = await response.json();
       if (Array.isArray(data.data)) {

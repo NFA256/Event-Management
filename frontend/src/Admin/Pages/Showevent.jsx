@@ -39,7 +39,17 @@ const ShowEvent = () => {
     
     fetchEvents();
   }, []);
+  const [role, setRole] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+useEffect(() => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (storedUser && storedUser.role) {
+    setRole(storedUser.role);
+    setIsLoggedIn(true);
 
+  }
+  
+}, []);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -222,7 +232,14 @@ const handleHideModal = () => {
               <th>No of Visitors</th>
               <th>Status</th>
               <th>Image</th>
-              <th>Actions</th>
+              {
+                 role === "admin"
+?(
+  <th>Actions</th>
+)
+:null
+              }
+              
             </tr>
           </thead>
           <tbody>
@@ -248,7 +265,10 @@ const handleHideModal = () => {
                       style={{ maxWidth: "80px" }}
                     />
                   </td>
-                  <td>
+                  {
+                 role === "admin"
+?(
+  <td>
                     <button
                       className="btn btn-outline-warning btn-md mx-2"
                       onClick={() => handleEdit(event)}
@@ -262,6 +282,10 @@ const handleHideModal = () => {
                       <i class="fas fa-trash-alt"></i>
                     </button>
                   </td>
+)
+:null
+              }
+                  
                 </tr>
               ))
             ) : (

@@ -6,7 +6,6 @@ import Faq from "./Faq";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
-  const [schedule, setschedule] = useState([]);
   const [latestScheduleDate, setLatestScheduleDate] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -20,34 +19,12 @@ const Home = () => {
 
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/schedules");
+        const response = await fetch("http://localhost:5000/latestSchedule");
         if (response.ok) {
           const data = await response.json();
           console.log("Fetched schedule data:", data); // Log fetched data
-
-          setschedule(data);
-
-          // Filter out past events and sort by start_date
-          const upcomingSchedules = data.filter(
-            (event) => new Date(event.start_date) > new Date()
-          );
-
-          // Sort the upcoming events by start_date
-          const sortedUpcomingSchedules = upcomingSchedules.sort(
-            (a, b) => new Date(a.start_date) - new Date(b.start_date)
-          );
-
-          // Get the latest upcoming event
-          const latestUpcoming = sortedUpcomingSchedules[0];
-
-          if (latestUpcoming) {
-            console.log("Latest schedule date:", latestUpcoming.reserved_for); // Log the latest schedule date
-            setLatestScheduleDate(latestUpcoming.start_date); // Set the latest schedule date
-            // console.log(latestScheduleDate)
-          } else {
-            console.log("No upcoming schedules found.");
-            setLatestScheduleDate(null); // Set to null if no upcoming events
-          }
+          setLatestScheduleDate(data.start_date);  // Set the latest schedule date
+            console.log("Latest schedule date:", latestScheduleDate);  // Log the latest schedule date
         } else {
           console.error("Failed to fetch events");
           setError("Failed to fetch events from the server.");

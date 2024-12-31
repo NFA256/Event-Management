@@ -54,6 +54,21 @@ const getAllSchedules = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch schedules", error: error.message });
   }
 };
+// Get all schedules
+const getlatestSchedule = async (req, res) => {
+  try {
+    const allSchedules = await schedules.findOne().sort({ start_date: 1 }).limit(1);  ;
+
+    if (allSchedules.length === 0) {
+      return res.status(404).json({ message: "No schedules found" });
+    }
+
+    res.status(200).json(allSchedules);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch schedules", error: error.message });
+  }
+};
 
 // Get a single schedule by ID
 const getScheduleById = async (req, res) => {
@@ -134,6 +149,7 @@ const deleteSchedule = async (req, res) => {
 module.exports = {
   createSchedule,
   getAllSchedules,
+  getlatestSchedule,
   getScheduleById,
   updateSchedule,
   deleteSchedule,
