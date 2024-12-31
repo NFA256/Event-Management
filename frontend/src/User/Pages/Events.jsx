@@ -241,7 +241,7 @@ const Events = () => {
                           <strong>{event.description}</strong>
                         </div>
                         <div className="text-center mt-3">
-                          {isLoggedIn && userRole === "exhibitor" ? (
+                          {isLoggedIn && userRole === "exhibitor"  ? (
                             isexhibenrolled(event._id) ? (
                               <p className="text-success">Already Enrolled</p>
                             ) : (
@@ -255,7 +255,11 @@ const Events = () => {
                                 Book a Booth
                               </button>
                             )
-                          ) : (
+                          ) :  isLoggedIn && userRole === "admin"
+                          ?  null
+
+                          :
+                           (
                             <>
                               <p className="text-danger">
                                 You must be an exhibitor to book a booth.

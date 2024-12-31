@@ -24,6 +24,7 @@ const Seminar = () => {
       setUserId(user.userId); // Assuming user ID is stored as 'userId'
       setIsLoggedIn(true); // User logged in hai
       fetchUserTickets(user.userId); // Fetch tickets for this user
+      setUserRole(user.role || "guest");
       console.log(user.userId);
       console.log(user.fname);
     } else {
@@ -293,16 +294,16 @@ const Seminar = () => {
                                 View Ticket
                               </button>
                             </>
-                          ) : (
-                            userRole === "attendee" && ( // Condition to hide Book button for admins
-                              <button
-                                className="btn3"
-                                type="submit"
-                                onClick={() => handleBookClick(seminar)}
-                              >
-                                Book
-                              </button>
-                            )
+                          ) : 
+                          
+                          (userRole !== "admin" ) && (
+                            <button
+                              className="btn3 mx-2"
+                              type="submit"
+                              onClick={() =>handleBookClick(seminar)}
+                            >
+                              Book
+                            </button>
                           )}
                         </div>
                       </div>

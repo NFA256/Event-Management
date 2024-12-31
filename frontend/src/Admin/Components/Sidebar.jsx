@@ -67,8 +67,6 @@ const Sidebar = () => {
           <ul className="nav text-center nav-pills mt-2 flex-column">
             {(role === "exhibitor"
               ? [
-                  { path: "exhibitor-dashboard", label: "Dashboard" },
-                  { path: "manage-exhibits", label: "Manage Exhibits" },
                   // { path: "addevent", label: "Add Event" },
                   { path: "showevent", label: "Show Event" },
                   { path: "book", label: "Book" },

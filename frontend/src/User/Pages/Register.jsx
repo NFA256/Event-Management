@@ -84,10 +84,10 @@ let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]
       setError("Email is not valid");
       return;
     }
-    if (Password === "" || !passwordreg.test(Password)) {
-      setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character");
-      return;
-    }
+    // if (Password === "" || !passwordreg.test(Password)) {
+    //   setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character");
+    //   return;
+    // }
     if (Cpassword !== Password) {
       setError("Password must be equal to Confirm Password");
       return;
