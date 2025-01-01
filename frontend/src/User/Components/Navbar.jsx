@@ -1,155 +1,98 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUserContext } from "../../context/UserContext"; 
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [role, setRole] = useState(""); // To track the user's role
+  // Get user data and logout function from the UserContext
+  const { user, logout } = useUserContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check login state on component mount
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      setIsLoggedIn(true);
-      setRole(user.role || "guest"); // Default to "guest" if role is undefined
-    } else {
-      setRole("guest");
-    }
-  }, []);
-
+  // Handle user logout
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Clear user info
-    setIsLoggedIn(false);
-    setRole("guest");
-    navigate("/login"); // Redirect to login page
+    logout() // Call the logout function from context to clear user data
+    navigate("/login"); // Redirect to the login page after logout
   };
 
+  // Render the navigation menu based on user role
   const renderMenu = () => {
-    if (role === "admin") {
+    if (user.role === "admin") {
+      // Menu items for admin
       return (
         <>
           <li className="nav-item">
-            <Link to="/admin/calendar" className="nav-link">
-              Dashboard
-            </Link>
+            <Link to="/admin" className="nav-link">Dashboard</Link>
           </li>
           <li className="nav-item">
-            <Link to="/" className="nav-link">
-              Home
-            </Link>
+            <Link to="/" className="nav-link">Home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/seminar" className="nav-link">
-              Seminar
-            </Link>
+            <Link to="/seminar" className="nav-link">Seminar</Link>
           </li>
           <li className="nav-item">
-            <Link to="/workshop" className="nav-link">
-              Workshop
-            </Link>
+            <Link to="/workshop" className="nav-link">Workshop</Link>
           </li>
           <li className="nav-item">
-            <Link to="/event" className="nav-link">
-              Event
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/profile" className="nav-link">
-              Profile
-            </Link>
+            <Link to="/event" className="nav-link">Event</Link>
           </li>
         </>
       );
-    } else if (role === "exhibitor") {
+    } else if (user.role === "exhibitor") {
+      // Menu items for exhibitor
       return (
         <>
           <li className="nav-item">
-            <Link to="/" className="nav-link">
-              Home
-            </Link>
+            <Link to="/admin" className="nav-link">Dashboard</Link>
           </li>
           <li className="nav-item">
-            <Link to="/seminar" className="nav-link">
-              Seminar
-            </Link>
+            <Link to="/" className="nav-link">Home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/workshop" className="nav-link">
-              Workshop
-            </Link>
+            <Link to="/seminar" className="nav-link">Seminar</Link>
           </li>
           <li className="nav-item">
-            <Link to="/event" className="nav-link">
-              Event
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link to="/schedule" className="nav-link">
-              Schedule
-            </Link>
+            <Link to="/workshop" className="nav-link">Workshop</Link>
           </li>
           <li className="nav-item">
-            <Link to="/contact" className="nav-link">
-              Contact
-            </Link>
+            <Link to="/event" className="nav-link">Event</Link>
           </li>
           <li className="nav-item">
-            <Link to="/admin/book" className="nav-link">
-              Dashboard
-            </Link>
+            <Link to="/schedule" className="nav-link">Schedule</Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/contact" className="nav-link">Contact</Link>
           </li>
         </>
       );
     } else {
+      // Menu items for guest or non-logged-in users
       return (
         <>
           <li className="nav-item">
-            <Link to="/" className="nav-link">
-              Home
-            </Link>
+            <Link to="/" className="nav-link">Home</Link>
           </li>
           <li className="nav-item">
-            <Link to="/about" className="nav-link">
-              About
-            </Link>
+            <Link to="/about" className="nav-link">About</Link>
           </li>
           <li className="nav-item">
-            <Link to="/seminar" className="nav-link">
-              Seminar
-            </Link>
+            <Link to="/seminar" className="nav-link">Seminar</Link>
           </li>
           <li className="nav-item">
-            <Link to="/workshop" className="nav-link">
-              Workshop
-            </Link>
+            <Link to="/workshop" className="nav-link">Workshop</Link>
           </li>
           <li className="nav-item">
-            <Link to="/event" className="nav-link">
-              Event
-            </Link>
+            <Link to="/event" className="nav-link">Event</Link>
           </li>
           <li className="nav-item">
-            <Link to="/schedule" className="nav-link">
-              Schedule
-            </Link>
+            <Link to="/schedule" className="nav-link">Schedule</Link>
           </li>
           <li className="nav-item">
-            <Link to="/contact" className="nav-link">
-              Contact
-            </Link>
+            <Link to="/contact" className="nav-link">Contact</Link>
           </li>
-          {
-            isLoggedIn != false
-            ?
-            (<li className="nav-item">
-            <Link to="/profile" className="nav-link">
-              Profile
-            </Link>
-          </li>)
-            :null
-          }
-          
+          {user.isLogin && (
+            <li className="nav-item">
+              <Link to="/profile" className="nav-link">Profile</Link>
+            </li>
+          )}
         </>
       );
     }
@@ -160,25 +103,11 @@ const Navbar = () => {
       <div className="container-fluid mx-5">
         {/* Logo */}
         <Link className="navbar-brand" to="/">
-          <img
-            src="assets/img/logo/logo.png"
-            alt="Logo"
-            style={{
-              height: "50px",
-            }}
-          />
+          <img src="assets/img/logo/logo.png" alt="Logo" style={{ height: "50px" }} />
         </Link>
 
         {/* Hamburger for mobile */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
 
@@ -186,32 +115,16 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav mx-auto">{renderMenu()}</ul>
 
-          {/* Buttons on the Right */}
+          {/* Right-side buttons (Login/Logout/Register) */}
           <div className="d-flex">
-            {isLoggedIn ? (
-              <button
-                className="btn3  me-2"
-                style={{ fontSize: "14px" }}
-                onClick={handleLogout}
-              >
+            {user.isLogin ? (
+              <button className="btn3 me-2" style={{ fontSize: "14px" }} onClick={handleLogout}>
                 Log Out
               </button>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="btn3  mx-2"
-                  style={{ fontSize: "14px" }}
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn3 "
-                  style={{ fontSize: "14px" }}
-                >
-                  Register
-                </Link>
+                <Link to="/login" className="btn3 mx-2" style={{ fontSize: "14px" }}>Log In</Link>
+                <Link to="/register" className="btn3" style={{ fontSize: "14px" }}>Register</Link>
               </>
             )}
           </div>

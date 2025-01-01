@@ -20,7 +20,6 @@ const Booth_Schema = mongoose.Schema(
     reserved_bool: {
       type: Boolean,
       default: false, // Defaults to false, meaning not reserved
-      required: true,
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

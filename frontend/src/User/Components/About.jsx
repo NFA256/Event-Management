@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import Faq from "../Pages/Faq";
 const HeroSection = () => (
   <div className="slider-area2">
     <div className="slider-height2 d-flex align-items-center">
@@ -42,7 +42,7 @@ export const AboutContent = () => (
             </p>
           </div>
 
-          <div className="text-center ">
+          <div className="text-left ">
             <Link to="/becomaexhibitor" className="btn3  ">
               Become An Exhibitor
             </Link>
@@ -65,80 +65,86 @@ export const AboutContent = () => (
 
 export const AboutPricing = () => (
   <>
-    <section className="pricing-card-area section-padding2">
-      <div className="container">
-        {/* <!-- Section Tittle --> */}
-        <div className="row justify-content-center">
-          <div className="col-lg-5 col-md-8">
-            <div className="section-tittle text-center mb-100">
-              <h2>Our Services</h2>
-              <p>
-                There arge many variations ohf passages of sorem gp ilable, but
-                the majority have ssorem gp iluffe.
-              </p>
+  <section className="pricing-card-area section-padding2">
+    <div className="container">
+      {/* <!-- Section Tittle --> */}
+      <div className="row justify-content-center">
+        <div className="col-lg-5 col-md-8">
+          <div className="section-tittle text-center mb-100">
+            <h2>Our Services</h2>
+            <p>
+              Explore our range of services designed to help you achieve your goals and take your experience to the next level.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        {/* Seminars Card */}
+        <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
+          <div className="single-card text-center mb-30">
+            <div className="card-top">
+              <h4>Seminars</h4>
+            </div>
+            <div className="card-bottom">
+              <ul>
+                <li>Engaging Presentations from Industry Leaders</li>
+                <li>Inspirational and Motivational Topics</li>
+                <li>Interactive Q&A Sessions</li>
+                <li>Networking Opportunities</li>
+              </ul>
+              <Link to="/seminar" className="btn3">
+                Book Now
+              </Link>
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
-            <div className="single-card text-center mb-30">
-              <div className="card-top">
-                <h4>Seminars</h4>
-              </div>
-              <div className="card-bottom">
-                <ul>
-                  <li>nspirational Speakers</li>
-                  <li>Diverse Topics</li>
-                  <li>Customized Content</li>
-                  <li>Audience Interaction</li>
-                </ul>
-                <Link to="/seminar" className="btn3  ">
-                 Book now
-                </Link>
-              </div>
+
+        {/* Workshops Card */}
+        <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
+          <div className="single-card active text-center mb-30">
+            <div className="card-top">
+              <h4>Workshops</h4>
+            </div>
+            <div className="card-bottom">
+              <ul>
+                <li>Expert-Led, Hands-On Sessions</li>
+                <li>Skill Development and Practical Learning</li>
+                <li>Personalized Guidance and Support</li>
+                <li>Small Group Interactions</li>
+                <li>Access to Learning Resources</li>
+              </ul>
+              <Link to="/workshop" className="btn3">
+                Book Now
+              </Link>
             </div>
           </div>
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
-            <div className="single-card active text-center mb-30">
-              <div className="card-top">
-                <h4>Workshops</h4>
-              </div>
-              <div className="card-bottom">
-                <ul>
-                  <li>Expert-Led Sessions</li>
-                  <li>Hands-On Learning</li>
-                  <li>Customized Content</li>
-                  <li>Small Group Settings</li>
-                  <li>24/7 support</li>
-                </ul>
-                <Link to="/workshop" className="btn3  ">
-                  Book Now
-                </Link>
-              </div>
+        </div>
+
+        {/* Event Management Card */}
+        <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
+          <div className="single-card text-center mb-30">
+            <div className="card-top">
+              <h4>Event Management</h4>
             </div>
-          </div>
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-10">
-            <div className="single-card text-center mb-30">
-              <div className="card-top">
-                <h4>Event Management</h4>
-              </div>
-              <div className="card-bottom">
-                <ul>
-                  <li>End-to-End Planning </li>
-                  <li>Custom Themes</li>
-                  <li>Technology Integration </li>
-                  <li>Sustainability Focus</li>
-                </ul>
-                <Link to="/event" className="btn3  ">
-                 Book Now
-                </Link>
-              </div>
+            <div className="card-bottom">
+              <ul>
+                <li>Comprehensive Planning and Execution</li>
+                <li>Custom Themes and Event Styling</li>
+                <li>Seamless Technology Integration</li>
+                <li>Logistics and Vendor Coordination</li>
+                <li>Post-Event Feedback and Reporting</li>
+              </ul>
+              <Link to="/event" className="btn3">
+                Book Now
+              </Link>
             </div>
           </div>
         </div>
       </div>
-    </section>
-  </>
+    </div>
+  </section>
+</>
+
 );
 
 // Main About Component
@@ -148,6 +154,8 @@ const About = () => (
       <HeroSection />
       <AboutContent />
       <AboutPricing />
+        <Faq />
+      
     </main>
   </>
 );

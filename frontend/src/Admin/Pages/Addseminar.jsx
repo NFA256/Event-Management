@@ -71,28 +71,48 @@ const Addseminar = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    // Handle start_time, end_time, and other input fields
     if (name === "start_time" || name === "end_time") {
-      // Check if the start time and end time are valid
+      const newStartTime = name === "start_time" ? value : seminarData.start_time;
+      const newEndTime = name === "end_time" ? value : seminarData.end_time;
       if (name === "end_time") {
-        const start = seminarData.start_time;
-        if (start && value <= start) {
+        const startTime = new Date(`1970-01-01T${newStartTime}:00`);
+        const endTime = new Date(`1970-01-01T${newEndTime}:00`);
+        if (newStartTime && value <= newStartTime) {
           setError("End time must be later than start time.");
           setSeminarData({ ...seminarData, end_time: "" });
+          setTimeout(() => setError(""), 3000);
           return;
-        } else {
-          setError("");
+        } 
+        else {
+          const durationMinutes = (endTime - startTime) / 60000;
+          if (durationMinutes < 30) {
+            setError("The duration between start time and end time must be at least 30 minutes.");
+          } else {
+            setError(""); // Clear the error if the duration is valid
+          }
         }
       }
       else if (name === "start_time") {
-        const end = seminarData.end_time;
-        if (end && value >= end) {
+        const startTime = new Date(`1970-01-01T${newStartTime}:00`);
+        const endTime = new Date(`1970-01-01T${newEndTime}:00`);
+        if (newEndTime && value >= newEndTime) {
+          setError("End time must be later than start time.");
           setSeminarData({ ...seminarData, end_time: "" });
+          setTimeout(() => setError(""), 3000);
           return;
         } else {
-          setError("");
+
+        const durationMinutes = (endTime - startTime) / 60000;
+          if (durationMinutes < 30) {
+            setError("The duration between start time and end time must be at least 30 minutes.");
+          } else {
+            setError(""); // Clear the error if the duration is valid
+          }
         }
       }
     }
+  
     // If the checkbox for is_paid is unchecked, set the price to "Free"
     if (name === "is_paid" && !checked) {
       setSeminarData({
@@ -107,6 +127,7 @@ const Addseminar = () => {
       });
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

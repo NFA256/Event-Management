@@ -8,8 +8,8 @@ const User_Schema = mongoose.Schema(
       required: [true, "Name is required"],
       trim: true,
       match: [
-        /^[A-Za-z]{3,}$/,
-        "Name must be at least 3 characters long and contain only alphabets",
+        /^[A-Za-z ]{3,}$/,
+        "Name must be at leastxxx 3 characters long and contain only alphabets",
       ],
     },
     email: {
@@ -33,10 +33,6 @@ const User_Schema = mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character",
-      ],
     },
     role: {
       type: mongoose.Schema.Types.ObjectId,

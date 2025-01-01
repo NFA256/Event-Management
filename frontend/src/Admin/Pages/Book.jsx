@@ -12,12 +12,22 @@ const Book = (refreshBooths) => {
     if (user) {
       setRole(user.role);
     }
-    console.log(user.role);
+    console.log(user.exhibitorId);
     // Fetch bookings data from API
     const fetchBookings = async () => {
       setError("");
       try {
-        const response = await fetch("http://localhost:5000/bookings");
+        let response;
+        if(user.role === "exhibitor")
+        {
+          response = await fetch(
+            `http://localhost:5000/bookings-exhibitor-id?exhibitor_id=${user.exhibitorId}`
+          );
+        }
+        else{
+
+           response = await fetch("http://localhost:5000/bookings");
+        }
         if (response.ok) {
           const data = await response.json();
           console.log("bookings",data.data)
@@ -105,13 +115,22 @@ const Book = (refreshBooths) => {
    }
  };
 
-  return (
-    <div className="col-10 mx-auto mt-5">
-      <h1 className="text-center text-uppercase font-weight-bold mb-3">
-        Booking Request
-      </h1>
-      {error && <p className="text-danger">{error}</p>}
-      {success && <p className="text-success">{success}</p>}
+ return (
+  <div className="col-10 mx-auto mt-5">
+    <h1 className="text-center text-uppercase font-weight-bold mb-3">
+      Booking Request
+    </h1>
+    {error && <p className="text-danger">{error}</p>}
+    {success && <p className="text-success">{success}</p>}
+
+    {/* Conditional rendering for no bookings */}
+    {bookings.length === 0 && role === "exhibitor" ?  (
+      <p className="text-muted">You haven't booked any event yet.</p>
+    )
+    : bookings.length === 0 && role === "admin" ?  (
+      <p className="text-muted">No Book request.</p>
+    )
+    : (
       <table className="table table-bordered">
         <thead>
           <tr className="table-info ">
@@ -130,8 +149,7 @@ const Book = (refreshBooths) => {
               <td>{index + 1}</td>
               <td>{booking._id}</td>
               <td>{booking.exhibitor_id._id}</td>
-              <td>{booking.event_id._id
-               ||  "N/A"}</td>
+              <td>{booking.event_id._id || "N/A"}</td>
               <td>{booking.booth_id.name}</td>
               <td>{new Date(booking.date).toLocaleDateString()}</td>
               <td>
@@ -170,8 +188,10 @@ const Book = (refreshBooths) => {
           ))}
         </tbody>
       </table>
-    </div>
-  );
+    )}
+  </div>
+);
+
 };
 
 export default Book;

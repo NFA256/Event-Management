@@ -108,12 +108,6 @@ const Addevent = () => {
         setTimeout(() => setError(""), 3000);
         return;
       }
-      
-      // if (file.size > maxSize) {
-      //   setError("Image size must be less than 5MB!");
-      //   setTimeout(() => setError(""), 3000);
-      //   return;
-      // }
   
       setPreviewImage(URL.createObjectURL(file)); // Display image preview
       setEventImage(file); // Store the file object

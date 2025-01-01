@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
 import { Navigate } from "react-router-dom";
-
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 const Workshop = () => {
   const [userId, setUserId] = useState("");
   const [workshops, setWorkshops] = useState([]);
@@ -62,10 +63,10 @@ const Workshop = () => {
     fetchSessions();
   }, []);
 
-  const fetchUserTickets = async (userId) => {
+  const fetchUserTickets = async (user_Id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/ticket-user-id?user_id=${userId}`
+        `http://localhost:5000/ticket-user-id?user_id=${user_Id}`
       );
       const data = await response.json();
       if (Array.isArray(data.data)) {
@@ -199,11 +200,8 @@ const Workshop = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Ticket booked successfully:", result);
-        // Optionally, you can show a success message or update the UI
         // Update tickets locally after booking
-        console.log("Ticket booked successfully:", result);
-        // Update tickets locally after booking
-        setUserTickets((prevTickets) => [...prevTickets, ticketData]); // Add the new ticket to the state
+        fetchUserTickets(userId)
         setError("Booking successful!");
       } else {
         setError("Failed to book the workshop.");
@@ -212,6 +210,29 @@ const Workshop = () => {
       console.error("Booking error:", error);
     }
     handleBookingModalClose();
+  };
+
+  const ticketRef = useRef(null);
+
+  const downloadSeminarTicketPDF = (workshop) => {
+    const downloadButton = document.getElementById(`download-button-${workshop._id}`);
+    if (downloadButton) {
+      downloadButton.style.display = "none"; // Hide the button while generating PDF
+    }
+  
+    html2canvas(ticketRef.current).then((canvas) => {
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgData = canvas.toDataURL("https://s3-us-west-2.amazonaws.com/s.cdpn.io/515428/barcode.png");
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save(`workshop-${workshop._id}-ticket.pdf`);
+  
+      if (downloadButton) {
+        downloadButton.style.display = "block"; // Show the download button again
+      }
+    });
   };
   return (
     <>
@@ -231,14 +252,13 @@ const Workshop = () => {
       <br />
       <section className="home-blog-area mt-5 mb-5">
         <div className="container col-10  mt-5">
-          {/* {error && <p className="text-danger">Error: {error}</p>} */}
           <div className="row">
             {combinedData.map((workshop) => {
               const timeLeft = calculateTimeLeft(workshop.start_date);
 
               return (
                 <div className="col-lg-4 col-md-6 col-sm-6" key={workshop._id}>
-                  <div className="home-blog-single mb-30">
+                  <div className="home-blog-single mb-30" >
                     <div className="blog-img-cap">
                       <div className="blog-img">
                         <img src={workshop.image} alt={workshop.title} />
@@ -277,17 +297,20 @@ const Workshop = () => {
                         <div className="row mb-3">
                           <div className="col-6 text-uppercase">
                             <strong>
-                              Capacity: {workshop.no_of_attendees}
+                              Capacity: { workshop.capacity - workshop.no_of_attendees}
                             </strong>
                           </div>
                           <div className="col-6 text-uppercase">
-                            <strong>Price: {workshop.price}/=</strong>
+                            <strong>Price:
+                            {workshop.price === ""
+                                ? "Free"
+                                : `${workshop.price}/=`}</strong>
                           </div>
                         </div>
                         <div className="row mb-3">
                           <div className="col-6 text-uppercase">
                             <strong>
-                              Start Date:{" "}
+                              Start Date:
                               {new Date(
                                 workshop.start_date
                               ).toLocaleDateString()}
@@ -295,12 +318,21 @@ const Workshop = () => {
                           </div>
                           <div className="col-6 text-uppercase">
                             <strong>
-                              End Date:{" "}
+                              End Date:
                               {new Date(workshop.end_date).toLocaleDateString()}
                             </strong>
                           </div>
                         </div>
-                        <div className="text-center mt-5">
+                        {
+                             (workshop.no_of_attendees === workshop.capacity) ? (
+                              <div className="text-center">
+                              <p className="text-success ">
+                                Tickets SoldOut
+                              </p></div>
+                            )
+                            :null
+                          }
+                        <div className="text-center mt-3">
                           <button
                             className="btn3"
                             type="button"
@@ -326,9 +358,9 @@ const Workshop = () => {
                               </button>
                             </>
                           ) :
-                          (userRole !== "admin" ) && (
+                          (userRole !== "admin" && workshop.no_of_attendees < workshop.capacity) && (
                             <button
-                              className="btn3 mx-2"
+                              className="btn3 mx-1"
                               type="submit"
                               onClick={() => handleBookingModalOpen(workshop)}
                             >
@@ -336,6 +368,7 @@ const Workshop = () => {
                             </button>
                           )
                           }
+                         
                         </div>
                       </div>
                     </div>
@@ -420,7 +453,7 @@ const Workshop = () => {
           </div>
         </div>
 
-        {isBookingModalOpen && (
+        {isBookingModalOpen  && currentWorkshop&&  (
           <div
             className="modal fade show"
             style={{ display: "block" }}
@@ -499,7 +532,7 @@ const Workshop = () => {
                     <p>
                       {" "}
                       <strong>Total Sessions: </strong>
-                      {currentWorkshop?.sessions.length}
+                      {currentWorkshop.total_sessions}
                     </p>
                   </div>
                 </div>
@@ -537,13 +570,29 @@ const Workshop = () => {
                   className="modal-body"
                   style={{ maxHeight: "650px", overflowY: "auto" }}
                 >
+                    <button
+            type="button"
+            className=""
+            onClick={handleTicketModalClose}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "15px",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "24px",
+              color: "#000",
+              cursor: "pointer",
+            }}
+          > &times;
+          </button>
                   <div class="">
-                    <div class="ticket border rounded shadow-sm mx-auto">
+                    <div ref={ticketRef}   style={{ width: "100%" }} class="ticket border   mb-0 ">
                       <div class="ticket__header bg-light p-4">
                         <div class="ticket__co text-center text-muted">
-                          <span class="ticket__co-name fs-1 fw-semibold">
-                            Event Sphere Management System
-                          </span>
+                        <h5 className="ticket__co-name fs-4">
+                                Event Sphere Management System
+                              </h5>
                         </div>
                       </div>
 
@@ -553,7 +602,7 @@ const Workshop = () => {
                           {currentWorkshop?.title || "Workshop Title"}
                         </p>
                         <p class="ticket__route fs-3 fw-light  text-capitalize">
-                          Name: {userName || "N/A"} {/* Display user's name */}
+                        Name: {userName || "N/A"} {/* Display user's name */}
                         </p>
                         <div class="ticket__timing d-flex justify-content-between mx-3 border-top border-bottom py-3 text-center">
                           <p class="mb-0 pe-3 border-end">
@@ -629,9 +678,7 @@ const Workshop = () => {
                           </p>
                         </div>
 
-                        <p class="ticket__fine-print mt-3 text-muted text-center">
-                          This ticket cannot be transfered
-                        </p>
+                       
 
                         <img
                           class="ticket__barcode  col-11"
@@ -641,11 +688,19 @@ const Workshop = () => {
                         <p className="ticket__route fs-3 fw-light text-muted text-center mt-1 text-capitalize">
                           Ticket ID: {currentWorkshop._id || "N/A"}
                         </p>
+                        <hr />
+                              <p className="ticket__route fs-3 fw-light text-muted text-center mt-1 text-capitalize">
+                               Valid Till: {
+                               new Date(currentWorkshop.end_date).toLocaleDateString() || "N/A"}
+                              </p>
+                              <p class="ticket__fine-print mt-3 text-muted text-center">
+                          This ticket cannot be transfered
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <button type="submit " className="btn3">
+                <button type="submit "onClick={() => downloadSeminarTicketPDF(currentWorkshop)} className="btn3">
                   Download
                 </button>
               </div>

@@ -57,18 +57,27 @@ const getAllSchedules = async (req, res) => {
 // Get all schedules
 const getlatestSchedule = async (req, res) => {
   try {
-    const allSchedules = await schedules.findOne().sort({ start_date: 1 }).limit(1);  ;
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);  // Set time to 00:00:00 to avoid time issues
+
+    // Fetch the schedule where start_date is >= today's date
+    const allSchedules = await schedules
+      .find({ start_date: { $gte: today } })  // Use $gte to filter schedules >= today's date
+      .sort({ start_date: 1 })  // Sort in ascending order to get the earliest one
+      .limit(1);  // Limit to only 1 schedule
 
     if (allSchedules.length === 0) {
-      return res.status(404).json({ message: "No schedules found" });
+      return res.status(404).json({ message: "No future or today's schedules found" });
     }
 
-    res.status(200).json(allSchedules);
+    res.status(200).json(allSchedules[0]);  // Return the first schedule
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to fetch schedules", error: error.message });
   }
 };
+
 
 // Get a single schedule by ID
 const getScheduleById = async (req, res) => {

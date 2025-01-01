@@ -32,12 +32,12 @@ const createUser = async (req, res) => {
     }
 
     // Validate Name
-    const nameRegex = /^[A-Za-z]{3,}$/;
+    const nameRegex = /^[A-Za-z ]{3,}$/;
     if (!nameRegex.test(name)) {
       return res.status(400).json({
         success: false,
         message:
-          "Name must be at least 3 characters long and contain only alphabets.",
+          "Name must be at least 3xxx characters long and contain only alphabets.",
       });
     }
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../../context/UserContext';  // Import UserContext
 
 const FileInput = ({ label, previewImage, onImageChange }) => (
   <div className="row mt-2 mb-3">
@@ -50,7 +51,7 @@ const FileInput = ({ label, previewImage, onImageChange }) => (
 
 const ExhibitorRegister = () => {
   const navigate = useNavigate();
-
+  const { user, login } = useUserContext(); // Use the context
   const [formData, setFormData] = useState({
     CompanyTitle: '',
     CompanyImage: '',
@@ -63,21 +64,19 @@ const ExhibitorRegister = () => {
 
   const [Error, setError] = useState('');
   const [Success, setSuccess] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Check if the user is logged in when the component mounts
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.userId && user.role === 'attendee') {
-      setIsLoggedIn(true);
+    if (!user.isLogin) {
+      navigate('/login');  // Redirect to login if the user is not logged in
+    } else if (user.role === 'exhibitor') {
+      alert('You are already registered as an exhibitor');
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
     }
-    else if(user && user.userId && user.role === 'exhibitor'){
-alert("You are already register as an exhibitor")
-    } 
-    else {
-      navigate('/login');  // Redirect to login page if not logged in
-    }
-  }, [navigate]);
+  }, [navigate, user.isLogin, user.role]);
 
   // Handle input change for text fields
   const handleInputChange = (e) => {
@@ -100,9 +99,9 @@ alert("You are already register as an exhibitor")
     }
   };
 
-  // Validate ExhibitorContact to ensure it's 11 digits long
+  // Validate ExhibitorContact to ensure it's 10 digits long
   const validateContact = (contact) => {
-    const regex = /^\d{10}$/;  // Regex to check exactly 11 digits
+    const regex = /^\d{10}$/; // Regex to check exactly 10 digits
     return regex.test(contact);
   };
 
@@ -119,11 +118,10 @@ alert("You are already register as an exhibitor")
     }
   
     if (!validateContact(ExhibitorContact)) {
-      setError('Contact number must be exactly 11 digits!');
+      setError('Contact number must be exactly 10 digits!');
       return;
     }
   
-    const user = JSON.parse(localStorage.getItem('user'));
     const userId = user ? user.userId : null;
   
     if (!userId) {
@@ -132,8 +130,10 @@ alert("You are already register as an exhibitor")
     }
   
     const exhibitorRole = 'exhibitor'; // The role ID for exhibitor
-  
+
     try {
+      setLoading(true); // Start loading
+
       // Update User Role to 'Exhibitor'
       const roleUpdateResponse = await fetch(`http://localhost:5000/userRole/${userId}`, {
         method: 'PUT',
@@ -144,6 +144,7 @@ alert("You are already register as an exhibitor")
       if (!roleUpdateResponse.ok) {
         const errorData = await roleUpdateResponse.json();
         setError(errorData.message || 'Failed to update user role');
+        setLoading(false); // Stop loading
         return;
       }
   
@@ -165,6 +166,7 @@ alert("You are already register as an exhibitor")
       if (!companyResponse.ok) {
         const errorData = await companyResponse.json();
         setError(errorData.message || 'Failed to create company');
+        setLoading(false); // Stop loading
         return;
       }
   
@@ -173,8 +175,8 @@ alert("You are already register as an exhibitor")
   
       // Send data to the Exhibitor API
       const exhibitorFormData = new FormData();
-      exhibitorFormData.append('company_id', companyId);  // Use the company ID from the previous response
-      exhibitorFormData.append('user_id', userId);  // Use the user ID from the previous response
+      exhibitorFormData.append('company_id', companyId);
+      exhibitorFormData.append('user_id', userId);
       exhibitorFormData.append('contact', ExhibitorContact);
       exhibitorFormData.append('exhibitorImage', ExhibitorImage);
   
@@ -186,26 +188,26 @@ alert("You are already register as an exhibitor")
       if (!exhibitorResponse.ok) {
         const errorData = await exhibitorResponse.json();
         setError(errorData.message || 'Failed to create exhibitor');
+        setLoading(false); // Stop loading
         return;
       }
   
       const exhibitorData = await exhibitorResponse.json();
-      const exhibitorId = exhibitorData.data._id;  // Get the exhibitor ID from the response
+      const exhibitorId = exhibitorData.data._id;
   
       // Save exhibitorId along with user details in localStorage
       const updatedUserWithExhibitorId = { ...updatedUser, exhibitorId };
       localStorage.setItem('user', JSON.stringify(updatedUserWithExhibitorId));
   
       setSuccess('Exhibitor registered successfully!');
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate("/admin"), 1000);
+      setLoading(false); // Stop loading
     } catch (error) {
       console.error(error);
       setError('An error occurred while registering exhibitor.');
+      setLoading(false); // Stop loading
     }
   };
-  if (!isLoggedIn) {
-    return null; // If user is not logged in, do not render the form.
-  }
 
   return (
     <div
@@ -213,12 +215,13 @@ alert("You are already register as an exhibitor")
       style={{ minHeight: "75vh" }}
     >
       <div className="container shadow-lg p-5" style={{ maxWidth: "550px" }}>
-        <h2 className="modal-title text-center  mb-4">
+        <h2 className="modal-title text-center mb-4">
           Exhibitor Registration
         </h2>
 
         {Error && <div className="alert alert-danger">{Error}</div>}
         {Success && <div className="alert alert-success">{Success}</div>}
+        {loading && <div className="alert alert-info">Submitting your registration...</div>}
 
         <form onSubmit={handleSubmit} className="form-contact contact_form">
           <div className="mb-3">
@@ -251,10 +254,10 @@ alert("You are already register as an exhibitor")
             />
           </div>
 
-          <div className=" input-group  mb-3">
-          <span class="input-group-text" id="inputGroupPrepend">+92</span>
+          <div className=" input-group mb-3">
+            <span className="input-group-text" id="inputGroupPrepend">+92</span>
             <input
-             type="tel" maxLength='10'
+              type="tel" maxLength="10"
               className="form-control"
               name="ExhibitorContact"
               placeholder="Exhibitor Contact"
@@ -271,8 +274,8 @@ alert("You are already register as an exhibitor")
             onImageChange={(e) => handleImageChange(e, "ExhibitorImage")}
           />
           <div className="text-center">
-            <button type="submit" className="btn3">
-              Register as Exhibitor
+            <button type="submit" className="btn3" disabled={loading}>
+              {loading ? "Registering..." : "Register as Exhibitor"}
             </button>
           </div>
         </form>

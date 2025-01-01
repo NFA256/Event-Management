@@ -38,6 +38,10 @@ const Seminar_Schema = mongoose.Schema(
         "Please provide a valid end time (HH:MM)",
       ],
     },
+    no_of_attendees: {
+      type: Number,
+      default: 0,
+    },
     capacity: {
       type: Number,
       required: [true, "Number of attendees is required"],

@@ -1,4 +1,5 @@
 const Exhibitor = require("../Models/Exhibitor");
+const Company =  require("../Models/Company")
 const { ImageDelete } = require("../Middlewares/ImageUploading");
 
 // Method -------  POST
@@ -54,6 +55,7 @@ const getAllExhibitors = async (req, res) => {
   try {
     const exhibitors = await Exhibitor.find()
       .populate("user_id", "name email") // Populate user details
+      .populate("company_id") // Populate user details
       .populate("event_id", "title date") // Populate event details
       .populate("booth_id", "name"); // Populate booth details
 
@@ -72,6 +74,7 @@ const getExhibitorById = async (req, res) => {
     const { id } = req.params;
 
     const exhibitorData = await Exhibitor.findById(id)
+      .populate("company_id", "title image description")  // Populating company details
       .populate("user_id", "name email")
       .populate("event_id", "title date")
       .populate("booth_id", "name");

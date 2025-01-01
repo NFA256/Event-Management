@@ -1,10 +1,12 @@
 const bookings = require("../Models/Bookings"); // Import the Booking model
+const booths = require("../Models/Booth"); // Import the Booking model
 
 // Create a new booking
 const createBooking = async (req, res) => {
   try {
     const { exhibitor_id, event_id, booth_id, date, total_cost } = req.body;
 
+    // Check if all required fields are provided and total_cost is positive
     if (!exhibitor_id || !event_id || !booth_id || !date || total_cost <= 0) {
       return res.status(400).json({
         success: false,
@@ -12,6 +14,34 @@ const createBooking = async (req, res) => {
       });
     }
 
+    // Check if the booth is already reserved
+    const booth = await booths.findOne({ _id: booth_id });
+
+    if (!booth) {
+      return res.status(404).json({
+        success: false,
+        message: "Booth not found.",
+      });
+    }
+
+    if (booth.reserved_bool === true) {
+      return res.status(400).json({
+        success: false,
+        message: "Booth is already reserved.",
+      });
+    }
+    // Check if the booth is already reserved for the same event and date
+    // const existingBooking = await bookings.findOne({
+    //   booth_id,
+    // });
+
+    // if (existingBooking) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Booth is already selected by seomone .",
+    //   });
+    // }
+    // If booth is not reserved, proceed with the booking
     const newBooking = new bookings({
       exhibitor_id,
       event_id,
@@ -20,7 +50,10 @@ const createBooking = async (req, res) => {
       total_cost,
     });
 
+    // Save the new booking to the database
     const savedBooking = await newBooking.save();
+
+
     return res.status(201).json({
       success: true,
       message: "Booking created successfully!",
@@ -34,6 +67,7 @@ const createBooking = async (req, res) => {
     });
   }
 };
+
 const getAllBookings = async (req, res) => {
   try {
     console.log("Fetching all bookings...");
@@ -151,25 +185,45 @@ const deleteBooking = async (req, res) => {
 
 };
 // Approve booking
+// Approve booking
 const approveBooking = async (req, res) => {
   try {
     const bookingId = req.params.id;
 
+    // Find the booking that is being approved
+    const booking = await bookings.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ success: false, message: "Booking not found" });
+    }
+
+    // Check if the booth is already reserved by another approved booking
+    const existingBooking = await bookings.findOne({
+      booth_id: booking.booth_id,
+      status: "approved",  // Look for already approved bookings
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        success: false,
+        message: "This booth has already been reserved by another approved booking.",
+      });
+    }
+
+    // Update the status of the booking to approved
     const updatedBooking = await bookings.findByIdAndUpdate(
       bookingId,
       { status: "approved" },
       { new: true }
     );
 
-    if (!updatedBooking) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Booking not found" });
-    }
+    // After approval, mark the booth as reserved
+    const booth = await booths.findById(booking.booth_id);
+    booth.reserved_bool = true;  // Mark the booth as reserved
+    await booth.save();  // Save the updated booth
 
     return res.status(200).json({
       success: true,
-      message: "Booking approved successfully",
+      message: "Booking approved and booth reserved successfully.",
       data: updatedBooking,
     });
   } catch (error) {
@@ -180,6 +234,7 @@ const approveBooking = async (req, res) => {
     });
   }
 };
+
 
 // Reject booking
 const rejectBooking = async (req, res) => {

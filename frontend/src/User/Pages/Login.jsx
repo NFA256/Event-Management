@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
-
+import { useUserContext } from "../../context/UserContext"; 
 // API Endpoint
 // http://localhost:5000/users
 // http://localhost:5000/forgot-password
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const { login } = useUserContext(); // Get the login function from context
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Error, setError] = useState("");
@@ -52,38 +52,8 @@ const Login = () => {
   
         if (response.status === 200) {
           const user = result.data;
-  
-          // Store user info in localStorage
-          if (user.role.RoleName === "admin") {
-            localStorage.setItem("user", JSON.stringify({
-              isLogin: true,
-              role: user.role.RoleName,
-              userId: user._id,
-              fname: user.name,
-              email: user.email,
-              NICno: user.cnic
-            }));
-          } else if (user.role.RoleName === "exhibitor") {
-            localStorage.setItem("user", JSON.stringify({
-              isLogin: true,
-              role: user.role.RoleName,
-              userId: user._id,
-              fname: user.name,
-              email: user.email,
-              NICno: user.cnic,
-              exhibitorId: user.exhibitorId
-            }));
-          } else {
-            localStorage.setItem("user", JSON.stringify({
-              isLogin: true,
-              role: user.role.RoleName,
-              userId: user._id,
-              fname: user.name,
-              email: user.email,
-              NICno: user.cnic
-            }));
-          }
-  
+         
+          login(user);
           setSuccess("Login successful!");
           setTimeout(() => {
             navigate('/');

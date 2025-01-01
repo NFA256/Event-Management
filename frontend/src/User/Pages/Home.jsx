@@ -3,6 +3,7 @@ import { AboutContent, AboutPricing } from "../Components/About";
 import { ScheduleContent } from "../Components/Schedule";
 import Testimonial from "../Components/Testimonial";
 import Faq from "./Faq";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [userName, setUserName] = useState("");
@@ -24,7 +25,6 @@ const Home = () => {
           const data = await response.json();
           console.log("Fetched schedule data:", data); // Log fetched data
           setLatestScheduleDate(data.start_date);  // Set the latest schedule date
-            console.log("Latest schedule date:", latestScheduleDate);  // Log the latest schedule date
         } else {
           console.error("Failed to fetch events");
           setError("Failed to fetch events from the server.");
@@ -40,47 +40,41 @@ const Home = () => {
 
   //--timer
   const calculateTimeLeft = () => {
-    if (!latestScheduleDate) return {};
-    console.log("latest" + latestScheduleDate);
+    if (!latestScheduleDate) return {};  // Return empty object if no date
+
     const eventDate = new Date(latestScheduleDate);
     if (isNaN(eventDate)) {
       console.error("Invalid date:", latestScheduleDate);
       return {}; // Return an empty object if the date is invalid
     }
-    // const eventDate = new Date("2024-12-31T00:00:00"); // Set your target date here
+
     const now = new Date();
     const difference = eventDate - now;
 
-    let timeLeft = {};
-
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    } else {
-      timeLeft = {
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-      };
+    if (difference <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
 
-    return timeLeft;
+    return {
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((difference / 1000 / 60) % 60),
+      seconds: Math.floor((difference / 1000) % 60),
+    };
   };
+
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
+    if (latestScheduleDate) {
+      const timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft());
+      }, 100);
 
-    // Clean up interval on component unmount
-    return () => clearInterval(timer);
+      // Clean up the interval on component unmount or when date changes
+      return () => clearInterval(timer);
+    }
   }, []);
 
   //speaker work
@@ -164,19 +158,20 @@ const Home = () => {
 
                     {/* <!-- Hero-btn --> */}
                     <div className="slider-btns mx-5">
-                      <a
+                      <Link
                         data-animation="fadeInLeft"
                         data-delay="1.0s"
-                        href="industries.html"
+                        to='/event'
                         className="btn3 hero-btn"
+
                       >
                         Get Your Ticket
-                      </a>
+                      </Link>
                       <a
                         data-animation="fadeInRight"
                         data-delay="1.0s"
                         className="popup-video video-btn"
-                        href="https://www.youtube.com/watch?v=I7D2fJBjRsI"
+                        href="https://youtu.be/p7utGYPgbPw?si=adNS5cI1Cnpr125T"
                       >
                         <i className="fas fa-play"></i>
                       </a>
@@ -227,7 +222,7 @@ const Home = () => {
       <section className="team-area slider-area3 pt-180 pb-100 section-bg bg-info">
         <div className="container">
           <div className="row">
-            <div className="col-lg-6 col-md-9">
+            <div className="col-lg-12 col-md-6">
               {/* Section Title */}
               <div className="section-tittle section-tittle2 mb-50">
                 <h2>The Most Important Speakers.</h2>
@@ -236,9 +231,7 @@ const Home = () => {
                   available, but the majority have suffered alteration in some
                   form.
                 </p>
-                <a href="#" className="btn3 white-btn mt-30">
-                  View Speakers
-                </a>
+               
               </div>
             </div>
 

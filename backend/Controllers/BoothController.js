@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 const booths = require("../Models/Booth"); // Adjust path as needed
+const floors = require("../Models/Floor"); // Adjust path as needed
 
-// Method -------  POST
-// API   --------  http://localhost:5000/booths
-// Create a new booth
 const createBooth = async (req, res) => {
   try {
-    const { floor_id, reserved_bool, name } = req.body;
+    const { floor_id,reserved_bool, name } = req.body;
 
     // Validate the data
     if (!floor_id) {
@@ -15,26 +13,30 @@ const createBooth = async (req, res) => {
         .json({ message: "All fields (floor_id) are required" });
     }
 
-    // Check the total number of booths on the specified floor
-    const totalBooths = await booths.countDocuments({ floor_id });
-    if (totalBooths >= 25) {
+    // Find the floor by its ID
+    const floor = await floors.findById(floor_id);
+    if (!floor) {
+      return res.status(404).json({ message: "Floor not found" });
+    }
+
+    // Check if the floor has reached its maximum capacity
+    if (floor.no_of_booths >= floor.total_booths) {
       return res
         .status(400)
-        .json({
-          message: "A maximum of 25 booths can be added to this floor.",
-        });
+        .json({ message: "The floor has no available capacity for more booths." });
     }
 
     // Check if a booth with the same name already exists on the specified floor
     const existingBooth = await booths.findOne({ floor_id, name });
     if (existingBooth) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "A booth with this name already exists on the selected floor.",
-        });
+      return res.status(400).json({
+        message: "A booth with this name already exists on the selected floor.",
+      });
     }
+
+    // Increment the `no_of_booths` by 1
+    floor.no_of_booths += 1;
+    await floor.save(); // Save the updated floor document
 
     // Create the new booth
     const newBooth = new booths({
@@ -55,6 +57,7 @@ const createBooth = async (req, res) => {
       .json({ message: "Failed to create booth", error: error.message });
   }
 };
+
 
 
 // Method -------  GET

@@ -11,7 +11,7 @@ const createWorkshop = async (req, res) => {
       start_date,
       end_date,
       hall_id,
-      no_of_attendees,
+      capacity,
       price,
       speaker_id,
       schedule_id, // Adding schedule_id to the request body
@@ -39,7 +39,7 @@ const createWorkshop = async (req, res) => {
       start_date,
       end_date,
       hall_id,
-      no_of_attendees,
+      capacity,
       price,
       speaker_id,
       schedule_id, // Include schedule_id
@@ -91,7 +91,7 @@ const updateWorkshop = async (req, res) => {
       start_date,
       end_date,
       hall_id,
-      no_of_attendees,
+      capacity,
       price,
       speaker_id,
       schedule_id, // Adding schedule_id to the update request body
@@ -146,7 +146,7 @@ const updateWorkshop = async (req, res) => {
           ...(start_date && { start_date }),
           ...(end_date && { end_date }),
           ...(hall_id && { hall_id }),
-          ...(no_of_attendees && { no_of_attendees }),
+          ...(capacity && { capacity }),
           ...(price && { price }),
           ...(speaker_id && { speaker_id }),
           ...(schedule_id && { schedule_id }), // Adding schedule_id to the update operation

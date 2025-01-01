@@ -247,7 +247,7 @@ const Showseminar = () => {
                 <td>{new Date(seminar.date).toLocaleDateString()}</td>
                 <td>{seminar.speaker_id ? seminar.speaker_id.name : "N/A"}</td>
                 <td>{seminar.hall_id ? seminar.hall_id.hall_name : "N/A"}</td>
-                <td>{seminar.capacity}</td>
+                <td>{seminar.capacity - seminar.no_of_attendees}</td>
                 <td>{seminar.price}</td>
                 <td>{seminar.is_paid}</td>
                 <td>

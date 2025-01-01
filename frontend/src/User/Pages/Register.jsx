@@ -74,7 +74,8 @@ const Register = () => {
     e.preventDefault();
     // Format CNIC before submission
     // const formattedCnic = formatCnic(Cnic); // Apply the formatting function
-let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{8,}$/
+
     // Validate inputs
     if (Name === "" || Name.length < 3) {
       setError("Username is not valid");
@@ -84,10 +85,10 @@ let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]
       setError("Email is not valid");
       return;
     }
-    // if (Password === "" || !passwordreg.test(Password)) {
-    //   setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character");
-    //   return;
-    // }
+    if (Password === "" || !passwordreg.test(Password)) {
+      setError("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character");
+      return;
+    }
     if (Cpassword !== Password) {
       setError("Password must be equal to Confirm Password");
       return;

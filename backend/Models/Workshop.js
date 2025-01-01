@@ -38,7 +38,12 @@ const Workshop_Schema = mongoose.Schema(
     },
     no_of_attendees: {
       type: Number,
+      default: 0,
+    },
+    capacity: {
+      type: Number,
       required: [true, "Number of attendees is required"],
+      min: [1, "Attendees count must be at least 1"],
     },
     price: {
       type: String,

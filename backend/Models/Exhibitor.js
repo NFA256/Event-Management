@@ -2,11 +2,7 @@ const mongoose = require("mongoose");
 
 const Exhibitor_Schema = mongoose.Schema(
   {
-    company_id: {
-      type: String,
-      required: [true, "Company ID is required"],
-      unique: true,
-    },
+    company_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
     image: {
       type: String,
       required: [true, "Image is required"],

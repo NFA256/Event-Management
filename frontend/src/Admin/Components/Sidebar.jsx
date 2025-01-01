@@ -67,7 +67,8 @@ const Sidebar = () => {
           <ul className="nav text-center nav-pills mt-2 flex-column">
             {(role === "exhibitor"
               ? [
-                  // { path: "addevent", label: "Add Event" },
+                  { path: "", label: "Profile" },
+                  { path: "tickets", label: "Tickets" },
                   { path: "showevent", label: "Show Event" },
                   { path: "book", label: "Book" },
                 ]
@@ -88,6 +89,7 @@ const Sidebar = () => {
                   { path: "addseminar", label: "Add Seminar" },
                   { path: "showseminar", label: "Show Seminar" },
                   { path: "book", label: "Book" },
+                  { path: "showtickets", label: "Tickets" },
                 ]
             ).map(({ path, label }) => (
               <li key={path} className="nav-item fs-4 fw-medium">

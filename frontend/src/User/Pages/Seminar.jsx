@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 const Seminar = () => {
   const [seminars, setSeminars] = useState([]);
@@ -46,10 +48,10 @@ const Seminar = () => {
       setError(err.message);
     }
   };
-  const fetchUserTickets = async (userId) => {
+  const fetchUserTickets = async (user_Id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/ticket-user-id?user_id=${userId}`
+        `http://localhost:5000/ticket-user-id?user_id=${user_Id}`
       );
       const data = await response.json();
 
@@ -146,7 +148,7 @@ const Seminar = () => {
       seminar_id: selectedSeminar._id,
       user_id: userId,
       total_price:
-        selectedSeminar.price === "Free" ? "0" : selectedSeminar.price,
+        selectedSeminar.price === "" ? "0" : selectedSeminar.price,
     };
 
     try {
@@ -161,11 +163,9 @@ const Seminar = () => {
       if (response.ok) {
         const result = await response.json();
         console.log("Ticket booked successfully:", result);
-        // Optionally, you can show a success message or update the UI
         // Update tickets locally after booking
-        console.log("Ticket booked successfully:", result);
-        // Update tickets locally after booking
-        setUserTickets((prevTickets) => [...prevTickets, ticketData]); // Add the new ticket to the state
+        fetchUserTickets(userId)
+        // setUserTickets((prevTickets) => [...prevTickets, result.data]); // Add the new ticket to the state
         setError("Seminar booked successfully!");
       } else {
         const errorData = await response.json();
@@ -177,7 +177,28 @@ const Seminar = () => {
       handleCloseModal();
     }
   };
+  const ticketRef = useRef(null);
 
+  const downloadSeminarTicketPDF = (seminar) => {
+    const downloadButton = document.getElementById(`download-button-${seminar._id}`);
+    if (downloadButton) {
+      downloadButton.style.display = "none"; // Hide the button while generating PDF
+    }
+  
+    html2canvas(ticketRef.current).then((canvas) => {
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgData = canvas.toDataURL("https://s3-us-west-2.amazonaws.com/s.cdpn.io/515428/barcode.png");
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save(`seminar-${seminar._id}-ticket.pdf`);
+  
+      if (downloadButton) {
+        downloadButton.style.display = "block"; // Show the download button again
+      }
+    });
+  };
   return (
     <>
       <div className="slider-area2">
@@ -244,13 +265,13 @@ const Seminar = () => {
                         </div>
                         <div className="row mb-3">
                           <div className="col-6 text-uppercase">
-                            <strong>Capacity: {seminar.capacity}</strong>
+                            <strong>Capacity: {seminar.capacity - seminar.no_of_attendees}</strong>
                           </div>
                           <div className="col-6 text-uppercase">
                             <strong>
                               Price:
-                              {seminar.price === "Free"
-                                ? seminar.price
+                              {seminar.price === ""
+                                ? "Free"
                                 : `${seminar.price}/=`}
                             </strong>
                           </div>
@@ -279,6 +300,15 @@ const Seminar = () => {
                             </strong>
                           </div>
                         </div>
+                        {
+                             (seminar.no_of_attendees === seminar.capacity) ? (
+                              <div className="text-center">
+                              <p className="text-success ">
+                                Tickets SoldOut
+                              </p></div>
+                            )
+                            :null
+                          }
                         <div className="text-center mt-5">
                           {timeLeft.isPast ? (
                             <p className="text-danger">
@@ -296,7 +326,7 @@ const Seminar = () => {
                             </>
                           ) : 
                           
-                          (userRole !== "admin" ) && (
+                          (userRole !== "admin" && seminar.no_of_attendees < seminar.capacity) && (
                             <button
                               className="btn3 mx-2"
                               type="submit"
@@ -428,12 +458,29 @@ const Seminar = () => {
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-body">
-                <div className="ticket border rounded shadow-sm mx-auto">
+                 {/* Close button */}
+          <button
+            type="button"
+            className=""
+            onClick={handleTicketModalClose}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "15px",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "24px",
+              color: "#000",
+              cursor: "pointer",
+            }}
+          > &times;
+          </button>
+                 <div ref={ticketRef}   style={{ width: "100%" }}  className="ticket border   mb-0 ">
                   <div className="ticket__header bg-light p-4">
                     <div className="ticket__co text-center text-muted">
-                      <span className="ticket__co-name fs-1 fw-semibold">
-                        Event Sphere Management System
-                      </span>
+                    <h5 className="ticket__co-name fs-4">
+                                Event Sphere Management System
+                              </h5>
                     </div>
                   </div>
                   <div className="ticket__body p-4">
@@ -474,7 +521,24 @@ const Seminar = () => {
                             : `${selectedSeminar.price}/=`}
                         </span>
                       </p>
-                      <p className="mb-0 pe-3 border-end">
+                    
+                    </div>
+                    <div class="ticket__timing d-flex justify-content-between  mx-3 border-bottom py-3 text-center">
+                          <p class="mb-0 pe-3 border-end">
+                            <span class="ticket__small-label text-muted">
+                               Date :
+                            </span>
+                            <br />
+                            <span class="ticket__detail">
+                              {" "}
+                              {new Date(
+                                selectedSeminar.date
+                              ).toLocaleDateString()}
+                            </span>
+                          </p>
+                          
+
+                          <p className="mb-0 pe-3 border-end">
                         <span className="ticket__small-label text-muted">
                           Start Time:
                         </span>
@@ -502,11 +566,9 @@ const Seminar = () => {
                           })}
                         </span>
                       </p>
-                    </div>
+                        </div>
 
-                    <p className="ticket__fine-print mt-3 text-muted text-center">
-                      This ticket cannot be transferred.
-                    </p>
+                   
                     <img
                       className="ticket__barcode col-11"
                       src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/515428/barcode.png"
@@ -515,10 +577,20 @@ const Seminar = () => {
                     <p className="ticket__route fs-3 fw-light text-muted text-center mt-1 text-capitalize">
                       Ticket ID: {selectedSeminar._id || "N/A"}
                     </p>
+                    <hr />
+                              <p className="ticket__route fs-3 fw-light text-muted text-center mt-1 text-capitalize">
+                               Valid Till: {
+                               new Date(selectedSeminar.date).toLocaleDateString() || "N/A"}
+                              </p>
+                              <p className="ticket__fine-print mt-3 text-muted text-center">
+                      This ticket cannot be transferred.
+                    </p>
                   </div>
+             
                 </div>
+                
               </div>
-              <button type="submit " className="btn3">
+              <button type="submit " className="btn3" onClick={() => downloadSeminarTicketPDF(selectedSeminar)}>
                 Download
               </button>
             </div>

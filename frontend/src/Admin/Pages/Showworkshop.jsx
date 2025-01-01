@@ -205,9 +205,9 @@ const Showworkshop = () => {
     // Check if the input is for the number of attendees
     if (name === "no_of_attendees") {
       const numValue = parseInt(value, 10);
-      if (numValue < 25) {
+      if (numValue < 0) {
         setAttendeeError("Minimum number of attendees is 25.");
-      } else if (numValue > 50) {
+      } else if (numValue > 2) {
         setAttendeeError("Maximum number of attendees is 50.");
       } else {
         setAttendeeError(""); // Clear error if within range
@@ -303,7 +303,7 @@ const Showworkshop = () => {
     formData.append("description", currentWorkshop.description);
     formData.append("start_date", currentWorkshop.start_date);
     formData.append("end_date", currentWorkshop.end_date);
-    formData.append("no_of_attendees", currentWorkshop.no_of_attendees);
+    formData.append("capacity", currentWorkshop.no_of_attendees);
     formData.append("hall_id", currentWorkshop.hall_id._id); // Use the ID string
     formData.append("speaker_id", currentWorkshop.speaker_id._id); // Use the ID string
 
@@ -364,7 +364,7 @@ const Showworkshop = () => {
             <th>Description</th>
             <th>Workshop Image</th>
             <th>Hall</th>
-            <th>No of Attendees</th>
+            <th>Capacity</th>
             <th>Speaker</th>
             <th>Action</th>
           </tr>
@@ -401,7 +401,7 @@ const Showworkshop = () => {
                   ? getHallName(workshop.hall_id._id)
                   : "Unknown Hall"}
               </td>
-              <td className="text-center p-4">{workshop.no_of_attendees}</td>
+              <td className="text-center p-4">{workshop.capacity - workshop.no_of_attendees}</td>
               <td className="text-center p-4">
                 {workshop.speaker_id
                   ? getSpeakerName(workshop.speaker_id._id)

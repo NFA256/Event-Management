@@ -14,7 +14,7 @@ const createFloor = async (req, res) => {
       total_booths,
     });
 
-    await newFloor.save();t
+    await newFloor.save();
     res.status(201).json({
       message: "Floor created successfully",
       floor: newFloor,

@@ -9,7 +9,7 @@ const Addworkshop = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [hallId, setHallId] = useState("");
-  const [noOfAttendees, setNoOfAttendees] = useState("");
+  const [capacity, setcapacity] = useState("");
   const [price, setPrice] = useState("");
   const [speakerId, setSpeakerId] = useState("");
   const [halls, setHalls] = useState([]);
@@ -68,9 +68,9 @@ const Addworkshop = () => {
       return updatedSessions;
     });
   };
-  const handleNoOfAttendeesChange = (e) => {
+  const handlecapacityChange = (e) => {
     const value = e.target.value;
-    setNoOfAttendees(value);
+    setcapacity(value);
 
     // Validate number of attendees
     const numValue = parseInt(value, 10);
@@ -87,7 +87,7 @@ const Addworkshop = () => {
     setPrice(value);
 
     // Validate price
-    if (value && parseFloat(value) <= 1000) {
+    if (value && parseFloat(value) < 1000) {
       setPriceError("Price must be greater than 1000.");
     } else {
       setPriceError(""); // Clear error if valid
@@ -150,15 +150,24 @@ const Addworkshop = () => {
           // Reset the end time to an empty string if invalid
           updatedSessions[index].end_time = "";
           updatedSessions[index].duration = ""; // Reset duration if times are invalid
+          setError("End time must be later than start time.");
+        setTimeout(() => setError(""), 3000);
         } else {
           // Calculate duration in minutes
           const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
   
           if (durationInMinutes > 0) {
-            const hours = Math.floor(durationInMinutes / 60);
+            if (durationInMinutes < 30) {
+              setError("The duration between start time and end time must be at least 30 minutes.");
+              setTimeout(() => setError(""), 3000);
+            } else {
+              const hours = Math.floor(durationInMinutes / 60);
             const minutes = durationInMinutes % 60;
             updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
+            }
           } else {
+            setError("End time must be later than start time.");
+            setTimeout(() => setError(""), 3000);
             updatedSessions[index].duration = ""; // Reset if duration is negative
           }
         }
@@ -196,7 +205,7 @@ const Addworkshop = () => {
       !startDate ||
       !endDate ||
       !hallId ||
-      !noOfAttendees ||
+      !capacity ||
       !price ||
       !speakerId ||
       sessions.some(
@@ -215,15 +224,15 @@ const Addworkshop = () => {
         .split("T")[0] !== endDate
     ) {
       setError("All fields are required!");
-      setTimeout(() => setError(""), 3000);
+      setTimeout(() => setError(""), 5000);
       return;
     }
     if (
       // ... other validations
-      !noOfAttendees ||
-      parseInt(noOfAttendees, 10) < 25 ||
-      parseInt(noOfAttendees, 10) > 50 ||
-      parseInt(noOfAttendees, 10) < 0
+      !capacity ||
+      parseInt(capacity, 10) < 25 ||
+      parseInt(capacity, 10) > 50 ||
+      parseInt(capacity, 10) < 0
     ) {
       setError(
         "Number of attendees must be between 25 and 50 and cannot be negative."
@@ -261,7 +270,7 @@ const Addworkshop = () => {
     formData.append("start_date", startDate);
     formData.append("end_date", endDate);
     formData.append("hall_id", hallId);
-    formData.append("no_of_attendees", noOfAttendees);
+    formData.append("capacity", capacity);
     formData.append("price", price);
     formData.append("speaker_id", speakerId);
     formData.append("schedule_id", scheduleId);
@@ -325,7 +334,7 @@ const Addworkshop = () => {
         setStartDate("");
         setEndDate("");
         setHallId("");
-        setNoOfAttendees("");
+        setcapacity("");
         setPrice("");
         setSpeakerId("");
         setSessions([]); // Clear session data after submission
@@ -421,7 +430,6 @@ const Addworkshop = () => {
       }
     }}
   />
-  {error && <div className="text-danger mt-2">{error}</div>}
 </div>
                     </div>
 
@@ -429,15 +437,15 @@ const Addworkshop = () => {
                     <div className="row">
                       {/* Number of Attendees */}
                       <div className="col-md-6 form-outline mb-4">
-                        <label className="form-label" htmlFor="no_of_attendees">
+                        <label className="form-label" htmlFor="capacity">
                           Number of Attendees
                         </label>
                         <input
                           type="number"
-                          id="no_of_attendees"
+                          id="capacity"
                           className="form-control text-center form-control-lg"
-                          value={noOfAttendees}
-                          onChange={handleNoOfAttendeesChange}
+                          value={capacity}
+                          onChange={handlecapacityChange}
                         />
                         {attendeesError && (
                           <div className="text-danger mt-2">

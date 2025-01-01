@@ -2,6 +2,8 @@ import React from "react";
 import Navbar from "./User/Components/Navbar";
 import Footer from "./User/Components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { UserProvider } from './context/UserContext';
+
 import About from "./User/Components/About";
 import Schedule from "./User/Components/Schedule";
 import Contact from "./User/Pages/Contact";
@@ -28,16 +30,18 @@ import Addevent from "./Admin/Pages/Addevent";
 import Showevent from "./Admin/Pages/Showevent";
 import Addseminar from "./Admin/Pages/Addseminar";
 import Showseminar from "./Admin/Pages/Showseminar";
-
+import AdminProfile from "./Admin/Pages/Profile";
 import EventCalendar from "./Admin/Pages/EventCalendar";
 import Workshop from "./User/Pages/Workshop";
 import Seminar from "./User/Pages/Seminar";
 import Events from "./User/Pages/Events";
 import Profile from "./User/Pages/Profile";
 import Book from "./Admin/Pages/Book";
-
+import Tickets from "./Admin/Pages/Tickets";
+import Showtickets from "./Admin/Pages/showtickets";
 const App = () => {
   return (
+    <UserProvider>
     <BrowserRouter>
       <Navbar />
       <Routes>
@@ -58,6 +62,7 @@ const App = () => {
 
         {/* //------Admin */}
         <Route path="/admin" element={<Sidebar />}>
+          <Route index element={<AdminProfile />} />
           <Route path="addspeaker" element={<Addspeaker />} />
           <Route path="showspeaker" element={<Showspeaker />} />
           <Route path="addhall" element={<Addhall />} />
@@ -73,6 +78,10 @@ const App = () => {
           <Route path="addseminar" element={<Addseminar />} />
           <Route path="showseminar" element={<Showseminar />} />
           <Route path="book" element={<Book />} />
+          <Route path="tickets" element={<Tickets />} />
+          <Route path="showtickets" element={<Showtickets/>} />
+
+
 
           <Route path="calendar" element={<EventCalendar />} />
         </Route>
@@ -82,6 +91,7 @@ const App = () => {
       </Routes>
       <Footer />
     </BrowserRouter>
+    </UserProvider>
   );
 };
 

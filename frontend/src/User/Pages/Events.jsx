@@ -87,8 +87,6 @@ const Events = () => {
     if (exhibitorId) {
       getExhibitorData();
       fetchexhibitorbook(exhibitorId);
-      console.log("boothbook"+boothbook)
-      // Fetch booking data when exhibitorId changes
     }
   }, [exhibitorId]); // Rerun effect if exhibitorId changes
 
@@ -98,7 +96,6 @@ const Events = () => {
         `http://localhost:5000/bookings-exhibitor-id?exhibitor_id=${exhibitorId}`
       );
       const data = await response.json();
-      console.log("Booking data :", data.data);
       if (Array.isArray(data.data)) {
         setboothbook(data.data);
       } else {
@@ -109,18 +106,29 @@ const Events = () => {
     }
   };
 
-  const isexhibenrolled = (eventId) => {
+  const isExhibitorEnrolled = (eventId) => {
     return boothbook.some(
-      (booking) => booking.event_id === eventId // Check if the event ID matches
+      (booking) => booking.event_id._id === eventId // Check if the event ID matches
     );
+  };
+
+  const getBookingStatus = (eventId) => {
+    const booking = boothbook.find((booking) => booking.event_id._id === eventId);
+    if (!booking) return null; // No booking found
+
+    if (booking.status === "approved") {
+      return "You have booked a booth!";
+    } else if (booking.status === "pending") {
+      return "Waiting for admin's approval.";
+    } else if (booking.status === "rejected") {
+      return "rejected";
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isexhibenrolled(selectedEventId)) {
-      setError(
-        "You are already enrolled in this event for the selected booth."
-      );
+    if (isExhibitorEnrolled(selectedEventId)) {
+      setError("You are already enrolled in this event for the selected booth.");
       return;
     }
     if (!selectedBooth) {
@@ -147,15 +155,14 @@ const Events = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setboothbook((prevBooks) => [...prevBooks, data.booking]);
+        fetchexhibitorbook(exhibitorId);
         setSuccess("Booking successful!");
-        console.log("Booking successful:", data);
+        setShowModal(false);
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
       setError(`Error during booking: ${error.message}`);
-      console.error("Error during booking:", error.message);
     }
   };
 
@@ -211,6 +218,7 @@ const Events = () => {
           <div className="row">
             {events.map((event) => {
               const timeLeft = calculateTimeLeft(event.date);
+              const bookingStatus = getBookingStatus(event._id);
 
               return (
                 <div className="col-lg-4 col-md-6 col-sm-6" key={event._id}>
@@ -233,7 +241,7 @@ const Events = () => {
                       </div>
                       <div className="blog-cap">
                         <p>| {event.status} </p>
-                        {/* <p>| {event.time}</p> */}
+                       
                         <h2 className="text-center mb-4 text-uppercase">
                           {event.title}
                         </h2>
@@ -241,34 +249,24 @@ const Events = () => {
                           <strong>{event.description}</strong>
                         </div>
                         <div className="text-center mt-3">
-                          {isLoggedIn && userRole === "exhibitor"  ? (
-                            isexhibenrolled(event._id) ? (
-                              <p className="text-success">Already Enrolled</p>
-                            ) : (
-                              <button
-                                className="btn3"
-                                onClick={() => {
-                                  setSelectedEventId(event._id);
-                                  setShowModal(true);
-                                }}
-                              >
-                                Book a Booth
-                              </button>
-                            )
-                          ) :  isLoggedIn && userRole === "admin"
-                          ?  null
-
-                          :
-                           (
-                            <>
-                              <p className="text-danger">
-                                You must be an exhibitor to book a booth.
-                              </p>
-                              <Link to="/becomaexhibitor" className="btn3 ">
-                                Become An Exhibitor
-                              </Link>
-                            </>
+                          {bookingStatus && bookingStatus != "rejected" ?  (
+                            <p className="text-success">{bookingStatus}</p>
+                          ) : (
+                            <button
+                              className="btn3"
+                              onClick={() => {
+                                setSelectedEventId(event._id);
+                                setShowModal(true);
+                              }}
+                            >
+                              Book a Booth
+                            </button>
                           )}
+                           {
+                           bookingStatus == "rejected"
+                           ?<p className="text-danger mt-3 text-center">Your booking was rejected. <br /> You can try booking again</p>
+                           :null
+                        }
                         </div>
                       </div>
                     </div>
@@ -299,40 +297,29 @@ const Events = () => {
                 </button>
               </div>
               <div className="modal-body">
-                {error && (
-                  <div className="alert alert-danger fs-6" role="alert">
-                    <p>{error}</p>
-                  </div>
-                )}
-                {success && (
-                  <div className="alert alert-success fs-6" role="alert">
-                    <p>{success}</p>
-                  </div>
-                )}
-                <form
-                  className="form-contact contact_form"
-                  id="contactForm"
-                  onSubmit={handleSubmit}
-                >
-                  <div className="form-outline mb-4">
+                {error && <p className="text-danger">{error}</p>}
+                {success && <p className="text-success">{success}</p>}
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label>Select Booth</label>
                     <select
-                      className="form-select"
+                      className="form-control"
                       value={selectedBooth}
                       onChange={(e) => setSelectedBooth(e.target.value)}
-                      required
                     >
-                      <option value="" disabled>
-                        Select a Booth
-                      </option>
+                      <option value="">Select a booth</option>
                       {getBooth.map((booth) => (
+                        booth.reserved_bool === true
+                        ?null
+                        :
                         <option key={booth._id} value={booth._id}>
                           {booth.name}
                         </option>
                       ))}
                     </select>
                   </div>
-                  <div className="text-center">
-                    <button type="submit" className="btn3 text-center">
+                  <div className="form-group mt-4">
+                    <button type="submit" className="btn3">
                       Confirm Booking
                     </button>
                   </div>
