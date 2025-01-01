@@ -4,7 +4,9 @@ const cors = require("cors");
 
 //----------env connect
 require("dotenv").config();
-
+app.use(cors({
+  origin: 'https://eventsphere-project-frontend.vercel.app'
+}))
 // --- MIDDLEWARE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
