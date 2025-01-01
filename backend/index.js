@@ -66,7 +66,7 @@ app.use("/", BookingRoutes); // For BooK-related routes
 
 //--------server listen
 
-app.listen(process.env.PORT, function () {
-  console.log(`Server is running on port ${process.env.PORT}`);
+app.listen(process.env.VERCEL_REGION, function () {
+  console.log(`Server is running on port ${process.env.VERCEL_REGION}`);
   connectionDB(); // invoking DB
 });
