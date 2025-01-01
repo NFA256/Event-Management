@@ -3,7 +3,7 @@ const Company =  require("../Models/Company")
 const { ImageDelete } = require("../Middlewares/ImageUploading");
 
 // Method -------  POST
-// API   --------  http://localhost:5000/exhibitors
+// API   --------  https://eventsphere-project.vercel.app/exhibitors
 // Description --  CREATE EXHIBITOR FUNCTION
 const createExhibitor = async (req, res) => {
   try {
@@ -49,7 +49,7 @@ const createExhibitor = async (req, res) => {
 };
 
 // Method -------  GET
-// API   --------  http://localhost:5000/exhibitors
+// API   --------  https://eventsphere-project.vercel.app/exhibitors
 // Description --  GET ALL EXHIBITORS FUNCTION
 const getAllExhibitors = async (req, res) => {
   try {
@@ -67,7 +67,7 @@ const getAllExhibitors = async (req, res) => {
 };
 
 // Method -------  GET
-// API   --------  http://localhost:5000/exhibitors/:id
+// API   --------  https://eventsphere-project.vercel.app/exhibitors/:id
 // Description --  GET EXHIBITOR BY ID FUNCTION
 const getExhibitorById = async (req, res) => {
   try {
@@ -91,7 +91,7 @@ const getExhibitorById = async (req, res) => {
 };
 
 // Method -------  PUT
-// API   --------  http://localhost:5000/exhibitors/:id
+// API   --------  https://eventsphere-project.vercel.app/exhibitors/:id
 // Description --  UPDATE EXHIBITOR BY ID FUNCTION
 const updateExhibitor = async (req, res) => {
   try {
@@ -150,7 +150,7 @@ const updateExhibitor = async (req, res) => {
 };
 
 // Method -------  DELETE
-// API   --------  http://localhost:5000/exhibitors/:id
+// API   --------  https://eventsphere-project.vercel.app/exhibitors/:id
 // Description --  DELETE EXHIBITOR FUNCTION
 const deleteExhibitor = async (req, res) => {
   try {

@@ -28,7 +28,7 @@ const FeedbackModal = ({ isOpen, onClose, onSubmit }) => {
 
     try {
       setSubmitBTN("disabled");
-      const response = await fetch("http://localhost:5000/testimonials", {
+      const response = await fetch("https://eventsphere-project.vercel.app/testimonials", {
         method: "POST",
         body: formData,
       });
@@ -159,7 +159,7 @@ const Testimonial = () => {
   useEffect(() => {
     const fetchingTestimonials = async () => {
       try {
-        const response = await fetch("http://localhost:5000/testimonials");
+        const response = await fetch("https://eventsphere-project.vercel.app/testimonials");
         const fetchData = await response.json();
         if (response.status === 200) {
           // Sort testimonials by createdAt in descending order

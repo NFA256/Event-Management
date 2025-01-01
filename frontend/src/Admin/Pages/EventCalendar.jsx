@@ -17,11 +17,11 @@ const EventCalendar = () => {
     const fetchData = async () => {
       try {
         const [scheduleResponse, eventResponse, seminarResponse, workshopResponse, sessionResponse] = await Promise.all([
-          fetch("http://localhost:5000/schedules"),
-          fetch("http://localhost:5000/events"),
-          fetch("http://localhost:5000/seminars"),
-          fetch("http://localhost:5000/workshops"),
-          fetch("http://localhost:5000/sessions"),
+          fetch("https://eventsphere-project.vercel.app/schedules"),
+          fetch("https://eventsphere-project.vercel.app/events"),
+          fetch("https://eventsphere-project.vercel.app/seminars"),
+          fetch("https://eventsphere-project.vercel.app/workshops"),
+          fetch("https://eventsphere-project.vercel.app/sessions"),
         ]);
 
         const scheduleData = await scheduleResponse.json();

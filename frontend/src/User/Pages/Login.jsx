@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
 import { useUserContext } from "../../context/UserContext"; 
 // API Endpoint
-// http://localhost:5000/users
-// http://localhost:5000/forgot-password
+// https://eventsphere-project.vercel.app/users
+// https://eventsphere-project.vercel.app/forgot-password
 
 const Login = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const Login = () => {
     if (Email && Password) {
       try {
         // API Call
-        const response = await fetch("http://localhost:5000/user-login", {
+        const response = await fetch("https://eventsphere-project.vercel.app/user-login", {
           method: "POST", // Changed to POST
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: Email, password: Password }), // Send email and password
@@ -83,7 +83,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/users/email/${ForgotEmail}`,
+        `https://eventsphere-project.vercel.app/users/email/${ForgotEmail}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -114,7 +114,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/verify-otp`, {
+      const response = await fetch(`https://eventsphere-project.vercel.app/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: ForgotEmail, otp: OTP }),

@@ -135,7 +135,7 @@ const ExhibitorRegister = () => {
       setLoading(true); // Start loading
 
       // Update User Role to 'Exhibitor'
-      const roleUpdateResponse = await fetch(`http://localhost:5000/userRole/${userId}`, {
+      const roleUpdateResponse = await fetch(`https://eventsphere-project.vercel.app/userRole/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ RoleName: exhibitorRole }),
@@ -158,7 +158,7 @@ const ExhibitorRegister = () => {
       companyFormData.append('description', CompanyDescription);
       companyFormData.append('companyImage', CompanyImage);
   
-      const companyResponse = await fetch("http://localhost:5000/company", {
+      const companyResponse = await fetch("https://eventsphere-project.vercel.app/company", {
         method: "POST",
         body: companyFormData,
       });
@@ -180,7 +180,7 @@ const ExhibitorRegister = () => {
       exhibitorFormData.append('contact', ExhibitorContact);
       exhibitorFormData.append('exhibitorImage', ExhibitorImage);
   
-      const exhibitorResponse = await fetch("http://localhost:5000/exhibitors", {
+      const exhibitorResponse = await fetch("https://eventsphere-project.vercel.app/exhibitors", {
         method: "POST",
         body: exhibitorFormData,
       });

@@ -16,7 +16,7 @@ const AddHall = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/halls", {
+      const res = await fetch("https://eventsphere-project.vercel.app/halls", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ hall_name: hallName }),

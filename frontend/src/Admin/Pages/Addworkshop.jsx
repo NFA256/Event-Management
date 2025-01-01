@@ -24,11 +24,11 @@ const Addworkshop = () => {
   useEffect(() => {
     const fetchHallsAndSpeakers = async () => {
       try {
-        const hallResponse = await fetch("http://localhost:5000/halls");
+        const hallResponse = await fetch("https://eventsphere-project.vercel.app/halls");
         const hallData = await hallResponse.json();
         setHalls(hallData);
 
-        const speakerResponse = await fetch("http://localhost:5000/speakers");
+        const speakerResponse = await fetch("https://eventsphere-project.vercel.app/speakers");
         const speakerData = await speakerResponse.json();
         setSpeakers(speakerData);
       } catch (err) {
@@ -246,7 +246,7 @@ const Addworkshop = () => {
       end_date:endDate,
       reserved_for:"Workshop",
    };
-   const scheduleResponse = await fetch("http://localhost:5000/schedules", {
+   const scheduleResponse = await fetch("https://eventsphere-project.vercel.app/schedules", {
      method: "POST",
      headers: { "Content-Type": "application/json" },
      body: JSON.stringify(scheduleData),
@@ -276,7 +276,7 @@ const Addworkshop = () => {
     formData.append("schedule_id", scheduleId);
     try {
       // Send POST request to create the workshop
-      const workshopResponse = await fetch("http://localhost:5000/workshops", {
+      const workshopResponse = await fetch("https://eventsphere-project.vercel.app/workshops", {
         method: "POST",
         body: formData,
       });
@@ -290,7 +290,7 @@ const Addworkshop = () => {
         console.log("workshop id", workshopId);
         const sessionPromises = sessions.map(async (session) => {
           console.log("Sending session data:", session); // Add this log to check the data
-          const response = await fetch("http://localhost:5000/sessions", {
+          const response = await fetch("https://eventsphere-project.vercel.app/sessions", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

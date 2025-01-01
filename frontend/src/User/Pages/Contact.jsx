@@ -8,7 +8,7 @@ const Contact = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // API endpoint for saving contact data
-  const contactApiUrl = "http://localhost:5000/contacts";
+  const contactApiUrl = "https://eventsphere-project.vercel.app/contacts";
 
   useEffect(() => {
     // Local storage se user ka data fetch karna

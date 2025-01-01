@@ -31,7 +31,7 @@ const UserProfile = () => {
   // Function to fetch user data
   const fetchUserData = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/users/${userId}`);
+      const response = await fetch(`https://eventsphere-project.vercel.app/users/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setUser(data.data); // Assuming the data is in data.data
@@ -46,7 +46,7 @@ const UserProfile = () => {
   // Function to fetch exhibitor data
   const fetchExhibitorData = async (exhibitorId) => {
     try {
-      const response = await fetch(`http://localhost:5000/exhibitors/${exhibitorId}`);
+      const response = await fetch(`https://eventsphere-project.vercel.app/exhibitors/${exhibitorId}`);
       if (response.ok) {
         const data = await response.json();
         console.log("exhibitorData",data.data)

@@ -18,7 +18,7 @@ const Showworkshop = () => {
 
   useEffect(() => {
     // Fetching workshops data from the API using fetch
-    fetch("http://localhost:5000/workshops")
+    fetch("https://eventsphere-project.vercel.app/workshops")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -32,7 +32,7 @@ const Showworkshop = () => {
       });
 
     // Fetching sessions data from the API using fetch
-    fetch("http://localhost:5000/sessions")
+    fetch("https://eventsphere-project.vercel.app/sessions")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -46,7 +46,7 @@ const Showworkshop = () => {
       });
 
     // Fetching halls data from the API
-    fetch("http://localhost:5000/halls")
+    fetch("https://eventsphere-project.vercel.app/halls")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -60,7 +60,7 @@ const Showworkshop = () => {
       });
 
     // Fetching speakers data from the API
-    fetch("http://localhost:5000/speakers")
+    fetch("https://eventsphere-project.vercel.app/speakers")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -131,19 +131,19 @@ const Showworkshop = () => {
     if (window.confirm("Are you sure you want to delete this workshop?")) {
       try {
         const deleteSchedule = await fetch(
-          `http://localhost:5000/schedules/${schedule_id}`,
+          `https://eventsphere-project.vercel.app/schedules/${schedule_id}`,
           {
             method: "DELETE",
           }
         );
         const response = await fetch(
-          `http://localhost:5000/workshops/${workshopId}`,
+          `https://eventsphere-project.vercel.app/workshops/${workshopId}`,
           {
             method: "DELETE",
           }
         );
         const deleteSessions = await fetch(
-          `http://localhost:5000/sessions-by-workshop-id/${workshopId}`,
+          `https://eventsphere-project.vercel.app/sessions-by-workshop-id/${workshopId}`,
           {
             method: "DELETE",
           }
@@ -269,7 +269,7 @@ const Showworkshop = () => {
       reserved_for: "Workshop",
     };
     const scheduleResponse = await fetch(
-      `http://localhost:5000/schedules/${currentWorkshop.schedule_id._id}`,
+      `https://eventsphere-project.vercel.app/schedules/${currentWorkshop.schedule_id._id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -311,7 +311,7 @@ const Showworkshop = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/workshops/${currentWorkshop._id}`,
+        `https://eventsphere-project.vercel.app/workshops/${currentWorkshop._id}`,
         {
           method: "PUT",
           body: formData,

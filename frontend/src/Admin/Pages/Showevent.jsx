@@ -19,7 +19,7 @@ const ShowEvent = () => {
   const modalRef = useRef(null);
   const fetchEvents = async () => {
     try {
-      const response = await fetch("http://localhost:5000/events");
+      const response = await fetch("https://eventsphere-project.vercel.app/events");
       if (response.ok) {
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -121,7 +121,7 @@ const handleHideModal = () => {
 
     try {
       if (editMode) {
-        const scheduleResponse = await fetch(`http://localhost:5000/schedules/${currentEvent.schedule_id._id}`, {
+        const scheduleResponse = await fetch(`https://eventsphere-project.vercel.app/schedules/${currentEvent.schedule_id._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(scheduleData),
@@ -142,7 +142,7 @@ const handleHideModal = () => {
         const scheduleResult = await scheduleResponse.json();
         const scheduleId = scheduleResult.schedule._id;
         formData.append("schedule_id", scheduleId);
-        const url = `http://localhost:5000/events/${currentEvent._id}`;
+        const url = `https://eventsphere-project.vercel.app/events/${currentEvent._id}`;
         const response = await fetch(url, {
           method: "PUT",
           body: formData,
@@ -177,12 +177,12 @@ const handleHideModal = () => {
     if (window.confirm("Are you sure you want to delete this workshop?")) {
     try {
       const deleteSchedule = await fetch(
-        `http://localhost:5000/schedules/${schedule_id}`,
+        `https://eventsphere-project.vercel.app/schedules/${schedule_id}`,
         {
           method: "DELETE",
         }
       );
-      const response = await fetch(`http://localhost:5000/events/${id}`, {
+      const response = await fetch(`https://eventsphere-project.vercel.app/events/${id}`, {
         method: "DELETE",
       });
 

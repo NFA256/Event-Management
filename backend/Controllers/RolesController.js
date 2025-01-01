@@ -1,7 +1,7 @@
 const  roles  = require("../Models/Roles");
 
 // Method -------  GET
-// Api   --------  http://localhost:5000/roles
+// Api   --------  https://eventsphere-project.vercel.app/roles
 // Description --  CREATE ROLES FUNCTION
 
 const createRole = async (req, res) => {
@@ -32,7 +32,7 @@ const createRole = async (req, res) => {
 };
 
 // Method -------  POST
-// Api   --------  http://localhost:5000/roles
+// Api   --------  https://eventsphere-project.vercel.app/roles
 // Description --  GET ALL ROLES FUNCTION
 const getAllRoles = async (req, res) => {
     try {
@@ -45,7 +45,7 @@ const getAllRoles = async (req, res) => {
 };
 
 // Method -------  GET
-// Api   --------  http://localhost:5000/roles/:id
+// Api   --------  https://eventsphere-project.vercel.app/roles/:id
 // Description --  GET ROLES BY SINGLE ID FUNCTION
 const getRoleById = async (req, res) => {
     try {
@@ -64,7 +64,7 @@ const getRoleById = async (req, res) => {
 };
 
 // Method -------  PUT
-// Api   --------  http://localhost:5000/roles
+// Api   --------  https://eventsphere-project.vercel.app/roles
 // Description --  UPDATE  ROLES FUNCTION
 const updateRole = async (req, res) => {
     try {
@@ -95,7 +95,7 @@ const updateRole = async (req, res) => {
 };
 
 // Method -------  DELETE
-// Api   --------  http://localhost:5000/roles/:id
+// Api   --------  https://eventsphere-project.vercel.app/roles/:id
 // Description --  DELETE ROLES FUNCTION
 const deleteRole = async (req, res) => {
     try {

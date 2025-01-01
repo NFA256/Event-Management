@@ -12,7 +12,7 @@ const AddBooth = () => {
   useEffect(() => {
     async function GetFloorData() {
       try {
-        const response = await fetch("http://localhost:5000/floors");
+        const response = await fetch("https://eventsphere-project.vercel.app/floors");
         if (response.status === 200) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -34,7 +34,7 @@ const AddBooth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/booths", {
+      const response = await fetch("https://eventsphere-project.vercel.app/booths", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -61,7 +61,7 @@ const createBooth = async (req, res) => {
 
 
 // Method -------  GET
-// API   --------  http://localhost:5000/booths
+// API   --------  https://eventsphere-project.vercel.app/booths
 // Get all booths
 const getAllBooths = async (req, res) => {
   try {
@@ -73,7 +73,7 @@ const getAllBooths = async (req, res) => {
 };
 
 // Method -------  GET
-// API   --------  http://localhost:5000/booths/id
+// API   --------  https://eventsphere-project.vercel.app/booths/id
 // Get a specific booth by ID
 const getBoothById = async (req, res) => {
   try {
@@ -88,7 +88,7 @@ const getBoothById = async (req, res) => {
   }
 };
 // Method -------  PUT
-// API   --------  http://localhost:5000/booths
+// API   --------  https://eventsphere-project.vercel.app/booths
 
 // Update a booth by ID (including reserved_bool update)
 const updateBooth = async (req, res) => {
@@ -135,7 +135,7 @@ const updateBooth = async (req, res) => {
 };
 
 // Method -------  DELEtE
-// API   --------  http://localhost:5000/booths/id
+// API   --------  https://eventsphere-project.vercel.app/booths/id
 // Delete a booth by ID
 const deleteBooth = async (req, res) => {
   try {

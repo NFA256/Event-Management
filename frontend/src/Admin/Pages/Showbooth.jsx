@@ -101,8 +101,8 @@ const Showbooth = () => {
   useEffect(() => {
     const fetchBoothsAndFloors = async () => {
       try {
-        const boothResponse = await fetch("http://localhost:5000/booths");
-        const floorResponse = await fetch("http://localhost:5000/floors");
+        const boothResponse = await fetch("https://eventsphere-project.vercel.app/booths");
+        const floorResponse = await fetch("https://eventsphere-project.vercel.app/floors");
 
         const boothData = await boothResponse.json();
         const floorData = await floorResponse.json();
@@ -127,7 +127,7 @@ const Showbooth = () => {
   }, []); // Re-fetch booths on initial render or whenever needed.
 
   const refreshBooths = async () => {
-    const boothResponse = await fetch("http://localhost:5000/booths");
+    const boothResponse = await fetch("https://eventsphere-project.vercel.app/booths");
     if (boothResponse.ok) {
       const boothData = await boothResponse.json();
       setBooths(boothData);
@@ -137,7 +137,7 @@ const Showbooth = () => {
   // Function to handle booth update
   const handleEditBooth = async (updatedBooth) => {
     try {
-      const response = await fetch(`http://localhost:5000/booths/${updatedBooth._id}`, {
+      const response = await fetch(`https://eventsphere-project.vercel.app/booths/${updatedBooth._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -161,7 +161,7 @@ const Showbooth = () => {
   const handleDeleteBooth = async (boothId) => {
     if (window.confirm("Are you sure you want to delete this booth?")) {
       try {
-        const response = await fetch(`http://localhost:5000/booths/${boothId}`, {
+        const response = await fetch(`https://eventsphere-project.vercel.app/booths/${boothId}`, {
           method: "DELETE",
         });
 

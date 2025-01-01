@@ -37,7 +37,7 @@ const Events = () => {
     const fetchEvents = async () => {
       setError("");
       try {
-        const response = await fetch("http://localhost:5000/events");
+        const response = await fetch("https://eventsphere-project.vercel.app/events");
         if (response.ok) {
           const data = await response.json();
           setEvents(Array.isArray(data) ? data : []);
@@ -52,7 +52,7 @@ const Events = () => {
     const getBoothData = async () => {
       setError("");
       try {
-        const response = await fetch("http://localhost:5000/booths");
+        const response = await fetch("https://eventsphere-project.vercel.app/booths");
         if (response.ok) {
           const data = await response.json();
           setBooth(Array.isArray(data) ? data : []);
@@ -68,7 +68,7 @@ const Events = () => {
       setError("");
       try {
         const response = await fetch(
-          `http://localhost:5000/exhibitors/${exhibitorId}`
+          `https://eventsphere-project.vercel.app/exhibitors/${exhibitorId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -93,7 +93,7 @@ const Events = () => {
   const fetchexhibitorbook = async (exhibitorId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/bookings-exhibitor-id?exhibitor_id=${exhibitorId}`
+        `https://eventsphere-project.vercel.app/bookings-exhibitor-id?exhibitor_id=${exhibitorId}`
       );
       const data = await response.json();
       if (Array.isArray(data.data)) {
@@ -139,7 +139,7 @@ const Events = () => {
     const total_cost = 100; // Example value; replace with a proper calculation
 
     try {
-      const response = await fetch("http://localhost:5000/bookings", {
+      const response = await fetch("https://eventsphere-project.vercel.app/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

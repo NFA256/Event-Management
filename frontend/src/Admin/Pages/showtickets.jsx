@@ -8,7 +8,7 @@ const Showtickets = () => {
     // Fetch tickets from backend API
     const fetchTickets = async () => {
       try {
-        const response = await fetch('http://localhost:5000/tickets');  // Your endpoint to fetch tickets
+        const response = await fetch('https://eventsphere-project.vercel.app/tickets');  // Your endpoint to fetch tickets
         const data = await response.json();
         console.log("tt",data)
         setTickets(data.data);

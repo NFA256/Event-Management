@@ -66,7 +66,7 @@ const Showhall = () => {
   useEffect(() => {
     const fetchHalls = async () => {
       try {
-        const response = await fetch("http://localhost:5000/halls");
+        const response = await fetch("https://eventsphere-project.vercel.app/halls");
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -91,7 +91,7 @@ const Showhall = () => {
     const confirmation = window.confirm("Are you sure you want to delete this hall?");
     if (confirmation) {
       try {
-        const response = await fetch(`http://localhost:5000/halls/${id}`, {
+        const response = await fetch(`https://eventsphere-project.vercel.app/halls/${id}`, {
           method: "DELETE",
         });
 
@@ -110,7 +110,7 @@ const Showhall = () => {
   // Handle edit form submission
   const handleEditSubmit = async (updatedHall) => {
     try {
-      const response = await fetch(`http://localhost:5000/halls/${updatedHall._id}`, {
+      const response = await fetch(`https://eventsphere-project.vercel.app/halls/${updatedHall._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

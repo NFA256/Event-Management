@@ -31,7 +31,7 @@ const Workshop = () => {
     }
     const fetchWorkshops = async () => {
       try {
-        const response = await fetch("http://localhost:5000/workshops");
+        const response = await fetch("https://eventsphere-project.vercel.app/workshops");
         const data = await response.json();
         if (Array.isArray(data)) {
           setWorkshops(data);
@@ -46,7 +46,7 @@ const Workshop = () => {
 
     const fetchSessions = async () => {
       try {
-        const response = await fetch("http://localhost:5000/sessions");
+        const response = await fetch("https://eventsphere-project.vercel.app/sessions");
         const data = await response.json();
         if (Array.isArray(data)) {
           setSessions(data);
@@ -66,7 +66,7 @@ const Workshop = () => {
   const fetchUserTickets = async (user_Id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/ticket-user-id?user_id=${user_Id}`
+        `https://eventsphere-project.vercel.app/ticket-user-id?user_id=${user_Id}`
       );
       const data = await response.json();
       if (Array.isArray(data.data)) {
@@ -192,7 +192,7 @@ const Workshop = () => {
         currentWorkshop.price === "Free" ? "0" : currentWorkshop.price,
     };
     try {
-      const response = await fetch("http://localhost:5000/tickets", {
+      const response = await fetch("https://eventsphere-project.vercel.app/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(ticketData),

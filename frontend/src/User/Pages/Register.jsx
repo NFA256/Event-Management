@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 // -----User API
 // API
-// http://localhost:5000/users
+// https://eventsphere-project.vercel.app/users
 
 // -----Role API
 // API
-// http://localhost:5000/roles
+// https://eventsphere-project.vercel.app/roles
 
 const Register = () => {
   const navigate = useNavigate();
@@ -106,7 +106,7 @@ let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&
 
     // Send user data to backend
     try {
-      const response = await fetch("http://localhost:5000/users", {
+      const response = await fetch("https://eventsphere-project.vercel.app/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),

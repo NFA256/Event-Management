@@ -20,7 +20,7 @@ const Home = () => {
 
     const fetchEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/latestSchedule");
+        const response = await fetch("https://eventsphere-project.vercel.app/latestSchedule");
         if (response.ok) {
           const data = await response.json();
           console.log("Fetched schedule data:", data); // Log fetched data
@@ -84,7 +84,7 @@ const Home = () => {
   useEffect(() => {
     const fetchSpeakers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/speakers");
+        const response = await fetch("https://eventsphere-project.vercel.app/speakers");
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -109,7 +109,7 @@ const Home = () => {
   useEffect(() => {
     const fetchcompanies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/company");
+        const response = await fetch("https://eventsphere-project.vercel.app/company");
         if (response.ok) {
           const company = await response.json();
           console.log(company); // Log the API response to check the structure

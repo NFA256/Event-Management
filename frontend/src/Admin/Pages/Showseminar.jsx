@@ -17,7 +17,7 @@ const Showseminar = () => {
 
   const fetchSeminars = async () => {
     try {
-      const response = await fetch("http://localhost:5000/seminars");
+      const response = await fetch("https://eventsphere-project.vercel.app/seminars");
       const data = await response.json();
 
       if (response.ok) {
@@ -37,8 +37,8 @@ const Showseminar = () => {
   const fetchDropdownData = async () => {
     try {
       const [speakerResponse, hallResponse] = await Promise.all([
-        fetch("http://localhost:5000/speakers"),
-        fetch("http://localhost:5000/halls"),
+        fetch("https://eventsphere-project.vercel.app/speakers"),
+        fetch("https://eventsphere-project.vercel.app/halls"),
       ]);
 
       const speakersData = await speakerResponse.json();
@@ -99,13 +99,13 @@ const Showseminar = () => {
     if (window.confirm("Are you sure you want to delete this seminar?")) {
       try {
         const deleteSchedule = await fetch(
-          `http://localhost:5000/schedules/${schedule_id}`,
+          `https://eventsphere-project.vercel.app/schedules/${schedule_id}`,
           {
             method: "DELETE",
           }
         );
         const response = await fetch(
-          `http://localhost:5000/seminars/${seminarId}`,
+          `https://eventsphere-project.vercel.app/seminars/${seminarId}`,
           {
             method: "DELETE",
           }
@@ -139,7 +139,7 @@ const Showseminar = () => {
       reserved_for: "Seminar",
     };
 
-    const scheduleResponse = await fetch(`http://localhost:5000/schedules/${currentSeminar.schedule_id._id}`, {
+    const scheduleResponse = await fetch(`https://eventsphere-project.vercel.app/schedules/${currentSeminar.schedule_id._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(scheduleData),
@@ -174,7 +174,7 @@ const Showseminar = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/seminars/${currentSeminar._id}`,
+        `https://eventsphere-project.vercel.app/seminars/${currentSeminar._id}`,
         {
           method: "PUT",
           headers: {
