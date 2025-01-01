@@ -4,7 +4,7 @@ const  exhibitors  = require("../Models/Exhibitor");
 const bcrypt = require("bcrypt");
 
 // Method -------  GET
-// API   --------  https://eventsphere-project.vercel.app/users
+// API   --------  http://localhost:5000/users
 // Description --  CREATE USERS FUNCTION
 const createUser = async (req, res) => {
   const role = await roles.findOne({ RoleName: "attendee" });
@@ -87,7 +87,7 @@ const createUser = async (req, res) => {
 };
 
 // Method -------  POST
-// API   --------  https://eventsphere-project.vercel.app/users
+// API   --------  http://localhost:5000/users
 // Description --  GET ALL USERS FUNCTION
 const getAllUsers = async (req, res) => {
   try {
@@ -103,7 +103,7 @@ const getAllUsers = async (req, res) => {
 };
 
 // Method -------  GET
-// API   --------  https://eventsphere-project.vercel.app/users/:id
+// API   --------  http://localhost:5000/users/:id
 // Description --  GET USER BY ID FUNCTION
 const getUserById = async (req, res) => {
   try {
@@ -129,7 +129,7 @@ const getUserById = async (req, res) => {
 };
 const OTPs = {};
 // Method -------  GET
-// API   --------  https://eventsphere-project.vercel.app/users/:id
+// API   --------  http://localhost:5000/users/:id
 // Description --  GET USER BY ID FUNCTION
 const getUserByEmail = async (req, res) => {
   try {
@@ -164,7 +164,7 @@ const getUserByEmail = async (req, res) => {
 };
 
 // Method -------  PUT
-// API   --------  https://eventsphere-project.vercel.app/users/:id
+// API   --------  http://localhost:5000/users/:id
 // Description --  UPDATE USER FUNCTION
 const updateUser = async (req, res) => {
   try {
@@ -245,7 +245,7 @@ const updateUser = async (req, res) => {
 };
 
 // Method -------  DELETE
-// API   --------  https://eventsphere-project.vercel.app/users/:id
+// API   --------  http://localhost:5000/users/:id
 // Description --  DELETE USER FUNCTION
 const deleteUser = async (req, res) => {
   try {
@@ -292,7 +292,7 @@ const updateUserRole = async (req, res) => {
 };
 
 // Method -------  GET
-// API   --------  https://eventsphere-project.vercel.app/users/:id
+// API   --------  http://localhost:5000/users/:id
 // Description --  GET USER BY ID FUNCTION
 const login = async (req, res) => {
   try {

@@ -25,7 +25,7 @@ export const ScheduleContent = () => {
     useEffect(() => {
       const fetchEvents = async () => {
         try {
-          const response = await fetch("https://eventsphere-project.vercel.app/events");
+          const response = await fetch("http://localhost:5000/events");
           if (response.ok) {
             const data = await response.json();
             if (Array.isArray(data)) {
@@ -46,7 +46,7 @@ export const ScheduleContent = () => {
       };
       const fetchWorkshops = async () => {
         try {
-          const response = await fetch("https://eventsphere-project.vercel.app/workshops");
+          const response = await fetch("http://localhost:5000/workshops");
           const data = await response.json();
           if (Array.isArray(data)) {
             setWorkshops(data);
@@ -60,7 +60,7 @@ export const ScheduleContent = () => {
       };
       const fetchSeminars = async () => {
         try {
-          const response = await fetch("https://eventsphere-project.vercel.app/seminars");
+          const response = await fetch("http://localhost:5000/seminars");
           const data = await response.json();
     
           if (response.ok) {

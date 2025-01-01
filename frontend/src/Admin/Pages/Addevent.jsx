@@ -35,7 +35,7 @@ const Addevent = () => {
       reserved_for: "Event",
     };
 
-    const scheduleResponse = await fetch("https://eventsphere-project.vercel.app/schedules", {
+    const scheduleResponse = await fetch("http://localhost:5000/schedules", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(scheduleData),
@@ -68,7 +68,7 @@ const Addevent = () => {
     formData.append("schedule_id", scheduleId);
 
     try {
-      const response = await fetch("https://eventsphere-project.vercel.app/events", {
+      const response = await fetch("http://localhost:5000/events", {
         method: "POST",
         body: formData,
       });

@@ -31,7 +31,7 @@ const Addspeaker = () => {
     formData.append("image", image);
 
     try {
-      const response = await fetch("https://eventsphere-project.vercel.app/speakers", {
+      const response = await fetch("http://localhost:5000/speakers", {
         method: "POST",
         body: formData,
       });

@@ -21,12 +21,12 @@ const Book = (refreshBooths) => {
         if(user.role === "exhibitor")
         {
           response = await fetch(
-            `https://eventsphere-project.vercel.app/bookings-exhibitor-id?exhibitor_id=${user.exhibitorId}`
+            `http://localhost:5000/bookings-exhibitor-id?exhibitor_id=${user.exhibitorId}`
           );
         }
         else{
 
-           response = await fetch("https://eventsphere-project.vercel.app/bookings");
+           response = await fetch("http://localhost:5000/bookings");
         }
         if (response.ok) {
           const data = await response.json();
@@ -46,7 +46,7 @@ const Book = (refreshBooths) => {
  const handleApprove = async (bookingId, boothId) => {
    try {
      const response = await fetch(
-       `https://eventsphere-project.vercel.app/bookings/${bookingId}/approve`,
+       `http://localhost:5000/bookings/${bookingId}/approve`,
        {
          method: "PATCH",
        }
@@ -54,7 +54,7 @@ const Book = (refreshBooths) => {
      if (response.ok) {
        // Update booth reservation status to reserved
        const boothResponse = await fetch(
-         `https://eventsphere-project.vercel.app/booths/${boothId}`,
+         `http://localhost:5000/booths/${boothId}`,
          {
            method: "PUT",
            headers: {
@@ -93,7 +93,7 @@ const Book = (refreshBooths) => {
  const handleReject = async (bookingId) => {
    try {
      const response = await fetch(
-       `https://eventsphere-project.vercel.app/bookings/${bookingId}/reject`,
+       `http://localhost:5000/bookings/${bookingId}/reject`,
        {
          method: "PATCH",
        }

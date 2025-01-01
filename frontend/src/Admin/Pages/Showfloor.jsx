@@ -12,7 +12,7 @@ const Showfloor = () => {
   useEffect(() => {
     const fetchFloors = async () => {
       try {
-        const response = await fetch("https://eventsphere-project.vercel.app/floors");
+        const response = await fetch("http://localhost:5000/floors");
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -44,7 +44,7 @@ const Showfloor = () => {
     const confirmed = window.confirm("Are you sure you want to delete this floor?");
     if (confirmed) {
       try {
-        const response = await fetch(`https://eventsphere-project.vercel.app/floors/${id}`, {
+        const response = await fetch(`http://localhost:5000/floors/${id}`, {
           method: "DELETE",
         });
 
@@ -70,7 +70,7 @@ const Showfloor = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://eventsphere-project.vercel.app/floors/${currentFloor._id}`, {
+      const response = await fetch(`http://localhost:5000/floors/${currentFloor._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

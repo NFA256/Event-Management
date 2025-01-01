@@ -28,11 +28,11 @@ const Addseminar = () => {
   useEffect(() => {
     const fetchHallsAndSpeakers = async () => {
       try {
-        const hallResponse = await fetch("https://eventsphere-project.vercel.app/halls");
+        const hallResponse = await fetch("http://localhost:5000/halls");
         const hallData = await hallResponse.json();
         setHalls(hallData);
 
-        const speakerResponse = await fetch("https://eventsphere-project.vercel.app/speakers");
+        const speakerResponse = await fetch("http://localhost:5000/speakers");
         const speakerData = await speakerResponse.json();
         setSpeakers(speakerData);
       } catch (err) {
@@ -167,7 +167,7 @@ const Addseminar = () => {
         reserved_for: "Seminar",
       };
 
-      const scheduleResponse = await fetch("https://eventsphere-project.vercel.app/schedules", {
+      const scheduleResponse = await fetch("http://localhost:5000/schedules", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(scheduleData),
@@ -195,7 +195,7 @@ const Addseminar = () => {
         formData.append(key, seminarData[key]);
       }
       formData.append("schedule_id", scheduleId);
-      const response = await fetch("https://eventsphere-project.vercel.app/seminars", {
+      const response = await fetch("http://localhost:5000/seminars", {
         method: "POST",
         body: formData,
       });

@@ -37,7 +37,7 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch(`https://eventsphere-project.vercel.app/users/USER_ID`, {
+    const response = await fetch(`http://localhost:5000/users/USER_ID`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

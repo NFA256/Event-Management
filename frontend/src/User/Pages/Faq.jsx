@@ -6,7 +6,7 @@ const Faq = () => {
   const [faqs, setFaqs] = useState([]);
 
   useEffect(() => {
-    fetch("https://eventsphere-project.vercel.app/faq")
+    fetch("http://localhost:5000/faq")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch FAQs");

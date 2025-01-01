@@ -18,7 +18,7 @@ const Showspeaker = () => {
   useEffect(() => {
     const fetchSpeakers = async () => {
       try {
-        const response = await fetch("https://eventsphere-project.vercel.app/speakers");
+        const response = await fetch("http://localhost:5000/speakers");
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -94,7 +94,7 @@ const Showspeaker = () => {
 
     try {
       if (editMode) {
-        const url = `https://eventsphere-project.vercel.app/speakers/${currentSpeaker._id}`;
+        const url = `http://localhost:5000/speakers/${currentSpeaker._id}`;
         const response = await fetch(url, {
           method: "PUT",
           body: formData,
@@ -126,7 +126,7 @@ const Showspeaker = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://eventsphere-project.vercel.app/speakers/${id}`, {
+      const response = await fetch(`http://localhost:5000/speakers/${id}`, {
         method: "DELETE",
       });
 
