@@ -78,7 +78,7 @@ const Faq = () => {
           }}
         />
       </div>
-      <div className="container col-5 mt-5 mb-5">
+      <div className="container col-3  mt-5 mb-5 ">
         <div
           style={{
             display: "flex",
