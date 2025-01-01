@@ -36,7 +36,7 @@ const Seminar = () => {
 
   const fetchSeminars = async () => {
     try {
-      const response = await fetch("http://localhost:5000/seminars");
+      const response = await fetch("https://eventsphere-project.vercel.app/seminars");
       const data = await response.json();
 
       if (response.ok) {
@@ -51,7 +51,7 @@ const Seminar = () => {
   const fetchUserTickets = async (user_Id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/ticket-user-id?user_id=${user_Id}`
+        `https://eventsphere-project.vercel.app/ticket-user-id?user_id=${user_Id}`
       );
       const data = await response.json();
 
@@ -152,7 +152,7 @@ const Seminar = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/tickets", {
+      const response = await fetch("https://eventsphere-project.vercel.app/tickets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
