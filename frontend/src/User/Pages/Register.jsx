@@ -78,7 +78,7 @@ let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&
 
     // Validate inputs
     if (Name === "" || Name.length < 3) {
-      setError("Username is not valid");
+      setError("Username is not valid .");
       return;
     }
     if (Email === "" || Email.length < 5) {
@@ -117,6 +117,7 @@ let passwordreg=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&
         console.log("Error Response:", errorData);
         setError(errorData.message || "Failed to register the user.");
       } else {
+        setError("")
         setSuccess("Account Registered Successfully !!");
         setTimeout(() => {
           navigate("/login");

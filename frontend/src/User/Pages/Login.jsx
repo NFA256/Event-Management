@@ -52,7 +52,7 @@ const Login = () => {
   
         if (response.status === 200) {
           const user = result.data;
-         
+          setError("")
           login(user);
           setSuccess("Login successful!");
           setTimeout(() => {

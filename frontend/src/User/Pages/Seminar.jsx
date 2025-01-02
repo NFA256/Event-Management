@@ -281,7 +281,7 @@ const Seminar = () => {
                             <strong>
                               Start Time:{" "}
                               {new Date(
-                                `1970-01-01T${seminar.start_time}Z`
+                                `1970-01-01T${seminar.start_time}`
                               ).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
@@ -292,7 +292,7 @@ const Seminar = () => {
                             <strong>
                               End Time:{" "}
                               {new Date(
-                                `1970-01-01T${seminar.end_time}Z`
+                                `1970-01-01T${seminar.end_time}`
                               ).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
@@ -407,7 +407,7 @@ const Seminar = () => {
                     <p>
                       <strong>Start Time:</strong>{" "}
                       {new Date(
-                        `1970-01-01T${selectedSeminar.start_time}Z`
+                        `1970-01-01T${selectedSeminar.start_time}`
                       ).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -418,7 +418,7 @@ const Seminar = () => {
                     <p>
                       <strong>End Time:</strong>{" "}
                       {new Date(
-                        `1970-01-01T${selectedSeminar.end_time}Z`
+                        `1970-01-01T${selectedSeminar.end_time}`
                       ).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -545,7 +545,7 @@ const Seminar = () => {
                         <br />
                         <span className="ticket__detail">
                           {new Date(
-                            `1970-01-01T${selectedSeminar.start_time}Z`
+                            `1970-01-01T${selectedSeminar.start_time}`
                           ).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -559,7 +559,7 @@ const Seminar = () => {
                         <br />
                         <span className="ticket__detail text-capitalize">
                           {new Date(
-                            `1970-01-01T${selectedSeminar.end_time}Z`
+                            `1970-01-01T${selectedSeminar.end_time}`
                           ).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState ,useRef} from "react";
+import { Modal } from "bootstrap";
 const Showworkshop = () => {
   const [workshops, setWorkshops] = useState([]);
   const [sessions, setSessions] = useState([]);
@@ -15,6 +15,10 @@ const Showworkshop = () => {
   const [image, setImage] = useState(null);
   const [attendeeError, setAttendeeError] = useState("");
   const [priceError, setPriceError] = useState("");
+  const [sessionError, setsessionError] = useState({
+    index:"",
+    error:""
+  });
 
   useEffect(() => {
     // Fetching workshops data from the API using fetch
@@ -104,7 +108,7 @@ const Showworkshop = () => {
     const speaker = speakers.find((speaker) => speaker._id === speakerId);
     return speaker ? speaker.name : "Unknown Speaker";
   };
-
+const modalRef = useRef(null);
   const handleEdit = (workshop) => {
     setCurrentWorkshop(workshop);
     setCurrentSessions(workshop.sessions); // Set current sessions for the workshop
@@ -126,6 +130,12 @@ const Showworkshop = () => {
       workshop.end_date = "";
     }
     setModalOpen(true);
+    setTimeout(() => {
+          if (modalRef.current) {
+            const modal = new Modal(modalRef.current);
+            modal.show();
+          }
+        }, 0);
   };
   const handleDelete = async (workshopId, schedule_id) => {
     if (window.confirm("Are you sure you want to delete this workshop?")) {
@@ -174,6 +184,8 @@ const Showworkshop = () => {
   };
 
   const handleModalClose = () => {
+     const modal = Modal.getInstance(modalRef.current);
+     modal.hide();
     setModalOpen(false);
     setCurrentWorkshop(null);
     setCurrentSessions([]);
@@ -215,13 +227,27 @@ const Showworkshop = () => {
     }
     setCurrentWorkshop((prev) => ({ ...prev, [name]: value }));
   };
-  const calculateDuration = (startTime, endTime) => {
+  const calculateDuration = (index,startTime, endTime) => {
     const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${endTime}:00`);
     const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
 
     if (durationInMinutes < 0) {
+      setsessionError({
+        index:index,
+        error:"End time must be greater than start time."})
+      setTimeout(() => setsessionError({index:"",error:""}), 3000);
       return "Invalid Duration"; // Handle case where end time is before start time
+    }
+    if (durationInMinutes < 30) {
+      setsessionError(
+        {
+           index:index,
+        error:"The duration between start time and end time must be at least 30 minutes."
+        }
+        );
+      setTimeout(() =>  setsessionError({index:"",error:""}), 8000);
+      return "Invalid Duration"; 
     }
 
     const hours = Math.floor(durationInMinutes / 60);
@@ -240,7 +266,7 @@ const Showworkshop = () => {
       const endTime = updatedSessions[index].end_time;
 
       if (startTime && endTime) {
-        updatedSessions[index].duration = calculateDuration(startTime, endTime);
+        updatedSessions[index].duration = calculateDuration(index,startTime, endTime);
       } else {
         updatedSessions[index].duration = ""; // Reset duration if either time is missing
       }
@@ -436,11 +462,13 @@ const Showworkshop = () => {
       </table>
       {modalOpen && (
         <div
-          className="modal fade show"
+          className="modal fade "
           style={{ display: "block" }}
           tabIndex="-1"
           role="dialog"
           onClick={handleModalClose}
+          aria-hidden={!modalOpen}
+          ref={modalRef}
         >
           <div
             className="modal-dialog modal-lg"
@@ -462,6 +490,7 @@ const Showworkshop = () => {
                 className="modal-body"
                 style={{ maxHeight: "600px", overflowY: "auto" }}
               >
+            {error && <div className="alert alert-danger">{error}</div>}
                 <form onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-md-6 form-group">
@@ -544,7 +573,7 @@ const Showworkshop = () => {
                         className=" text-center form-control"
                         id="hall_id"
                         name="hall_id"
-                        value={currentWorkshop?.hall_id?._id || ""}
+                        value={currentWorkshop?.hall_id?._id || currentWorkshop?.hall_id || ""}
                         onChange={handleInputChange}
                       >
                         <option value="">Select Hall</option>
@@ -615,6 +644,7 @@ const Showworkshop = () => {
                   {currentSessions.map((session, index) => (
                     <>
                       <hr />
+  {(sessionError && sessionError.error && sessionError.index == index ) && <div className="alert alert-danger">{sessionError.error}</div>}
                       <div key={index} className="session-input">
                         <h5>Session {index + 1}</h5>
                         <div className="row">
@@ -768,8 +798,21 @@ const Showworkshop = () => {
                         <td>{index + 1}</td>
                         <td>{session.title}</td>
                         <td>{new Date(session.date).toLocaleDateString()}</td>
-                        <td>{session.start_time}</td>
-                        <td>{session.end_time}</td>
+                        
+                        <td>
+                        {new Date(
+                                `1970-01-01T${session.start_time}`
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}</td>
+                        <td>
+                        {new Date(
+                                `1970-01-01T${session.end_time}`
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}</td>
                         <td>{session.duration}</td>
                       </tr>
                     ))}

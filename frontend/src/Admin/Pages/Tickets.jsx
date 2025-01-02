@@ -220,7 +220,7 @@ const Tickets = () => {
                                             <br />
                                             <span className="ticket__detail">
                                               {new Date(
-                                                `1970-01-01T${ticket.seminar_id.start_time}Z`
+                                                `1970-01-01T${ticket.seminar_id.start_time}`
                                               ).toLocaleTimeString([], {
                                                 hour: "2-digit",
                                                 minute: "2-digit",
@@ -234,7 +234,7 @@ const Tickets = () => {
                                             <br />
                                             <span className="ticket__detail">
                                               {new Date(
-                                                `1970-01-01T${ticket.seminar_id.end_time}Z`
+                                                `1970-01-01T${ticket.seminar_id.end_time}`
                                               ).toLocaleTimeString([], {
                                                 hour: "2-digit",
                                                 minute: "2-digit",

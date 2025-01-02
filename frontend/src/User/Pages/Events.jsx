@@ -127,10 +127,7 @@ const Events = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isExhibitorEnrolled(selectedEventId)) {
-      setError("You are already enrolled in this event for the selected booth.");
-      return;
-    }
+  
     if (!selectedBooth) {
       setError("Please select a booth before confirming your booking.");
       return;
@@ -189,7 +186,16 @@ const Events = () => {
       return { days: daysAgo, isPast: true, isToday: false };
     }
   };
-
+  const handleBookingModalOpen = (event) => {
+    if (!isLoggedIn) {
+      // Redirect to login page if user is not logged in
+      window.location.href = "/login"; // Change this to your actual login route
+      return;
+    }
+  
+    setSelectedEventId(event._id);
+    setShowModal(true);
+ };
   return (
     <>
       <div className="slider-area2">
@@ -249,20 +255,34 @@ const Events = () => {
                           <strong>{event.description}</strong>
                         </div>
                         <div className="text-center mt-3">
-                          {bookingStatus && bookingStatus != "rejected" ?  (
-                            <p className="text-success">{bookingStatus}</p>
-                          ) : (
-                            <button
-                              className="btn3"
-                              onClick={() => {
-                                setSelectedEventId(event._id);
-                                setShowModal(true);
-                              }}
-                            >
-                              Book a Booth
-                            </button>
-                          )}
-                           {
+                        {
+  !isLoggedIn || (isLoggedIn && userRole === "exhibitor" && (bookingStatus === "rejected" || !bookingStatus)) ? (
+    // Agar user logged in nahi hai ya user exhibitor ho aur booking status rejected ho ya not defined ho
+    <button
+      className="btn3"
+      onClick={() => handleBookingModalOpen(event)}
+    >
+      Book a Booth
+    </button>
+  ) : isLoggedIn && userRole === "exhibitor" && bookingStatus && bookingStatus !== "rejected" ? (
+    // Agar user exhibitor ho aur status rejected na ho ya defined ho, status show karna hai
+    <p className="text-success">{bookingStatus}</p>
+  ) : isLoggedIn && userRole === "admin" ? (
+    // Agar user admin ho, koi button nahi dikhna chahiye
+    null
+  ) : isLoggedIn && userRole === "attendee" ? (
+    // Agar user attendee ho, "Become An Exhibitor" show karna hai
+    <>
+      <p className="text-danger">
+        You must be an exhibitor to book a booth.
+      </p>
+      <Link to="/becomaexhibitor" className="btn3">
+        Become An Exhibitor
+      </Link>
+    </>
+  ) : null
+}
+{
                            bookingStatus == "rejected"
                            ?<p className="text-danger mt-3 text-center">Your booking was rejected. <br /> You can try booking again</p>
                            :null

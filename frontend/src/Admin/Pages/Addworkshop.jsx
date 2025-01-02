@@ -20,7 +20,10 @@ const Addworkshop = () => {
   const [sessions, setSessions] = useState([]); // New state for holding sessions
   const [priceError, setPriceError] = useState("");
   const [attendeesError, setAttendeesError] = useState("");
-
+const [sessionError, setsessionError] = useState({
+    index:"",
+    error:""
+  });
   useEffect(() => {
     const fetchHallsAndSpeakers = async () => {
       try {
@@ -149,26 +152,43 @@ const Addworkshop = () => {
         if (start >= end) {
           // Reset the end time to an empty string if invalid
           updatedSessions[index].end_time = "";
-          updatedSessions[index].duration = ""; // Reset duration if times are invalid
-          setError("End time must be later than start time.");
-        setTimeout(() => setError(""), 3000);
-        } else {
+          updatedSessions[index].duration = "Invalid Duration"; // Reset duration if times are invalid
+          setsessionError({
+            index:index,
+            error:"End time must be greater than start time."})
+            setTimeout(() => {
+              updatedSessions[index].duration = "" // Reset if duration is negative
+                setsessionError({index:"",error:""})}, 5000);
+        }
+         else {
           // Calculate duration in minutes
           const durationInMinutes = (end - start) / (1000 * 60); // Convert milliseconds to minutes
   
           if (durationInMinutes > 0) {
             if (durationInMinutes < 30) {
-              setError("The duration between start time and end time must be at least 30 minutes.");
-              setTimeout(() => setError(""), 3000);
+              setsessionError(
+                {
+                   index:index,
+                error:"The duration between start time and end time must be at least 30 minutes."
+                }
+                );
+              updatedSessions[index].duration = "Invalid Duration"; // Reset if duration is negative
+              setTimeout(() => {
+                updatedSessions[index].duration = "" // Reset if duration is negative
+                  setsessionError({index:"",error:""})}, 5000);
             } else {
               const hours = Math.floor(durationInMinutes / 60);
             const minutes = durationInMinutes % 60;
             updatedSessions[index].duration = `${hours}h ${minutes}m`; // Format as "Xh Ym"
             }
           } else {
-            setError("End time must be later than start time.");
-            setTimeout(() => setError(""), 3000);
-            updatedSessions[index].duration = ""; // Reset if duration is negative
+            setsessionError({
+              index:index,
+              error:"End time must be greater than start time."})
+              updatedSessions[index].duration = "Invalid Duration"; // Reset if duration is negative
+              setTimeout(() => {
+              updatedSessions[index].duration = "" // Reset if duration is negative
+                setsessionError({index:"",error:""})}, 5000);
           }
         }
       } else {
@@ -614,10 +634,12 @@ const Addworkshop = () => {
                     {/* Render Session Input Fields Dynamically */}
                     {sessions.map((session, index) => (
                       <>
-                        <h5 className="text-center mt-3">
+                        <hr />
+                        <h5 className="text-center mt-3 mb-2">
                           Session {index + 1}
                         </h5>
-                        <hr />
+  {(sessionError && sessionError.error && sessionError.index == index ) && <div className="alert alert-danger">{sessionError.error}</div>}
+
                         <div className="row" key={index}>
                           <div className="col-md-4 form-outline mb-4">
                             <label

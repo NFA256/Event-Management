@@ -72,10 +72,10 @@ const Showseminar = () => {
     if (modalRef.current) {
       // Use the Bootstrap modal instance for proper control
       const modal = Modal.getInstance(modalRef.current);
-
+      setCurrentSeminar(null)
       // Hide the modal and dispose the instance to ensure cleanup
       modal.hide();
-      modal.dispose();
+      // modal.dispose();
 
       // Update the React state to close the modal
       setModalOpen(false);
@@ -188,6 +188,7 @@ const Showseminar = () => {
         setSuccessMessage("Seminar updated successfully!");
         fetchSeminars(); // Refresh seminars list
         handleHideModal(); // Close modal after success
+        
       } else {
         const result = await response.json();
         setError(result.message || "Failed to update seminar.");
@@ -230,7 +231,7 @@ const Showseminar = () => {
                 <td>{seminar.purpose}</td>
                 <td>
                   {new Date(
-                    `1970-01-01T${seminar.start_time}Z`
+                    `1970-01-01T${seminar.start_time}`
                   ).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -238,7 +239,7 @@ const Showseminar = () => {
                 </td>
                 <td>
                   {new Date(
-                    `1970-01-01T${seminar.end_time}Z`
+                    `1970-01-01T${seminar.end_time}`
                   ).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -306,6 +307,7 @@ const Showseminar = () => {
               </button>
             </div>
             <div className="modal-body">
+            {error && <div className="alert alert-danger">{error}</div>}
               <form onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="mb-3 col-md-6">
@@ -411,7 +413,7 @@ const Showseminar = () => {
                     <label>Speaker</label>
                     <select
                       className="text-center form-control"
-                      value={currentSeminar?.speaker_id?._id || ""}
+                      value={currentSeminar?.speaker_id?._id ||currentSeminar?.speaker_id || ""}
                       onChange={(e) =>
                         setCurrentSeminar({
                           ...currentSeminar,

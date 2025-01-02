@@ -19,7 +19,7 @@ const UserProfile = () => {
       const user = JSON.parse(storedUser);
       setUserId(user.userId);
       fetchUserData(user.userId); // Fetch user data
-      if(user.role.RoleName === "exhibitor"){
+      if(user.role === "exhibitor"){
 
         fetchExhibitorData(user.exhibitorId); // Fetch exhibitor data
       }
@@ -69,9 +69,9 @@ const UserProfile = () => {
                 <div className="card-body text-center">
                   <img
                     src={
-                      user.role.RoleName === "admin"
-                        ? "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
-                        : "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
+                      user.role.RoleName === "exhibitor" && exhibitorData &&  exhibitorData.image
+                      ?  exhibitorData.image
+                      : "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
                     }
                     alt="avatar"
                     className="rounded-circle img-fluid"

@@ -96,7 +96,6 @@ const handleHideModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handleHideModal();
 
     if (!title || !description || !time || !date || !no_of_visitors || (!eventImage && !editMode)) {
       setError("All fields are required!");
@@ -250,10 +249,7 @@ const handleHideModal = () => {
                   <td>{event.title}</td>
                   <td>{event.description}</td>
                   <td>
-                    {new Date(`1970-01-01T${event.time}Z`).toLocaleTimeString(
-                      [],
-                      { hour: "2-digit", minute: "2-digit" }
-                    )}
+                  {new Date(`1970-01-01T${event.time}`).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </td>
                   <td>{new Date(event.date).toLocaleDateString()} </td>
                   <td>{event.no_of_visitors}</td>
@@ -373,7 +369,7 @@ const handleHideModal = () => {
                         Date
                       </label>
                       <input
-                        type="text"
+                        type="date"
                         id="modal-date"
                         className="form-control form-control-lg"
                         value={date.split("T")[0] || ""} // Ensure the date is in YYYY-MM-DD format
@@ -398,21 +394,23 @@ const handleHideModal = () => {
                       />
                     </div>
                   </div>
-
-                  <div className="col-md-6 mb-4">
-                    <div className="form-outline">
-                      <label className="form-label" htmlFor="modal-status">
-                        Status
-                      </label>
-                      <input
-                        type="text"
-                        id="modal-status"
-                        className="form-control form-control-lg"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                      />
-                    </div>
-                  </div>
+{/* Status */}
+<div className="col-md-6 mb-4">
+                        <label className="form-label" htmlFor="modal-status">
+                          Status
+                        </label>
+                        <select
+                          id="modal-status"
+                          className="form-control form-control-lg"
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                        >
+                          <option value="">Select Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Completed">Completed</option>
+                          <option value="Upcoming">Upcoming</option>
+                        </select>
+                      </div>
                 </div>
 
                 <div className="form-outline mb-4">

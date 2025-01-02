@@ -425,13 +425,22 @@ const Workshop = () => {
                               <td>
                                 {new Date(session.date).toLocaleDateString()}
                               </td>
-                              <td>{session.start_time}</td>
-                              <td>{session.end_time}</td>
+                              <td> {new Date(
+                                `1970-01-01T${session.end_time}`
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}</td>
+                              <td> {new Date(
+                                `1970-01-01T${session.end_time}`
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}</td>
                               <td>
-                                {calculateDuration(
-                                  session.start_time,
-                                  session.end_time
-                                )}
+                                {
+                                 session.duration
+                                }
                               </td>
                             </tr>
                           ))}
@@ -554,7 +563,7 @@ const Workshop = () => {
         {isTicketModalOpen && (
           <div
             className="modal fade show"
-            style={{ display: "block" }}
+            style={{ display: "block"  }}
             tabIndex="-1"
             role="dialog"
             onClick={handleTicketModalClose}
